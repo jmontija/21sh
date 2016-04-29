@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:05:11 by jmontija          #+#    #+#             */
-/*   Updated: 2016/04/29 23:47:19 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/04/30 00:21:55 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,32 @@ void	print_cmd(t_group *grp, int key, char **cmd)
 	grp->curs_pos += 1;
 }
 
+void	remove_line(t_group *grp, char **cmd)
+{
+	size_t	i;
+
+	i = -1;
+	grp->curs_pos = START_POS + LEN(*cmd) - 1;
+	ft_tputs(NULL, "ch");
+	while (++i < LEN(*cmd))
+	{
+		ft_tputs("le", NULL);
+		ft_tputs("dc", NULL);
+	}
+	REMOVE(cmd);
+	*cmd = SDUP("");
+	grp->curs_pos = START_POS;
+}
+
 int		key_selection(t_group *grp, int key, char **cmd)
 {
 	if (grp && key == ENTER)
 		return (ENTER);
-	if (key == ARROW_L || key == ARROW_R || key == ARROW_U || key == ARROW_D)
+	else if (key == BACKSPACE)
+		handling_backspace(grp, cmd);
+	else if (key == DEL)
+		remove_line(grp, cmd);
+	else if (key == ARROW_L || key == ARROW_R || key == ARROW_U || key == ARROW_D)
 		handling_arrow(grp, cmd, key);
 	else if (ft_isprint(key))
 		print_cmd(grp, key, cmd);

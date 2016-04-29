@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/04/29 23:05:05 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/04/30 00:07:45 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@
 # define CTRL_R 18
 
 typedef int				t_bool;
-//enum {false, true};
 enum {P, S, ii, v, u};
 enum {e_opt, namenv, utils};
 
@@ -91,6 +90,7 @@ void					read_cmd(t_group *grp, int fd, char **cmd);
 void					exec_cmd(t_group *grp, char *path, char **cmd_line);
 void					exec_env(t_group *grp, int show_env);
 void					handling_arrow(t_group *grp, char **cmd, int key);
+void					handling_backspace(t_group *grp, char **cmd);
 void					cderr_pwd(t_group *grp, char *path, struct stat s_buf);
 void					ft_tputs(char *cap_code, char *what);
 char					*child_process(t_group *grp, char *order);

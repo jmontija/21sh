@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:06:08 by jmontija          #+#    #+#             */
-/*   Updated: 2016/04/29 23:33:08 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/04/30 00:05:45 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@ int		ft_getchar(int c)
 	return (write(2, &c, 1));
 }
 
-void	ft_tputs(char *cap_code, char *what)
+void	ft_tputs(char *cap_code, char *cap_code_bis)
 {
 	t_group	*grp;
 
 	grp = init_grp();
-	if (what == NULL)
+	if (cap_code_bis == NULL)
 		tputs(tgetstr(cap_code, NULL), 1, ft_getchar);
 	else
-		tputs(tgoto(tgetstr(what, NULL), 0, grp->curs_pos), 1, ft_getchar);
+		tputs(tgoto(tgetstr(cap_code_bis, NULL), 0, grp->curs_pos), 1, ft_getchar);
 }
 
 int		reset_shell(void)
