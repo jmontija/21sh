@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/04/30 03:50:06 by julio            ###   ########.fr       */
+/*   Updated: 2016/04/30 15:38:52 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 # define STRCHR(a, b)	(ft_strchr(a, b))
 # define REMOVE(x)		(ft_strdel(x))
 # define KEY(a, b, c, d) ((d << 24) + (c << 16) + (b << 8) + a)
-# define BUF_SIZE 4
+# define BUF_SIZE 1500
 # define START_POS 7
 # define ENTER 10
 # define SPACE 32
