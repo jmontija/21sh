@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/04/30 00:07:45 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/04/30 03:50:06 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@
 # define DEL 2117294875
 # define CTRL_D 4
 # define CTRL_R 18
+# define CTRL_V 22
 
 typedef int				t_bool;
 enum {P, S, ii, v, u};
