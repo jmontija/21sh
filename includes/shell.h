@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/04/30 15:38:52 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/04/30 18:50:23 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,9 @@ typedef struct			s_group
 	char				*order;
 	int					*define_cmd;
 	int					lvl;
-	int					curs_pos;
+	int					curs_col;
+	int					curs_line;
+	int					char_nb;
 	struct s_options	*options;
 	struct s_env		*first;
 	struct s_env		*last;
