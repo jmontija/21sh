@@ -6,20 +6,20 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:05:11 by jmontija          #+#    #+#             */
-/*   Updated: 2016/04/30 18:50:38 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/01 19:50:30 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-int		manage_curs_col(t_group *grp)
+void		manage_curs_col(t_group *grp)
 {
 	struct winsize	window;
 
 	ioctl(0, TIOCGWINSZ, &window);
-	if (grp->curs_col >= window.ws_col)
+	/*if (grp->curs_col >= window.ws_col)
 		grp->line += 1;
-	return (grp->line == 0 ? START_POS + LEN(*cmd) : )
+	return (grp->line == 0 ? START_POS + LEN(*cmd) : )*/
 
 }
 
@@ -27,31 +27,27 @@ void	print_cmd(t_group *grp, int key, char *order, char **cmd)
 {
 	char	*beg_cmd;
 	char	*end_cmd;
-	int		i;
-	int		line;
+	size_t	i;
 
 	i = -1;
 	while (order[++i] != '\0')
 		if (ft_isprint(order[i]) == false)
 			return ;
 	ft_putstr_fd(order, 2);
-	line = manage_curs_col(grp);
-	if (grp->curs_col < )
+	if (grp->curs_col < START_POS + LEN(*cmd))
 	{
 		beg_cmd = SUB(*cmd, 0, grp->curs_col - START_POS);
 		beg_cmd = JOIN(beg_cmd, order);
 		end_cmd = SUB(*cmd, grp->curs_col - START_POS, LEN(*cmd));
-		ft_putstr_fd(end_cmd, 2);
 		*cmd = JOIN(beg_cmd, end_cmd);
-		grp->curs_col += LEN(order) - 1;
-		ft_tputs(NULL, "ch");
+		ft_putstr_fd(end_cmd, 2);
+		i = LEN(end_cmd);
+		while (i-- > 0)
+			ft_tputs(NULL, "le");
 	}
 	else
-	{
 		*cmd = JOIN(*cmd, order);
-		grp->curs_col += LEN(order) - 1;
-	}
-	grp->curs_col += 1;
+	grp->curs_col += LEN(order);
 }
 
 void	remove_line(t_group *grp, char **cmd)
