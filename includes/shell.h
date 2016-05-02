@@ -101,6 +101,8 @@ void					exec_cmd(t_group *grp, char *path, char **cmd_line);
 void					exec_env(t_group *grp, int show_env);
 void					handling_arrow(t_group *grp, char **cmd, int key);
 void					handling_backspace(t_group *grp, char **cmd);
+void					remove_line(t_group *grp, char **cmd);
+void					insert_hist(t_group *grp, char *name);
 void					cderr_pwd(t_group *grp, char *path, struct stat s_buf);
 void					ft_tputs(char *cap_code, char *what);
 char					*child_process(t_group *grp, char *order);

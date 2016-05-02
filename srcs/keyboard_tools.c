@@ -3,38 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard_tools.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 19:31:01 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/02 15:39:04 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/02 17:55:28 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-static void	remove_line(t_group *grp, char **cmd)
+void	handling_historic(t_group *grp, char **cmd, int key)
 {
-	size_t	i;
-
-	i = -1;
-	grp->curs_col = START_POS + LEN(*cmd) - 1;
-	ft_tputs(NULL, "ch");
-	while (++i < LEN(*cmd))
-	{
-		ft_tputs("le", NULL);
-		ft_tputs("dc", NULL);
-	}
-	REMOVE(cmd);
-	*cmd = SDUP("");
-	grp->curs_col = START_POS;
-}
-
-void	ft_historique(t_group *grp, char **cmd, int key)
-{
-	if (grp->hist == NULL)
-		return ;
 	remove_line(grp, cmd);
-	if (key == ARROW_U)
+	if (key == ARROW_U && grp->hist)
 	{
 		if (grp->curr_hist == NULL)
 			grp->curr_hist = grp->hist;
@@ -44,7 +25,7 @@ void	ft_historique(t_group *grp, char **cmd, int key)
 		*cmd = SDUP(grp->curr_hist->name);
 		grp->curs_col += LEN(*cmd);
 	}
-	else if (key == ARROW_D)
+	else if (key == ARROW_D && grp->hist)
 	{
 		if (grp->curr_hist != NULL)
 			grp->curr_hist = grp->curr_hist->prev;
@@ -79,7 +60,7 @@ void	handling_backspace(t_group *grp, char **cmd)
 void	handling_arrow(t_group *grp, char **cmd, int key)
 {
 	if (key == ARROW_U || key == ARROW_D)
-		ft_historique(grp, cmd, key);
+		handling_historic(grp, cmd, key);
 	else if (key == ARROW_L && grp->curs_col > START_POS)
 	{
 		grp->curs_col -= 1;
