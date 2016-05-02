@@ -6,7 +6,7 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 19:31:01 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/02 15:36:35 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/02 15:39:04 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,8 @@ static void	remove_line(t_group *grp, char **cmd)
 	grp->curs_col = START_POS;
 }
 
-void	arrow_ud(t_group *grp, char **cmd, int key)
+void	ft_historique(t_group *grp, char **cmd, int key)
 {
-	t_hist	*tmp;
-
 	if (grp->hist == NULL)
 		return ;
 	remove_line(grp, cmd);
@@ -81,7 +79,7 @@ void	handling_backspace(t_group *grp, char **cmd)
 void	handling_arrow(t_group *grp, char **cmd, int key)
 {
 	if (key == ARROW_U || key == ARROW_D)
-		arrow_ud(grp, cmd, key);
+		ft_historique(grp, cmd, key);
 	else if (key == ARROW_L && grp->curs_col > START_POS)
 	{
 		grp->curs_col -= 1;

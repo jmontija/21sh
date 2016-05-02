@@ -6,21 +6,27 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:05:11 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/02 15:31:22 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/02 15:42:42 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-void		manage_curs_col(t_group *grp)
+void	remove_line(t_group *grp, char **cmd)
 {
-	struct winsize	window;
+	size_t	i;
 
-	ioctl(0, TIOCGWINSZ, &window);
-	/*if (grp->curs_col >= window.ws_col)
-		grp->line += 1;
-	return (grp->line == 0 ? START_POS + LEN(*cmd) : )*/
-
+	i = -1;
+	grp->curs_col = START_POS + LEN(*cmd) - 1;
+	ft_tputs(NULL, "ch");
+	while (++i < LEN(*cmd))
+	{
+		ft_tputs("le", NULL);
+		ft_tputs("dc", NULL);
+	}
+	REMOVE(cmd);
+	*cmd = SDUP("");
+	grp->curs_col = START_POS;
 }
 
 void	print_cmd(t_group *grp, int key, char *order, char **cmd)
@@ -50,28 +56,13 @@ void	print_cmd(t_group *grp, int key, char *order, char **cmd)
 	grp->curs_col += LEN(order);
 }
 
-void	remove_line(t_group *grp, char **cmd)
-{
-	size_t	i;
-
-	i = -1;
-	grp->curs_col = START_POS + LEN(*cmd) - 1;
-	ft_tputs(NULL, "ch");
-	while (++i < LEN(*cmd))
-	{
-		ft_tputs("le", NULL);
-		ft_tputs("dc", NULL);
-	}
-	REMOVE(cmd);
-	*cmd = SDUP("");
-	grp->curs_col = START_POS;
-}
-
 int		key_selection(t_group *grp, char *order, char **cmd)
 {
 	int	key;
 
 	key = KEY(order[0], order[1], order[2], order[3]);
+	if (key != ARROW_U && key != ARROW_D)
+		grp->curr_hist = NULL;
 	if (key == CTRL_D || key == ESC)
 	{
 		reset_shell();
@@ -89,28 +80,6 @@ int		key_selection(t_group *grp, char *order, char **cmd)
 	else
 		print_cmd(grp, key, order, cmd);
 	return (0);
-}
-
-void	print_hist(t_hist *curr)
-{
-	ft_putchar('\n');
-	while (curr != NULL)
-	{
-		ft_putstr_fd(curr->name, 2);
-		if (curr->next)
-			curr = curr->next;
-		else
-			break;
-	}
-	curr = curr->prev;
-	while (curr != NULL)
-	{
-		ft_putstr_fd(curr->name, 2);
-		if (curr->prev)
-			curr = curr->prev;
-		else
-			break;
-	}
 }
 
 void	insert_hist(t_group *grp, char *name)
