@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 19:31:01 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/02 17:55:28 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/02 18:00:53 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void	handling_arrow(t_group *grp, char **cmd, int key)
 	else if (key == ARROW_L && grp->curs_col > START_POS)
 	{
 		grp->curs_col -= 1;
-		tgetflag("bw");
 		ft_tputs("le", NULL);
 	}
 	else if (key == ARROW_R && grp->curs_col < LEN(*cmd) + START_POS)

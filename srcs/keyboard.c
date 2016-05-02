@@ -52,7 +52,7 @@ int		key_selection(t_group *grp, char *order, char **cmd)
 		ft_putchar('\n');
 		exit(0);
 	}
-	if (grp && key == ENTER)
+	if (key == ENTER)
 		return (ENTER);
 	else if (key == BACKSPACE)
 		handling_backspace(grp, cmd);
@@ -76,9 +76,9 @@ void	read_cmd(t_group *grp, int fd, char **cmd)
 		order[ret] = '\0';
 		if (key_selection(grp, order, cmd) == ENTER)
 		{
+			ft_putchar('\n');
 			insert_hist(grp, *cmd);
 			grp->curs_col = START_POS;
-			ft_putchar('\n');
 			break ;
 		}
 		ft_bzero(order, BUF_SIZE + 1);
