@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/01 19:29:31 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/02 01:16:17 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,13 @@ typedef struct			s_options
 	char				**params;
 }						t_options;
 
+typedef struct			s_hist
+{
+	char				*name;
+	struct s_hist		*prev;
+	struct s_hist		*next;
+}						t_hist;
+
 typedef struct			s_group
 {
 	char				**cmd;
@@ -76,10 +83,12 @@ typedef struct			s_group
 	int					*define_cmd;
 	int					lvl;
 	int					curs_col;
+	struct termios		cpy_term;
 	struct s_options	*options;
 	struct s_env		*first;
 	struct s_env		*last;
-	struct termios		cpy_term;
+	struct s_hist		*hist;
+	struct s_hist		*curr_hist;
 }						t_group;
 
 t_group					*init_grp(void);

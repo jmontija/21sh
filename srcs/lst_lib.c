@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_lib.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/05/01 19:40:49 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/02 02:08:07 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,8 @@ t_group	*set_grp(void)
 	grp->first = NULL;
 	grp->last = NULL;
 	grp->cmd = NULL;
+	grp->hist = NULL;
+	grp->curr_hist = NULL;
 	grp->curs_col = START_POS;
 	grp->define_cmd = (int *)malloc(sizeof(int) * 4);
 	while (++i < 4)
