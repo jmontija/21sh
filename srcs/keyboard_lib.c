@@ -6,11 +6,18 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/02 15:43:58 by julio             #+#    #+#             */
-/*   Updated: 2016/05/02 18:01:09 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/02 20:46:23 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+
+void	get_cursor_pos()
+{
+	char *pos;
+
+	ft_putstr_fd("\033[6n", 2);
+}
 
 void	remove_line(t_group *grp, char **cmd)
 {

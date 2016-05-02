@@ -6,11 +6,16 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:05:11 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/02 17:55:30 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/02 20:46:17 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+
+static int		ft_getchar(int c)
+{
+	return (write(2, &c, 1));
+}
 
 void	print_cmd(t_group *grp, int key, char *order, char **cmd)
 {
@@ -23,6 +28,7 @@ void	print_cmd(t_group *grp, int key, char *order, char **cmd)
 		if (ft_isprint(order[i]) == false)
 			return ;
 	ft_putstr_fd(order, 2);
+	ft_tputs("sc", NULL);
 	if (grp->curs_col < START_POS + LEN(*cmd))
 	{
 		beg_cmd = SUB(*cmd, 0, grp->curs_col - START_POS);
@@ -31,12 +37,14 @@ void	print_cmd(t_group *grp, int key, char *order, char **cmd)
 		*cmd = JOIN(beg_cmd, end_cmd);
 		ft_putstr_fd(end_cmd, 2);
 		i = LEN(end_cmd);
+		//tputs(tgoto(tgetstr("rc", NULL), 1, 0), 1, ft_getchar);
 		while (i-- > 0)
 			ft_tputs("le", NULL);
 	}
 	else
 		*cmd = JOIN(*cmd, order);
 	grp->curs_col += LEN(order);
+	get_cursor_pos();
 }
 
 int		key_selection(t_group *grp, char *order, char **cmd)
