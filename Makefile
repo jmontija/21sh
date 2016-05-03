@@ -27,6 +27,7 @@ SRCS			+=	srcs/father.c
 SRCS			+=	srcs/keyboard.c
 SRCS			+=	srcs/keyboard_tools.c
 SRCS			+=	srcs/keyboard_lib.c
+SRCS			+=	srcs/redirections.c
 SRCS			+=	srcs/exec_cmd.c
 SRCS			+=	srcs/child.c
 SRCS			+=	srcs/builtins.c

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   father.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/03 23:53:16 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/03 02:00:51 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/03 16:40:44 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	**get_all_command(int const fd)
 	order = NULL;
 	get_next_line(fd, &order);
 	cmd_line = SDUP(order);
-	while ((ret = get_next_line(fd, &order)) > 0)	
+	while ((ret = get_next_line(fd, &order)) > 0)
 	{
 		cmd_line = JOIN(cmd_line, ";");
 		cmd_line = JOIN(cmd_line, order);
@@ -46,26 +46,13 @@ char	*check_shortcut(t_group *grp, char *order)
 	char	*tmp;
 
 	i = ft_strintchr(order, '~');
-	if ((i != 0 || (i == 0 && *order == '~')) &&
-		ft_getenv(grp, "HOME") == NULL)
+	if (i >= 0 && ft_getenv(grp, "HOME") == NULL)
 		ft_putendl("HOME has been unset from environnement !");
-	else if (i != 0 || (i == 0 && *order == '~'))
+	else if (i >= 0)
 	{
 		tmp = SUB(order, i + 1, LEN(order));
 		order = SUB(order, 0, i);
 		tmp = JOIN(ft_getenv(grp, "HOME"), tmp);
-		order = JOIN(order, tmp);
-	}
-	else if ((i = ft_strintchr(order, '>')) > 0)
-	{
-		order = ft_strtrim(order);
-		printf("%s\n", order);
-		//tmp = SUB(order, i + 1, LEN(order));
-	}
-	while ((i = ft_strintchr(order, '"')) != 0)
-	{
-		tmp = SUB(order, i + 1, LEN(order));
-		order = SUB(order, 0, i);
 		order = JOIN(order, tmp);
 	}
 	return (order);

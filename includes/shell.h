@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/03 02:18:13 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/03 19:26:19 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@
 # define BACKSPACE 127
 # define DEL 2117294875
 # define CTRL_D 4
+# define CTRL_L 12
 # define CTRL_R 18
 # define CTRL_V 22
 

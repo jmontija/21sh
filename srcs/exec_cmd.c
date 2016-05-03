@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/03 02:28:47 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/03 18:07:39 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ void	create_process(t_group *grp, char *path, char **cmd_line, char **env)
 		buf == SIGSEGV ? error_cmd("segmentation fault", cmd_line[0]) : 0;
 	}
 	else
-	{ 
-		//cmd_line = redirections(cmd_line);
+	{
+		if ((cmd_line = redirections(cmd_line)) == NULL)
+			exit(0);
 		if (pid == 0 && execve(path, cmd_line, env) < 1)
 		{
 			(fd = open(path, O_RDONLY)) != -1 ?
@@ -36,7 +37,7 @@ void	create_process(t_group *grp, char *path, char **cmd_line, char **env)
 			exit(0);
 		}
 	}
-	
+
 }
 
 void	manage_env(t_group *grp, char *path, char **cmd_line)

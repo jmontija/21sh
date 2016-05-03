@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard_tools.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 19:31:01 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/02 23:24:27 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/03 16:25:27 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	handling_historic(t_group *grp, char **cmd, int key)
 		else
 			remove_line(grp, cmd);
 	}
-	
+
 }
 
 void	handling_backspace(t_group *grp, char **cmd)

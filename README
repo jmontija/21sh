@@ -1,0 +1,10 @@
+REDIRECTION/PIPE
+	-> http://www.cs.loyola.edu//nfs/2015/j/jmontijajglenn/702/S2005/Examples/dup2.html
+	-> http://stackoverflow.com/questions/12942042/pipe-redirection-precedence
+PRECEDENCE
+	-> http://unix.stackexchange.com/questions/163479/pipes-redirection-binding-precedence-with-disjuncts-conjuncts-etc
+	-> https://www.gnu.org/software/gawk/manual/html_node/Precedence.htmltest
+PARSING
+	-> https://openclassrooms.com/forum/sujet/lexer-parser
+EXPLE
+	-> ls | wc -l > TEST < README <- resultat = 20 ?
