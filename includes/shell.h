@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/02 20:34:30 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/03 02:18:13 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void					remove_line(t_group *grp, char **cmd);
 void					insert_hist(t_group *grp, char *name);
 void					cderr_pwd(t_group *grp, char *path, struct stat s_buf);
 void					ft_tputs(char *cap_code, char *what);
-void					get_cursor_pos();
+char 					**redirections(char **cmd_line);
 char					*child_process(t_group *grp, char *order);
 char					*search_exec(t_group *grp, char *cmd);
 char					*ft_getenv(t_group *grp, char *tofind);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 18:38:24 by julio             #+#    #+#             */
-/*   Updated: 2016/04/30 15:18:37 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/03 02:04:57 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ int		stock_env(t_group *grp, char **env)
 int		main(int argc, char **argv, char **env)
 {
 	t_group	*grp;
-
 	(!argc || !argv) ? exit(0) : 0;
 	grp = init_grp();
 	init_shell();

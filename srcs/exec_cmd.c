@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/01 19:40:56 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/03 02:28:47 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,18 @@ void	create_process(t_group *grp, char *path, char **cmd_line, char **env)
 		waitpid(pid, &buf, 0);
 		buf == SIGSEGV ? error_cmd("segmentation fault", cmd_line[0]) : 0;
 	}
-	else if (pid == 0 && execve(path, cmd_line, env) < 1)
-	{
-		(fd = open(path, O_RDONLY)) != -1 ?
-		parse_cmd(fd, grp) : error_cmd("unknown command", cmd_line[0]);
-		exit(0);
+	else
+	{ 
+		//cmd_line = redirections(cmd_line);
+		if (pid == 0 && execve(path, cmd_line, env) < 1)
+		{
+			(fd = open(path, O_RDONLY)) != -1 ?
+			parse_cmd(fd, grp) : error_cmd("unknown command", cmd_line[0]);
+			close(fd);
+			exit(0);
+		}
 	}
+	
 }
 
 void	manage_env(t_group *grp, char *path, char **cmd_line)

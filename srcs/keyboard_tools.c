@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard_tools.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 19:31:01 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/02 20:46:16 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/02 23:24:27 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	handling_historic(t_group *grp, char **cmd, int key)
 			grp->curr_hist = grp->hist;
 		else if (grp->curr_hist->next)
 			grp->curr_hist = grp->curr_hist->next;
-		ft_putstr_fd(grp->curr_hist->name, 2);
+		ft_putstr(grp->curr_hist->name);
 		*cmd = SDUP(grp->curr_hist->name);
 		grp->curs_col += LEN(*cmd);
 	}
@@ -31,13 +31,14 @@ void	handling_historic(t_group *grp, char **cmd, int key)
 			grp->curr_hist = grp->curr_hist->prev;
 		if (grp->curr_hist != NULL)
 		{
-			ft_putstr_fd(grp->curr_hist->name, 2);
+			ft_putstr(grp->curr_hist->name);
 			*cmd = SDUP(grp->curr_hist->name);
 			grp->curs_col += LEN(*cmd);
 		}
 		else
 			remove_line(grp, cmd);
 	}
+	
 }
 
 void	handling_backspace(t_group *grp, char **cmd)

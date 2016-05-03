@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:05:11 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/02 20:46:17 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/02 23:53:20 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 static int		ft_getchar(int c)
 {
-	return (write(2, &c, 1));
+	return (write(1, &c, 1));
 }
 
-void	print_cmd(t_group *grp, int key, char *order, char **cmd)
+/*void	print_cmd(t_group *grp, int key, char *order, char **cmd)
 {
 	char	*beg_cmd;
 	char	*end_cmd;
@@ -27,24 +27,56 @@ void	print_cmd(t_group *grp, int key, char *order, char **cmd)
 	while (order[++i] != '\0')
 		if (ft_isprint(order[i]) == false)
 			return ;
-	ft_putstr_fd(order, 2);
-	ft_tputs("sc", NULL);
+	ft_putstr(order);
 	if (grp->curs_col < START_POS + LEN(*cmd))
 	{
 		beg_cmd = SUB(*cmd, 0, grp->curs_col - START_POS);
 		beg_cmd = JOIN(beg_cmd, order);
 		end_cmd = SUB(*cmd, grp->curs_col - START_POS, LEN(*cmd));
 		*cmd = JOIN(beg_cmd, end_cmd);
-		ft_putstr_fd(end_cmd, 2);
+		ft_putstr(end_cmd);
 		i = LEN(end_cmd);
-		//tputs(tgoto(tgetstr("rc", NULL), 1, 0), 1, ft_getchar);
+		/* idée : print order avec la 1ere lettre de end_cmd, print end_cmd avec le 1er char en moins
 		while (i-- > 0)
 			ft_tputs("le", NULL);
 	}
 	else
 		*cmd = JOIN(*cmd, order);
 	grp->curs_col += LEN(order);
-	get_cursor_pos();
+}*/
+
+		/* codait tester */
+
+void	print_cmd(t_group *grp, int key, char *order, char **cmd)
+{
+	char	*beg_cmd;
+	char	*end_cmd;
+	char	*printer;
+	size_t	i;
+
+	i = -1;
+	while (order[++i] != '\0')
+		if (ft_isprint(order[i]) == false)
+			return ;
+	if (grp->curs_col < START_POS + LEN(*cmd))
+	{
+		beg_cmd = SUB(*cmd, 0, grp->curs_col - START_POS);
+		beg_cmd = JOIN(beg_cmd, order);
+		end_cmd = SUB(*cmd, grp->curs_col - START_POS, LEN(*cmd));
+		*cmd = JOIN(beg_cmd, end_cmd);
+		printer = ft_charjoin(order, end_cmd[0]);
+		ft_putstr(printer);
+		ft_putstr(++end_cmd);
+		i = LEN(end_cmd) + 1;
+		while (i-- > 0)
+			ft_tputs("le", NULL);
+	}
+	else
+	{
+		*cmd = JOIN(*cmd, order);
+		ft_putstr(order);
+	}
+	grp->curs_col += LEN(order);
 }
 
 int		key_selection(t_group *grp, char *order, char **cmd)

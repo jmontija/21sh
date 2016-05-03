@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard_lib.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/02 15:43:58 by julio             #+#    #+#             */
-/*   Updated: 2016/05/02 20:46:23 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/02 23:25:10 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 void	get_cursor_pos()
 {
-	char *pos;
+	struct winsize	window;
 
-	ft_putstr_fd("\033[6n", 2);
+	ioctl(0, TIOCGWINSZ, &window);
+	
 }
 
 void	remove_line(t_group *grp, char **cmd)
