@@ -1,1 +1,13 @@
-NULL
+REDIRECTION/PIPE
+	-> http://www.cs.loyola.edu//nfs/2015/j/jmontijajglenn/702/S2005/Examples/dup2.html
+	-> http://stackoverflow.com/questions/12942042/pipe-redirection-precedence
+PRECEDENCE
+	-> http://unix.stackexchange.com/questions/163479/pipes-redirection-binding-precedence-with-disjuncts-conjuncts-etc
+	-> https://www.gnu.org/software/gawk/manual/html_node/Precedence.htmltest
+PARSING
+	-> https://openclassrooms.com/forum/sujet/lexer-parser
+EXPLE
+	-> ls | wc -l > TEST < README < OK : wc -l get README ls OK data and write it to TEST
+	-> ls > cat README | grep -i pipe | wc -l > NEW < TEST < auteur > DONE : redirect ls README to file "cat" get line in / "cat" file grep "pipe" / TEST / auteur / redirect to NEW DONE
+	cat README | grep -i pipe | wc -l > NEW < TEST < auteur > DONE : here cat is cmd
+	->ls > cat README OK | grep -i pipe | wc -l > NEWS < README < auteur : attention cat
