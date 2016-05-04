@@ -6,11 +6,16 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/03 18:07:39 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/04 18:32:36 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+
+int		check_pipe_redir(t_group *grp, char *path, char **cmd_line, char **env)
+{
+	return (redirections(path, cmd_line, env));
+}
 
 void	create_process(t_group *grp, char *path, char **cmd_line, char **env)
 {
@@ -25,19 +30,16 @@ void	create_process(t_group *grp, char *path, char **cmd_line, char **env)
 		waitpid(pid, &buf, 0);
 		buf == SIGSEGV ? error_cmd("segmentation fault", cmd_line[0]) : 0;
 	}
-	else
+	else if (pid == 0)
 	{
-		if ((cmd_line = redirections(cmd_line)) == NULL)
-			exit(0);
-		if (pid == 0 && execve(path, cmd_line, env) < 1)
+		if (check_pipe_redir(grp, path, cmd_line, env) == false &&
+			execve(path, cmd_line, env) < 1)
 		{
 			(fd = open(path, O_RDONLY)) != -1 ?
 			parse_cmd(fd, grp) : error_cmd("unknown command", cmd_line[0]);
-			close(fd);
 			exit(0);
 		}
 	}
-
 }
 
 void	manage_env(t_group *grp, char *path, char **cmd_line)

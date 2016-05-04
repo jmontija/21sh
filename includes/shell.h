@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/03 19:26:19 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/04 17:40:57 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@
 typedef int				t_bool;
 enum {P, S, ii, v, u};
 enum {e_opt, namenv, utils};
+enum {READ_END, WRITE_END};
 
 typedef struct			s_env
 {
@@ -106,10 +107,10 @@ void					remove_line(t_group *grp, char **cmd);
 void					insert_hist(t_group *grp, char *name);
 void					cderr_pwd(t_group *grp, char *path, struct stat s_buf);
 void					ft_tputs(char *cap_code, char *what);
-char 					**redirections(char **cmd_line);
 char					*child_process(t_group *grp, char *order);
 char					*search_exec(t_group *grp, char *cmd);
 char					*ft_getenv(t_group *grp, char *tofind);
+int 					redirections(char *path, char **cmd_line, char **env);
 int						list_to_tab(t_env *env, char ***env_tab);
 int						exec_builtin(t_group *grp, char *order);
 int						is_env(char *env);
