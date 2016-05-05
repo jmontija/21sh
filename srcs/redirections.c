@@ -6,7 +6,7 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/05 13:13:33 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/05 13:51:38 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	create_pipe(char *path, char **cmd_line, char **env, int idx)
 		dup2(fd_save, 0);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
-		pipe_cmd = ft_spacesplit(cmd_line[idx - 1]);
+		pipe_cmd = ft_strsplit(cmd_line[idx - 1], '/');
 		while (pipe_cmd[++j])
 			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
 		execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
@@ -50,16 +50,20 @@ void	create_pipe(char *path, char **cmd_line, char **env, int idx)
 	}
 	else if (pid != 0)
 	{
-		printf("PERE\n");
+		printf("PEREWAIT\n");
 		waitpid(pid, &buf, 0);
+		printf("PEREACT\n");
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[1]);
 		fd_save = fd[0];
-		pipe_cmd = ft_strsplit(cmd_line[idx + 1], '/');
-		while (pipe_cmd[++j])
-			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
-		execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
-		exit(0);
+		if (redirections(path, cmd_line + 2, env) == false)
+		{
+			pipe_cmd = ft_strsplit(cmd_line[idx + 1], '/');
+			while (pipe_cmd[++j])
+				pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
+			execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
+			exit(0);
+		}
 	}
 }
 
