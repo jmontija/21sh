@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/04 20:41:42 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/05 13:13:33 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,57 +20,52 @@
 		-> cmd get info from file2 file1 file3 and redirect it to file4 file5 etc .. till next_cmd
 */
 
-/*
-	OLD PIPE CREATION :
+int 	fd_save = 0;
+
+void	create_pipe(char *path, char **cmd_line, char **env, int idx)
+{
+	t_group *grp = init_grp();
+	pid_t		pid;
+	int			buf;
+	char		**pipe_cmd;
+	int			fd[2];
+	int			j;
+
+	ft_putendl("create_pipe");
 	pipe(fd) != 0 ? ft_putendl("error pipe function") : 0;
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
 	j = -1;
 	if (pid == 0)
 	{
-		dup2(fd[WRITE_END], STDOUT_FILENO);
-		close(fd[READ_END]);
+		printf("FILS\n");
+		dup2(fd_save, 0);
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
 		pipe_cmd = ft_spacesplit(cmd_line[idx - 1]);
 		while (pipe_cmd[++j])
 			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
 		execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
+		exit(0);
 	}
 	else if (pid != 0)
 	{
-		dup2(fd[READ_END], STDIN_FILENO);
-		close(fd[WRITE_END]);
-		wait(NULL);
+		printf("PERE\n");
+		waitpid(pid, &buf, 0);
+		dup2(fd[0], STDIN_FILENO);
+		close(fd[1]);
+		fd_save = fd[0];
 		pipe_cmd = ft_strsplit(cmd_line[idx + 1], '/');
 		while (pipe_cmd[++j])
 			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
 		execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
+		exit(0);
 	}
-	j = -1;
-*/
-
-void	create_pipe(char *path, char **cmd_line, char **env, int idx)
-{
-	t_group *grp = init_grp();
-	pid_t	pid;
-	char	**pipe_cmd;
-	int		fd[2];
-
-
-	ft_putendl("create_pipe");
-	/* parsing :
-		check si second cmd = cmd
-	*/
-
 }
 
 char	**create_redirection_to(char **cmd_line, int idx, int action)
 {
 	int	fd;
-
-	/*
-		parsing :
-
-	*/
 
 	if (cmd_line[idx + 2] == NULL)
 	{
@@ -113,7 +108,7 @@ int		redirections(char *path, char **cmd_line, char **env)
 	match = false;
 	while (cmd_line[++i])
 	{
-		ft_putstr("cmd =");
+		ft_putstr("cmd = ");
 		ft_putendl(cmd_line[i]);
 		if ((occ = ft_strintchr(cmd_line[i], '>')) >= 0)
 		{
@@ -132,7 +127,11 @@ int		redirections(char *path, char **cmd_line, char **env)
 			execve(path, cmd_line, env) < 1 ? ft_putendl("error pipe execve") : (match = true);
 		}
 		else if ((occ = ft_strintchr(cmd_line[i], '|')) >= 0)
+		{
 			create_pipe(path, cmd_line, env, i);
+			match = true;
+		}
 	}
+	ft_putstr("exit");
 	return (match);
 }

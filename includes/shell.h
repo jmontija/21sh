@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/04 17:40:57 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/05 00:33:12 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@
 typedef int				t_bool;
 enum {P, S, ii, v, u};
 enum {e_opt, namenv, utils};
-enum {READ_END, WRITE_END};
 
 typedef struct			s_env
 {
