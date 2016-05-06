@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/05/03 16:25:28 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/06 18:12:36 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ t_group	*set_grp(void)
 	grp->hist = NULL;
 	grp->curr_hist = NULL;
 	grp->curs_col = START_POS;
+	grp->fd_save = STDIN_FILENO;
 	grp->define_cmd = (int *)malloc(sizeof(int) * 4);
 	while (++i < 4)
 		grp->define_cmd[i] = false;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/05 13:50:18 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/06 18:09:40 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	create_process(t_group *grp, char *path, char **cmd_line, char **env)
 		{
 			(fd = open(path, O_RDONLY)) != -1 ?
 			parse_cmd(fd, grp) : error_cmd("unknown command", cmd_line[0]);
-			//exit(0);
 		}
 		exit(0);
 	}

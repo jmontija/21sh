@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/05 19:36:51 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/06 20:08:53 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,66 +18,22 @@
 	traité de gauche a droite
 		-> cmd < file2 <file1 > file4 < file3  >file5
 		-> cmd get info from file2 file1 file3 and redirect it to file4 file5 etc .. till next_cmd
+	cmd < file > file -> envois un fd vide (faire  un cat et kill process);
 */
-
-int 	fd_save = 0;
-
-void	create_pipe(char *path, char **cmd_line, char **env, int idx)
-{
-	t_group *grp = init_grp();
-	pid_t		pid;
-	int			buf;
-	char		**pipe_cmd;
-	int			fd[2];
-	int			j;
-
-	ft_putendl("create_pipe");
-	pipe(fd) != 0 ? ft_putendl("error pipe function") : 0;
-	pid = fork();
-	pid == -1 ? exit(270) : 0;
-	j = -1;
-	if (pid == 0)
-	{
-		printf("FILS\n");
-		dup2(fd_save, STDIN_FILENO);
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
-		pipe_cmd = ft_strsplit(cmd_line[idx - 1], '/');
-		while (pipe_cmd[++j])
-			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
-		execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
-		exit(0);
-	}
-	else if (pid != 0)
-	{
-		printf("PEREWAIT\n");
-		waitpid(pid, &buf, 0);
-		printf("PEREACT\n");
-		dup2(fd[0], STDIN_FILENO);
-		close(fd[1]);
-		fd_save = fd[0];
-		pipe_cmd = ft_strsplit(cmd_line[idx + 1], '/');
-		while (pipe_cmd[++j])
-			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
-		if (redirections(search_exec(grp, pipe_cmd[0]), cmd_line + 2, env) == false)
-		{
-			execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
-			exit(0);
-		}
-	}
-}
 
 char	**create_redirection_to(char **cmd_line, int idx, int action)
 {
-	int	fd;
+	int		fd;
+	t_group	*grp;
 
+	grp = init_grp();
 	if (cmd_line[idx + 2] == NULL)
 	{
 		error_cmd("error pars near", cmd_line[idx + 1]);
 		return (NULL);
 	}
 	fd = open(cmd_line[idx + 2], O_WRONLY | action | O_CREAT, 0644);
-	dup2(fd_save, STDIN_FILENO);
+	dup2(grp->fd_save, STDIN_FILENO);
 	dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
 	close(fd);
 	while (cmd_line[++idx])
@@ -95,10 +51,23 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 		return (NULL);
 	}
 
-	/* si plusieurs entree sur la meme cmd faire un pipe avec la meme cmd tant qu il y a des entrée */
+	/*
+	si plusieurs '<', redirigé chaque file dans un nouveau file avec '>>'
+		exple :
+			-> wc < TEST < TEST2 < TEST3
+				->	tab = {TEST, TEST2, TEST3};
+					fd = open("TESTFINAL", O_WRONLY | O_APPEND | O_CREAT, 0644);
+					while (tab[++i])
+					{
+						buf = strdup(tab[i]);
+						size = strlen(buf);
+						write(fd, buf, size);
+					}
+				->	wc < TESTFINAL ; rm -rf TESTFINAL
+	 */
 
 	fd = open(cmd_line[idx + 2], O_RDONLY);
-	dup2(fd, STDIN_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
+	dup2(fd, STDIN_FILENO);
 	close(fd);
 	while (cmd_line[++idx])
 		REMOVE(&cmd_line[idx]);
@@ -140,3 +109,7 @@ int		redirections(char *path, char **cmd_line, char **env)
 	}
 	return (match);
 }
+
+/*
+	idée pars : check first stuff -> next check  the contrary (exple : first stuff '|', next stuff after cmd need to be redir file while we get new pipe etc ... )
+*/
