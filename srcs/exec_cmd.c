@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/06 18:09:40 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/07 21:11:53 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		check_pipe_redir(t_group *grp, char *path, char **cmd_line, char **env)
 {
-	return (redirections(path, cmd_line, env));
+	return (ft_parsing(grp->order));
 }
 
 void	create_process(t_group *grp, char *path, char **cmd_line, char **env)

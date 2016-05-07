@@ -6,13 +6,13 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/06 18:34:09 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/07 20:39:48 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-void	create_pipe(char *path, char **cmd_line, char **env, int idx)
+/*void	create_pipe(char *path, char **cmd_line, char **env, int idx)
 {
 	t_group *grp = init_grp();
 	pid_t		pid;
@@ -49,10 +49,16 @@ void	create_pipe(char *path, char **cmd_line, char **env, int idx)
 		pipe_cmd = ft_strsplit(cmd_line[idx + 1], '/');
 		while (pipe_cmd[++j])
 			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
-		if (redirections(search_exec(grp, pipe_cmd[0]), cmd_line + 2, env) == false)
+		if (ft_parsing(search_exec(grp, pipe_cmd[0]), cmd_line + 2, env) == false)
 		{
 			execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
 			exit(0);
 		}
 	}
+}*/
+
+int		main_pipe(t_group *grp, char **split_cmd)
+{
+	printf("IN PIPE\n");
+	return (1);
 }

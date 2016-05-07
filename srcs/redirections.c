@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/06 20:08:53 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/07 21:38:14 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,6 @@ char	**create_redirection_to(char **cmd_line, int idx, int action)
 	dup2(grp->fd_save, STDIN_FILENO);
 	dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
 	close(fd);
-	while (cmd_line[++idx])
-		REMOVE(&cmd_line[idx]);
 	return (cmd_line);
 }
 
@@ -69,47 +67,18 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 	fd = open(cmd_line[idx + 2], O_RDONLY);
 	dup2(fd, STDIN_FILENO);
 	close(fd);
-	while (cmd_line[++idx])
-		REMOVE(&cmd_line[idx]);
 	return (cmd_line);
 }
 
-int		redirections(char *path, char **cmd_line, char **env)
+int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 {
-	int	occ;
-	int i;
-	int	match;
+	printf("IN REDIRECTION with %s\n", symbol);
+	char	checker;
+	int		i;
 
 	i = -1;
-	occ = -1;
-	match = false;
-	while (cmd_line[++i])
-	{
-		if ((occ = ft_strintchr(cmd_line[i], '>')) >= 0)
-		{
-			if (occ == 0 && cmd_line[i][occ + 1] == '>')
-				cmd_line = create_redirection_to(cmd_line, i - 1, O_APPEND);
-			else if (occ == 0)
-				cmd_line = create_redirection_to(cmd_line, i - 1, O_TRUNC);
-			execve(path, cmd_line, env) < 1 ? ft_putendl("error pipe execve") : (match = true);
-		}
-		else if ((occ = ft_strintchr(cmd_line[i], '<')) >= 0)
-		{
-			if (occ == 0 && cmd_line[i][occ + 1] == '<')
-			{} // heredoc prompt a approfondir;
-			else if (occ == 0)
-				cmd_line = create_redirection_from(cmd_line, i - 1, O_TRUNC);
-			execve(path, cmd_line, env) < 1 ? ft_putendl("error pipe execve") : (match = true);
-		}
-		else if ((occ = ft_strintchr(cmd_line[i], '|')) >= 0)
-		{
-			create_pipe(path, cmd_line, env, i);
-			match = true;
-		}
-	}
-	return (match);
+	checker = ft_parsing(split_cmd[0]);
+	if (checker == false)
+	{}
+	return (1);
 }
-
-/*
-	idée pars : check first stuff -> next check  the contrary (exple : first stuff '|', next stuff after cmd need to be redir file while we get new pipe etc ... )
-*/
