@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/08 03:42:18 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/08 20:12:01 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ char	*ft_findocc(char *order, char *symbol)
 
 // ls | CMD0 > FILE | CMD1 | CMD2 > FILE2 < OK
 // ls -i DIR > FILE | CMD1 | CMD2 > FILE2 < OK
+// ls < TETS | CMD0 > FILE | CMD1 | CMD2 > FILE2 < OK
 // checker si cest pas mieux de split sur les pipe first
 
 int		ft_parsing(int exec, char *to_pars)
@@ -58,14 +59,12 @@ int		ft_parsing(int exec, char *to_pars)
 
 	i = -1;
 	grp = init_grp();
-	if ((splitw = ft_findocc(to_pars, "> >> | < <<")) == NULL)
+	if ((splitw = ft_findocc(to_pars, "| < << >> >")) == NULL)
 		return (-1);
 	split_cmd = ft_strsplit(to_pars, splitw[0]);
 	while (split_cmd[++i])
-	{
 		split_cmd[i] = ft_strtrim(split_cmd[i]);
-		ft_putendl(split_cmd[i]);
-	}
-	exec && splitw[0] != '|' ? main_redirection(grp, split_cmd, splitw) : main_pipe(grp, split_cmd);
-	return (splitw[0]);
+	if (exec)
+		splitw[0] != '|' ? main_redirection(grp, split_cmd, splitw) : main_pipe(grp, split_cmd);
+	return (true);
 }

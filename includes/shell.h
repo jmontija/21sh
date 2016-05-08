@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/08 02:17:05 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/08 18:58:09 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ typedef struct			s_group
 	char				**cmd;
 	char				*order;
 	int					*define_cmd;
-	//int					lvl;
 	int					curs_col;
-	int					fd_save;
+	int					fd_in_save;
+	int					fd_out_save;
 	int					curr_cmd;
 	struct termios		cpy_term;
 	struct s_options	*options;

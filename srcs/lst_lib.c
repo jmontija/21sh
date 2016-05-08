@@ -118,7 +118,8 @@ t_group	*set_grp(void)
 	grp->hist = NULL;
 	grp->curr_hist = NULL;
 	grp->curs_col = START_POS;
-	grp->fd_save = STDIN_FILENO;
+	grp->fd_in_save = STDIN_FILENO;
+	grp->fd_out_save = STDOUT_FILENO;
 	grp->curr_cmd = 0;
 	grp->define_cmd = (int *)malloc(sizeof(int) * 4);
 	while (++i < 4)

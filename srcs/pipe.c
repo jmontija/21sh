@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/08 02:17:54 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/08 20:30:30 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 		dup2(grp->fd_save, STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
+		grp->fd_out_save = fd[1];
 		pipe_cmd = ft_strsplit(cmd_line[idx - 1], '/');
 		while (pipe_cmd[++j])
 			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
@@ -45,7 +46,7 @@
 		//printf("PEREACT\n");
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[1]);
-		grp->fd_save = fd[0];
+		grp->fd_in_save = fd[0];
 		pipe_cmd = ft_strsplit(cmd_line[idx + 1], '/');
 		while (pipe_cmd[++j])
 			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
@@ -59,6 +60,16 @@
 
 int		main_pipe(t_group *grp, char **split_cmd)
 {
+	int	i;
+
+	i = -1;
 	printf("IN PIPE\n");
+	while (split_cmd[++i])
+	{
+		ft_putendl(split_cmd[i]);
+		ft_parsing(1, split_cmd[i]);
+		ft_putendl("PARS_DONE -> |");
+
+	}
 	return (1);
 }
