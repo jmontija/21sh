@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/07 21:38:14 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/08 03:27:46 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,15 @@
 	traité de gauche a droite
 		-> cmd < file2 <file1 > file4 < file3  >file5
 		-> cmd get info from file2 file1 file3 and redirect it to file4 file5 etc .. till next_cmd
-	cmd < file > file -> envois un fd vide (faire  un cat et kill process);
+	cmd < file > file -> envois un fd vide (faire  un cat et kill process)
+	attention si 2 fois le meme fichier est appelé au cours d'une meme commande pour des redirections, 
+	comportement indeterminé (peut prendre en compte la redirection ou non selon le symbol qui suit, 
+	, si la redirection est similaire, a approfondir)
+	exemple test :
+		ls | grep -i ZKJSj < dkld | wc > TEST | grep -i '0' | wc -l > TEST | pwd ; cat TEST 
+			-> comportement indeterminé (spamer la cmd) !
+		ls | grep -i ZKJSj < dkld | wc > TEST | grep -i 0 | wc -l > TEST ; cat TEST
+		ls | grep -i ZKJSj < dkld | wc > TEST | grep -i 0 | wc -l ; cat TEST
 */
 
 char	**create_redirection_to(char **cmd_line, int idx, int action)
@@ -62,7 +70,12 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 						write(fd, buf, size);
 					}
 				->	wc < TESTFINAL ; rm -rf TESTFINAL
-	 */
+
+	pour "<<" le pipe ne prend pas en compte la sortie eof, << et < redirige seulment la sortie
+		exple_test: ls | grep -i OK <(<) FILE | grep -i "word_in_FILE" | wc -l
+	/!\ Attention: modifie l'entrée de sa cmd (ici grep) et modifie donc sa sortie
+
+	*/
 
 	fd = open(cmd_line[idx + 2], O_RDONLY);
 	dup2(fd, STDIN_FILENO);
@@ -73,12 +86,17 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 {
 	printf("IN REDIRECTION with %s\n", symbol);
+	struct stat	buf;
 	char	checker;
 	int		i;
+	int		ret;
 
 	i = -1;
-	checker = ft_parsing(split_cmd[0]);
-	if (checker == false)
-	{}
+	ret = lstat(split_cmd[grp->curr_cmd + 1], &buf);
+	if (ret == 0 && !S_ISREG(buf.st_mode))
+		error_cmd("need to be a file", split_cmd[grp->curr_cmd + 1]);
+	checker = ft_parsing(0, split_cmd[0]);
+	// boucler sur split_cmd[0], continuer a verif si cest pas mieu le split | first avant
+	// de continuer
 	return (1);
 }

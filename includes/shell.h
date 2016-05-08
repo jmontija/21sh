@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/07 21:12:15 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/08 02:17:05 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct			s_group
 	//int					lvl;
 	int					curs_col;
 	int					fd_save;
+	int					curr_cmd;
 	struct termios		cpy_term;
 	struct s_options	*options;
 	struct s_env		*first;
@@ -110,7 +111,7 @@ void					ft_tputs(char *cap_code, char *what);
 char					*child_process(t_group *grp, char *order);
 char					*search_exec(t_group *grp, char *cmd);
 char					*ft_getenv(t_group *grp, char *tofind);
-int 					ft_parsing(char *to_pars);
+int 					ft_parsing(int exec, char *to_pars);
 int						main_redirection(t_group *grp, char **split_cmd, char *symbol);
 int						main_pipe(t_group *grp, char **split_cmd);
 int						list_to_tab(t_env *env, char ***env_tab);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/07 21:11:53 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/08 02:30:09 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		check_pipe_redir(t_group *grp, char *path, char **cmd_line, char **env)
 {
-	return (ft_parsing(grp->order));
+	return (ft_parsing(1, grp->order));
 }
 
 void	create_process(t_group *grp, char *path, char **cmd_line, char **env)
