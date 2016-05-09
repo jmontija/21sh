@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/08 20:12:01 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/09 21:56:40 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int		ft_parsing(int exec, char *to_pars)
 
 	i = -1;
 	grp = init_grp();
-	if ((splitw = ft_findocc(to_pars, "| < << >> >")) == NULL)
+	if ((splitw = ft_findocc(to_pars, "| >> > < <<")) == NULL)
 		return (-1);
 	split_cmd = ft_strsplit(to_pars, splitw[0]);
 	while (split_cmd[++i])

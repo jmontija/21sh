@@ -6,70 +6,92 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/08 20:30:30 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/09 20:25:07 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-/*void	create_pipe(char *path, char **cmd_line, char **env, int idx)
+void	exec_cmd_pipe(t_group *grp, char *cmd_to_exec)
 {
-	t_group *grp = init_grp();
+	char	**exec_cmd;
+	int		i;
+
+	i = -1;
+	exec_cmd = ft_spacesplit(cmd_to_exec);
+	while (exec_cmd[++i])
+			exec_cmd[i] = ft_strtrim(exec_cmd[i]);
+	execve(search_exec(grp, exec_cmd[0]), exec_cmd, NULL) < 1 ? ft_putendl("error pipe execve") : 0;
+	// env a placer a la place de NULL le stocker dans grp->env !
+	exit(0);
+}
+
+void	create_pipe(t_group *grp, char **pipe_cmd)
+{
 	pid_t		pid;
 	int			buf;
-	char		**pipe_cmd;
 	int			fd[2];
-	int			j;
+	static int	pipe_counter = 0;
 
-	//ft_putendl("create_pipe");
+	ft_putendl("create_pipe");
+	pipe_counter += 1;
 	pipe(fd) != 0 ? ft_putendl("error pipe function") : 0;
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
-	j = -1;
 	if (pid == 0)
 	{
-		//printf("FILS\n");
-		dup2(grp->fd_save, STDIN_FILENO);
+		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
-		grp->fd_out_save = fd[1];
-		pipe_cmd = ft_strsplit(cmd_line[idx - 1], '/');
-		while (pipe_cmd[++j])
-			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
-		execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
-		exit(0);
+		exec_cmd_pipe(grp, pipe_cmd[0]);
 	}
 	else if (pid != 0)
 	{
-		//printf("PEREWAIT\n");
 		waitpid(pid, &buf, 0);
-		//printf("PEREACT\n");
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[1]);
 		grp->fd_in_save = fd[0];
-		pipe_cmd = ft_strsplit(cmd_line[idx + 1], '/');
-		while (pipe_cmd[++j])
-			pipe_cmd[j] = ft_strtrim(pipe_cmd[j]);
-		if (ft_parsing(search_exec(grp, pipe_cmd[0]), cmd_line + 2, env) == false)
+		if (grp->pipe == pipe_counter)
 		{
-			execve(search_exec(grp, pipe_cmd[0]), pipe_cmd, env) < 1 ? ft_putendl("error pipe execve") : 0;
-			exit(0);
+			pipe_counter = 0;
+			grp->pipe = 0;
+			grp->curr_cmd = NULL;
+			exec_cmd_pipe(grp, pipe_cmd[1]);
 		}
 	}
-}*/
+}
+
+void	pipe_manager(t_group *grp, char *cmd_first, char *cmd_second)
+{
+	char	*pipe_cmd[2];
+
+	ft_putendl("PARS_DONE -> |");
+	pipe_cmd[0] = SDUP(cmd_first);
+	pipe_cmd[1] = SDUP(ft_strsplit(cmd_second, '>')[0]);
+		if (ft_strcmp(pipe_cmd[1], cmd_second) == 0)
+			pipe_cmd[1] = SDUP(ft_strsplit(cmd_second, '<')[0]);
+	ft_putstr("first pipe_cmd -> ");
+	ft_putendl(pipe_cmd[0]);
+	ft_putstr("second pipe_cmd -> ");
+	ft_putendl(pipe_cmd[1]);
+	// RECUPERER LES COMMANDES PLUS PROPREMENT
+	create_pipe(grp, pipe_cmd);
+}
 
 int		main_pipe(t_group *grp, char **split_cmd)
 {
-	int	i;
+	int		i;
 
 	i = -1;
-	printf("IN PIPE\n");
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
-		ft_putendl("PARS_DONE -> |");
-
+		if (grp->curr_cmd != NULL)
+			pipe_manager(grp, grp->curr_cmd, split_cmd[i]);
+		grp->curr_cmd = SDUP(ft_strsplit(split_cmd[i], '>')[0]);
+		if (ft_strcmp(grp->curr_cmd, split_cmd[i]) == 0)
+			grp->curr_cmd = SDUP(ft_strsplit(split_cmd[i], '<')[0]);
 	}
 	return (1);
 }

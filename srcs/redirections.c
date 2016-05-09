@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/08 20:21:48 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/09 22:04:56 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,22 +83,76 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 }
 */
 
+/*void	create_redirection_to(t_group *grp, int action)
+{
+	int			fd;
+	pid_t		pid;
+	int			buf;
+
+	ft_putendl("create_redir_to");
+	pid = fork();
+	pid == -1 ? exit(270) : 0;
+	if (pid == 0)
+	{
+		fd = open(cmd_line[idx + 2], O_WRONLY | action | O_CREAT, 0644);
+		dup2(grp->fd_save, STDIN_FILENO);
+		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
+		close(fd);
+	}
+	else if (pid != 0)
+		waitpid(pid, &buf, 0);
+}*/
+
+void	redir_manager(char *cmd, char *file, char *symbol)
+{
+	char *redir_cmd[2];
+
+	redir_cmd[0] = SDUP(cmd);
+	redir_cmd[1] = SDUP(ft_strsplit(file, '<')[0]);
+	printf("TEST = %s %s %s\n", cmd, symbol, file);
+	/*if (ft_strcmp(symbol, ">") == 0)
+		create_redirection_to(grp, O_TRUNC);
+	else if (ft_strcmp(symbol, ">>") == 0)
+		create_redirection_to(grp,, O_APPEND);*/
+}
+
+void	main_from_redir(char **split_cmd, char *symbol)
+{
+	int	i;
+	static char *redir_from_cmd[2];
+
+	i = -1;
+	while (split_cmd[++i])
+	{
+		//ft_putendl(split_cmd[i]);
+		ft_parsing(1, split_cmd[i]);
+		if (redir_from_cmd[0] != NULL)
+			redir_manager(redir_from_cmd[0], split_cmd[i], symbol);
+		redir_from_cmd[0] = SDUP(ft_strsplit(split_cmd[i], '<')[0]);
+	}
+}
+
 int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 {
-	struct stat	buf;
-	char	checker;
-	int		i;
-	int		ret;
+	int	i;
+	static char *redir_to_cmd[2];
+
 
 	i = -1;
 	printf("IN REDIRECTION with %s\n", symbol);
+	// A RECODER A REPENSER !
+	/*if (ft_strcmp(symbol, "<") == 0)
+	{
+		main_from_redir(split_cmd, symbol);
+		return (1) ;
+	}*/
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
-		ft_putstr("PARS_DONE -> ");
-		ft_putendl(symbol);
+		/*if (redir_to_cmd[0] != NULL)
+			redir_manager(redir_to_cmd[0], split_cmd[i], symbol);
+		redir_to_cmd[0] = SDUP(ft_strsplit(split_cmd[i], '<')[0]);*/
 	}
-
 	return (1);
 }

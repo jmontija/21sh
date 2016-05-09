@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/08 18:58:09 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/09 19:38:43 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,13 @@ typedef struct			s_group
 {
 	char				**cmd;
 	char				*order;
+	char				*curr_cmd;
+
 	int					*define_cmd;
 	int					curs_col;
 	int					fd_in_save;
-	int					fd_out_save;
-	int					curr_cmd;
+	int					pipe;
+
 	struct termios		cpy_term;
 	struct s_options	*options;
 	struct s_env		*first;

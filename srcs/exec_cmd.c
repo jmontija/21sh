@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/08 18:59:42 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/09 19:42:17 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 int		check_pipe_redir(t_group *grp, char *path, char **cmd_line, char **env)
 {
+	int	i;
+
+	i = -1;
+	while (grp->order[++i])
+		if (grp->order[i] == '|')
+			grp->pipe += 1;
 	return (ft_parsing(1, grp->order));
 }
 
