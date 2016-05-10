@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/05/09 19:39:19 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/10 20:00:57 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ t_group	*set_grp(void)
 	grp->last = NULL;
 	grp->cmd = NULL;
 	grp->hist = NULL;
+	grp->redirect = NULL;
 	grp->curr_hist = NULL;
 	grp->curs_col = START_POS;
 	grp->fd_in_save = STDIN_FILENO;

@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/13 18:00:52 by jmontija          #+#    #+#             */
-/*   Updated: 2016/03/23 20:42:23 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/10 21:48:50 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char			**ft_strsplit(char const *s, char c)
 	if (s == NULL)
 		return (NULL);
 	nb_word = ft_cnt_parts((const char *)s, c);
-	t = (char **)malloc(sizeof(*t) * (ft_cnt_parts((const char *)s, c) + 1));
+	t = (char **)malloc(sizeof(*t) * nb_word + 1);
 	if (t == NULL)
 		return (NULL);
 	while (nb_word--)

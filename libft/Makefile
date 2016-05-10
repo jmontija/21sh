@@ -61,6 +61,7 @@ SRC += ft_charjoin.c
 SRC += ft_strtrim.c
 SRC += ft_strsplit.c
 SRC += ft_spacesplit.c
+SRC += ft_strsplitstr.c
 SRC += ft_atoi.c
 SRC += ft_strchr.c
 SRC += ft_strlcat.c

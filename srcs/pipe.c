@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/10 04:34:52 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/10 19:42:03 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	create_pipe(t_group *grp, char **pipe_cmd)
 	}
 }
 
-// RECUPERER LES COMMANDES PLUS PROPREMENT 
+// RECUPERER LES COMMANDES PLUS PROPREMENT
 
 void	pipe_manager(t_group *grp, char *cmd_first, char *cmd_second)
 {
@@ -76,7 +76,7 @@ void	pipe_manager(t_group *grp, char *cmd_first, char *cmd_second)
 	ft_putendl(pipe_cmd[0]);
 	ft_putstr("second pipe_cmd -> ");
 	ft_putendl(pipe_cmd[1]);
-	//make_redir();
+	make_redir(grp);
 	create_pipe(grp, pipe_cmd);
 }
 // RECUPERER LES COMMANDES PLUS PROPREMENT ET LES VERIFIER

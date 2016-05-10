@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/09 21:56:40 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/10 20:54:26 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,15 @@ int		ft_parsing(int exec, char *to_pars)
 
 	i = -1;
 	grp = init_grp();
-	if ((splitw = ft_findocc(to_pars, "| >> > < <<")) == NULL)
+	if ((splitw = ft_findocc(to_pars, "| > >> < <<")) == NULL)
 		return (-1);
-	split_cmd = ft_strsplit(to_pars, splitw[0]);
+	//split_cmd = ft_strsplit(to_pars, splitw[0]);
+	printf("%sSPLITER\n", splitw);
+	split_cmd = ft_strsplitstr(to_pars, splitw);
+	//ft_strsplitstr(to_pars, ">");
 	while (split_cmd[++i])
 		split_cmd[i] = ft_strtrim(split_cmd[i]);
 	if (exec)
 		splitw[0] != '|' ? main_redirection(grp, split_cmd, splitw) : main_pipe(grp, split_cmd);
-	return (true);
+	return (splitw[0] != '|' ? -1 : 0);
 }

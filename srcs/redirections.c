@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/10 04:41:40 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/10 20:39:26 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,50 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 		waitpid(pid, &buf, 0);
 }*/
 
-void	make_redirection()
+int		make_redir(t_group *grp)
 {
+	t_redir *curr;
 
+	if (grp->redirect == NULL)
+		return(-1);
+	ft_putendl("MAKE REDIRECTION with");
+	curr = grp->redirect;
+	while (curr != NULL)
+	{
+		ft_putstr(curr->symbol);
+		ft_putendl(curr->name);
+		curr = curr->next;
+	}
+	grp->redirect = NULL;
+	return (0);
+}
+
+int		insert_redir(t_group *grp, char *cmd, char *symbol)
+{
+	t_redir	*new;
+	t_redir	*curr;
+	int		action;
+
+	ft_putstr("insert redirection -> ");
+	ft_putendl(cmd);
+	action = ft_strcmp(symbol, ">") == 0 ? O_TRUNC : O_APPEND;
+	new = (t_redir *)malloc(sizeof(t_redir));
+	new->name = SDUP(cmd);
+	new->action = action;
+	new->symbol = symbol;
+	new->next = NULL;
+	if (grp->redirect == NULL)
+	{
+		grp->redirect = new;
+		return (1);
+	}
+	curr = grp->redirect;
+	while (curr->next != NULL)
+	{
+		curr = curr->next;
+	}
+	curr->next = new;
+	return (1);
 }
 
 int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
@@ -119,11 +160,14 @@ int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 	{
 		ft_putendl(split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
-		printf("PARS DONE synbol first cmd=%s\n", grp->curr_cmd);
+		if (i > 0 && symbol[0] == '>')
+			insert_redir(grp, ft_strsplit(split_cmd[i], '<')[0], symbol);
+		else if (i > 0 && symbol[0] == '<')
+			insert_redir(grp, split_cmd[i], symbol);
 	}
 /*
 	idée tout stocké dans une liste (fd, sign, name)
-	creer function qui boucle sur liste et exectuter make_redirection() avant un create_pipe 
+	creer function qui boucle sur liste et exectuter make_redirection() avant un create_pipe
 	ou si il ny a pas de pipe avant lexecv de base
 */
 	return (1);

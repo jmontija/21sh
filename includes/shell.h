@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/09 19:38:43 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/10 19:21:35 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,16 @@ typedef struct			s_hist
 	struct s_hist		*next;
 }						t_hist;
 
+typedef struct			s_redir
+{
+
+	char				*name;
+	char				*symbol;
+	int					action;
+	struct s_redir		*next;
+}						t_redir;
+
+
 typedef struct			s_group
 {
 	char				**cmd;
@@ -94,6 +104,7 @@ typedef struct			s_group
 	struct s_env		*last;
 	struct s_hist		*hist;
 	struct s_hist		*curr_hist;
+	struct s_redir		*redirect;
 }						t_group;
 
 t_group					*init_grp(void);
@@ -115,6 +126,7 @@ char					*search_exec(t_group *grp, char *cmd);
 char					*ft_getenv(t_group *grp, char *tofind);
 int 					ft_parsing(int exec, char *to_pars);
 int						main_redirection(t_group *grp, char **split_cmd, char *symbol);
+int						make_redir(t_group *grp);
 int						main_pipe(t_group *grp, char **split_cmd);
 int						list_to_tab(t_env *env, char ***env_tab);
 int						exec_builtin(t_group *grp, char *order);
