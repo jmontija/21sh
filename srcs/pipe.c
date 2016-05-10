@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/09 20:25:07 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/10 04:34:52 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	create_pipe(t_group *grp, char **pipe_cmd)
 	else if (pid != 0)
 	{
 		waitpid(pid, &buf, 0);
-		dup2(fd[0], STDIN_FILENO);
 		close(fd[1]);
 		grp->fd_in_save = fd[0];
 		if (grp->pipe == pipe_counter)
@@ -56,10 +55,13 @@ void	create_pipe(t_group *grp, char **pipe_cmd)
 			pipe_counter = 0;
 			grp->pipe = 0;
 			grp->curr_cmd = NULL;
+			dup2(fd[0], STDIN_FILENO);
 			exec_cmd_pipe(grp, pipe_cmd[1]);
 		}
 	}
 }
+
+// RECUPERER LES COMMANDES PLUS PROPREMENT 
 
 void	pipe_manager(t_group *grp, char *cmd_first, char *cmd_second)
 {
@@ -74,24 +76,33 @@ void	pipe_manager(t_group *grp, char *cmd_first, char *cmd_second)
 	ft_putendl(pipe_cmd[0]);
 	ft_putstr("second pipe_cmd -> ");
 	ft_putendl(pipe_cmd[1]);
-	// RECUPERER LES COMMANDES PLUS PROPREMENT
+	//make_redir();
 	create_pipe(grp, pipe_cmd);
+}
+// RECUPERER LES COMMANDES PLUS PROPREMENT ET LES VERIFIER
+
+char	*save_first_cmd(t_group *grp, char *cmd)
+{
+	grp->curr_cmd = SDUP(ft_strsplit(cmd, '>')[0]);
+	if (ft_strcmp(grp->curr_cmd, cmd) == 0)
+		grp->curr_cmd = SDUP(ft_strsplit(cmd, '<')[0]);
+	return (grp->curr_cmd);
 }
 
 int		main_pipe(t_group *grp, char **split_cmd)
 {
 	int		i;
+	char	*cmd_first;
 
 	i = -1;
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
+		save_first_cmd(grp, split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
-		if (grp->curr_cmd != NULL)
-			pipe_manager(grp, grp->curr_cmd, split_cmd[i]);
-		grp->curr_cmd = SDUP(ft_strsplit(split_cmd[i], '>')[0]);
-		if (ft_strcmp(grp->curr_cmd, split_cmd[i]) == 0)
-			grp->curr_cmd = SDUP(ft_strsplit(split_cmd[i], '<')[0]);
+		if (i > 0)
+			pipe_manager(grp, cmd_first, split_cmd[i]);
+		cmd_first = save_first_cmd(grp, split_cmd[i]);
 	}
 	return (1);
 }

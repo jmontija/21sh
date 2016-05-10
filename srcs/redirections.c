@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/09 22:04:56 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/10 04:41:40 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,33 +103,9 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 		waitpid(pid, &buf, 0);
 }*/
 
-void	redir_manager(char *cmd, char *file, char *symbol)
+void	make_redirection()
 {
-	char *redir_cmd[2];
 
-	redir_cmd[0] = SDUP(cmd);
-	redir_cmd[1] = SDUP(ft_strsplit(file, '<')[0]);
-	printf("TEST = %s %s %s\n", cmd, symbol, file);
-	/*if (ft_strcmp(symbol, ">") == 0)
-		create_redirection_to(grp, O_TRUNC);
-	else if (ft_strcmp(symbol, ">>") == 0)
-		create_redirection_to(grp,, O_APPEND);*/
-}
-
-void	main_from_redir(char **split_cmd, char *symbol)
-{
-	int	i;
-	static char *redir_from_cmd[2];
-
-	i = -1;
-	while (split_cmd[++i])
-	{
-		//ft_putendl(split_cmd[i]);
-		ft_parsing(1, split_cmd[i]);
-		if (redir_from_cmd[0] != NULL)
-			redir_manager(redir_from_cmd[0], split_cmd[i], symbol);
-		redir_from_cmd[0] = SDUP(ft_strsplit(split_cmd[i], '<')[0]);
-	}
 }
 
 int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
@@ -137,22 +113,18 @@ int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 	int	i;
 	static char *redir_to_cmd[2];
 
-
 	i = -1;
 	printf("IN REDIRECTION with %s\n", symbol);
-	// A RECODER A REPENSER !
-	/*if (ft_strcmp(symbol, "<") == 0)
-	{
-		main_from_redir(split_cmd, symbol);
-		return (1) ;
-	}*/
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
-		/*if (redir_to_cmd[0] != NULL)
-			redir_manager(redir_to_cmd[0], split_cmd[i], symbol);
-		redir_to_cmd[0] = SDUP(ft_strsplit(split_cmd[i], '<')[0]);*/
+		printf("PARS DONE synbol first cmd=%s\n", grp->curr_cmd);
 	}
+/*
+	idée tout stocké dans une liste (fd, sign, name)
+	creer function qui boucle sur liste et exectuter make_redirection() avant un create_pipe 
+	ou si il ny a pas de pipe avant lexecv de base
+*/
 	return (1);
 }

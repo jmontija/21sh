@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/09 19:42:17 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/10 03:09:56 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-int		check_pipe_redir(t_group *grp, char *path, char **cmd_line, char **env)
+int		launch_parser(t_group *grp, char *path, char **cmd_line, char **env)
 {
 	int	i;
 
@@ -38,7 +38,7 @@ void	create_process(t_group *grp, char *path, char **cmd_line, char **env)
 	}
 	else if (pid == 0)
 	{
-		if (check_pipe_redir(grp, path, cmd_line, env) < 0 &&
+		if (launch_parser(grp, path, cmd_line, env) < 0 &&
 			execve(path, cmd_line, env) < 1)
 		{
 			(fd = open(path, O_RDONLY)) != -1 ?
