@@ -1,0 +1,12 @@
+total 126
+-rwxr-xr-x  1 jmontija  2015_paris  44164 May 12 17:42 21sh
+-rw-r--r--  1 jmontija  2015_paris   1968 May 12 17:41 Makefile
+-rw-r--r--  1 jmontija  2015_paris     52 May 12 17:41 README
+-rw-r--r--  1 jmontija  2015_paris      0 May 12 20:58 TESTDONE
+-rw-r--r--  1 jmontija  2015_paris      0 May 12 20:49 TETS
+-rw-r--r--  1 jmontija  2015_paris     26 May 12 17:41 auteur
+drwxr-xr-x  2 jmontija  2015_paris   4096 May 12 17:41 includes
+drwxr-xr-x  3 jmontija  2015_paris   4096 May 12 17:41 libft
+-rwxr-xr-x  1 jmontija  2015_paris    184 May 12 17:41 regit.sh
+drwxr-xr-x  2 jmontija  2015_paris   4096 May 12 17:42 srco
+drwxr-xr-x  2 jmontija  2015_paris   4096 May 12 17:41 srcs

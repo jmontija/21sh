@@ -1,9 +1,11 @@
 21sh
 Makefile
+OK
 README
 TEST
-TEST01
-TEST02
+TEST2 OK
+TESTDONE
+TETS
 auteur
 includes
 libft

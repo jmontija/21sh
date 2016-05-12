@@ -87,6 +87,12 @@ typedef struct			s_redir
 	struct s_redir		*next;
 }						t_redir;
 
+typedef struct			s_redir_group
+{
+	struct s_redir		*redir_to;
+	struct s_redir		*redir_from;
+	struct s_redir		*redir_heredoc;
+}						t_redir_group;
 
 typedef struct			s_group
 {
@@ -99,13 +105,14 @@ typedef struct			s_group
 	int					fd_in_save;
 	int					pipe;
 
-	struct termios		cpy_term;
-	struct s_options	*options;
-	struct s_env		*first;
-	struct s_env		*last;
-	struct s_hist		*hist;
-	struct s_hist		*curr_hist;
-	struct s_redir		*redirect;
+	struct termios			cpy_term;
+	struct s_options		*options;
+	struct s_env			*first;
+	struct s_env			*last;
+	struct s_hist			*hist;
+	struct s_hist			*curr_hist;
+	struct s_redir			*redirect;
+	struct s_redir_group	*redirect_grp;
 }						t_group;
 
 t_group					*init_grp(void);
