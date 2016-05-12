@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/10 19:21:35 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/12 02:35:01 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ typedef struct			s_redir
 	char				*name;
 	char				*symbol;
 	int					action;
+	char				*command;
 	struct s_redir		*next;
 }						t_redir;
 
@@ -126,7 +127,8 @@ char					*search_exec(t_group *grp, char *cmd);
 char					*ft_getenv(t_group *grp, char *tofind);
 int 					ft_parsing(int exec, char *to_pars);
 int						main_redirection(t_group *grp, char **split_cmd, char *symbol);
-int						make_redir(t_group *grp);
+int						exec_redir(t_group *grp);
+char					*get_cmd(t_group *grp, char *cmd);
 int						main_pipe(t_group *grp, char **split_cmd);
 int						list_to_tab(t_env *env, char ***env_tab);
 int						exec_builtin(t_group *grp, char *order);

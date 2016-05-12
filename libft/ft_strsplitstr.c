@@ -3,106 +3,84 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsplitstr.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/10 19:59:55 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/10 22:03:50 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/12 00:40:52 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <stdio.h>
 
-static int		ft_cnt_parts(const char *s, char *c)
+static int		ft_cnt_words(char *cmd, char *symbol)
 {
-	int		cnt;
-	int		in_substring;
-	char	*tocmp;
+	int symlen;
+	int	cnt;
+	int	i;
 
-	in_substring = 0;
+	i = 0;
 	cnt = 0;
-	while (*s != '\0')
+	symlen = ft_strlen(symbol);
+	while (cmd[i] != '\0')
 	{
-		tocmp = ft_charjoin("", *s);
-		if (*(s + 1) && *s == *(s + 1))
+		if ( (symlen > 1 && strncmp(cmd + i, symbol, symlen) == 0) ||
+			(symlen == 1 && *symbol == cmd[i] && cmd[i - 1] && cmd[i + 1] &&
+				cmd[i + 1] != *symbol && cmd[i - 1] != *symbol) )
 		{
-			tocmp = ft_charjoin(tocmp, *(s + 1));
-			s++;
-		}
-		if (in_substring == 1 && ft_strcmp(tocmp, c) == 0)
-			in_substring = 0;
-		if (in_substring == 0 && ft_strcmp(tocmp, c) != 0)
-		{
-			in_substring = 1;
 			cnt++;
+			i += symlen;
 		}
-		s++;
+		else
+			i++;
 	}
-	return (cnt);
+	return (cnt + 1);
 }
 
-/*
-static int		ft_wlen(const char *s, char *c)
+char		**ft_fillstr(char **t, char *cmd, char *symbol)
 {
-	int		len;
-	char	*tocmp;
-
-	len = 0;
-	while (*s != '\0')
+	int		i;
+	int		pos;
+	int		idx;
+	size_t	symlen;
+	
+	i = 0;
+	pos = 0;
+	idx = 0;
+	symlen = ft_strlen(symbol);
+	while (cmd[i] != '\0')
 	{
-		tocmp = ft_charjoin("", *s);
-		if (*(s + 1) && *s == *(s + 1))
+		if ( (symlen > 1 && strncmp(cmd + i, symbol, symlen) == 0) ||
+			(symlen == 1 && *symbol == cmd[i] && cmd[i - 1] && cmd[i + 1] &&
+				cmd[i + 1] != *symbol && cmd[i - 1] != *symbol) )
 		{
-			tocmp = ft_charjoin(tocmp, *(s + 1));
-			s++;
+			t[idx] = ft_strsub(cmd, pos, i - pos);
+			i += symlen;
+			pos = i;
+			idx++;
 		}
-
-		if (ft_strcmp(tocmp, c) == 0)
-			break ;
-		s++;
-		len++;
+		else
+			i++;
 	}
-	//printf("LEN %d WORD %s\n", len, s);
-	return (len);
+	t[idx] = ft_strsub(cmd, pos, i - pos);
+	t[idx + 1] = NULL;
+	return (t);
 }
-*/
 
-char			**ft_strsplitstr(char const *s, char *c)
+char			**ft_strsplitstr(char *cmd, char *symbol)
 {
 	char	**t;
 	int		nb_word;
-	int		index;
-	char	*tocmp;
+	int		i;
 
-	index = 0;
-	if (s == NULL)
-		return (NULL);
-	nb_word = ft_cnt_parts((const char *)s, c);
-	printf("WORD = %d\n", nb_word);
-	t = (char **)malloc(sizeof(*t) * nb_word + 1);
+	i = -1;
+	nb_word = ft_cnt_words(cmd, symbol);
+	t = (char **)malloc(sizeof(char *) * nb_word + 1);
 	if (t == NULL)
 		return (NULL);
-	while (nb_word--)
-	{
-		while (*s != '\0')
-		{
-			tocmp = ft_charjoin("", *s);
-			if (*(s + 1) && *s == *(s + 1))
-			{
-				tocmp = ft_charjoin(tocmp, *(s + 1));
-				s++;
-			}
-			if (ft_strcmp(tocmp, c) != 0)
-				break ;
-			s++;
-		}
-		t[index] = ft_strsub((const char *)s, 0, 5);
-		printf("WORD = %s\n", t[index]);
-		if (t[index] == NULL)
-			return (NULL);
-		s = s + 5;
-		index++;
-	}
-	t[index] = NULL;
+	printf("WORD = %d\n", nb_word);
+	t = ft_fillstr(t, cmd, symbol);
+	while (t[++i])
+		t[i] = ft_strtrim(t[i]);
 	return (t);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/10 20:54:26 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/12 02:20:33 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*ft_strchrsym(char *str, char *tofind)
 	return (NULL);
 }
 
-char	*ft_findocc(char *order, char *symbol)
+char	*ft_findocc(char *to_pars, char *symbol)
 {
 	size_t	i;
 	char	**tofind;
@@ -40,7 +40,7 @@ char	*ft_findocc(char *order, char *symbol)
 	i = -1;
 	tofind = ft_spacesplit(symbol);
 	while (tofind[++i] != NULL)
-		if (ft_strchrsym(order, tofind[i]) != NULL)
+		if (ft_strchrsym(to_pars, tofind[i]) != NULL)
 			return (tofind[i]);
 	return (NULL);
 }
@@ -48,7 +48,8 @@ char	*ft_findocc(char *order, char *symbol)
 // ls | CMD0 > FILE | CMD1 | CMD2 > FILE2 < OK
 // ls -i DIR > FILE | CMD1 | CMD2 > FILE2 < OK
 // ls < TETS | CMD0 > FILE | CMD1 | CMD2 > FILE2 < OK
-// checker si cest pas mieux de split sur les pipe first
+
+
 
 int		ft_parsing(int exec, char *to_pars)
 {
@@ -61,12 +62,8 @@ int		ft_parsing(int exec, char *to_pars)
 	grp = init_grp();
 	if ((splitw = ft_findocc(to_pars, "| > >> < <<")) == NULL)
 		return (-1);
-	//split_cmd = ft_strsplit(to_pars, splitw[0]);
-	printf("%sSPLITER\n", splitw);
-	split_cmd = ft_strsplitstr(to_pars, splitw);
-	//ft_strsplitstr(to_pars, ">");
-	while (split_cmd[++i])
-		split_cmd[i] = ft_strtrim(split_cmd[i]);
+	printf("PARSER -> '%s'\n", splitw);
+	split_cmd = ft_strsplitstr(to_pars, splitw);	
 	if (exec)
 		splitw[0] != '|' ? main_redirection(grp, split_cmd, splitw) : main_pipe(grp, split_cmd);
 	return (splitw[0] != '|' ? -1 : 0);

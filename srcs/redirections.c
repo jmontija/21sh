@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/10 20:39:26 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/12 02:38:56 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,18 +103,22 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 		waitpid(pid, &buf, 0);
 }*/
 
-int		make_redir(t_group *grp)
+int		exec_redir(t_group *grp)
 {
 	t_redir *curr;
 
 	if (grp->redirect == NULL)
 		return(-1);
-	ft_putendl("MAKE REDIRECTION with");
+	ft_putendl("EXEC REDIRECTION with");
 	curr = grp->redirect;
 	while (curr != NULL)
 	{
+		ft_putstr(curr->command);
+		//REMOVE(&curr->command);
 		ft_putstr(curr->symbol);
+		//REMOVE(&curr->symbol);
 		ft_putendl(curr->name);
+		//REMOVE(&curr->name);
 		curr = curr->next;
 	}
 	grp->redirect = NULL;
@@ -134,6 +138,7 @@ int		insert_redir(t_group *grp, char *cmd, char *symbol)
 	new->name = SDUP(cmd);
 	new->action = action;
 	new->symbol = symbol;
+	new->command = SDUP(grp->curr_cmd);
 	new->next = NULL;
 	if (grp->redirect == NULL)
 	{
@@ -152,7 +157,7 @@ int		insert_redir(t_group *grp, char *cmd, char *symbol)
 int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 {
 	int	i;
-	static char *redir_to_cmd[2];
+	char *cmp;
 
 	i = -1;
 	printf("IN REDIRECTION with %s\n", symbol);
@@ -160,10 +165,12 @@ int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 	{
 		ft_putendl(split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
-		if (i > 0 && symbol[0] == '>')
-			insert_redir(grp, ft_strsplit(split_cmd[i], '<')[0], symbol);
-		else if (i > 0 && symbol[0] == '<')
-			insert_redir(grp, split_cmd[i], symbol);
+		if (i > 0)
+		{
+			cmp = get_cmd(grp, split_cmd[i]);
+			insert_redir(grp, cmp, symbol);
+		}
+
 	}
 /*
 	idée tout stocké dans une liste (fd, sign, name)

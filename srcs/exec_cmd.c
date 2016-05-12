@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/10 21:49:23 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/12 00:01:14 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,10 @@ int		launch_parser(t_group *grp, char *path, char **cmd_line, char **env)
 	while (grp->order[++i])
 		if (grp->order[i] == '|')
 			grp->pipe += 1;
+	grp->curr_cmd = SDUP(cmd_line[0]);
 	ret = ft_parsing(1, grp->order);
 	if (ret < 0)
-		ret = make_redir(grp);
+		ret = exec_redir(grp);
 	return (ret);
 }
 

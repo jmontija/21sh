@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/10 19:42:03 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/12 02:35:24 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	create_pipe(t_group *grp, char **pipe_cmd)
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
 	{
+		exec_redir(grp);
 		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
@@ -56,12 +57,42 @@ void	create_pipe(t_group *grp, char **pipe_cmd)
 			grp->pipe = 0;
 			grp->curr_cmd = NULL;
 			dup2(fd[0], STDIN_FILENO);
+			//exec_redir(grp);
 			exec_cmd_pipe(grp, pipe_cmd[1]);
 		}
 	}
 }
 
-// RECUPERER LES COMMANDES PLUS PROPREMENT
+char	*get_cmd(t_group *grp, char *cmd)
+{
+	char	**symbol;
+	char	*shell_cmd;
+	char	*tofind;
+	size_t 	symlen;
+	size_t		i;
+	int			j;
+
+	i = -1;
+	tofind = SDUP("> >> < <<");
+	symbol = ft_spacesplit(tofind);
+	shell_cmd = SDUP(cmd);
+	while (cmd[++i] != '\0')
+	{
+		j = -1;
+		while (symbol[++j] != NULL)
+		{
+			symlen = ft_strlen(symbol[j]);
+			if ( (symlen > 1 && strncmp(cmd + i, symbol[j], symlen) == 0) ||
+				(symlen == 1 && *symbol[j] == cmd[i] && cmd[i - 1] && cmd[i + 1] &&
+					cmd[i + 1] != *symbol[j] && cmd[i - 1] != *symbol[j]) )
+			{
+				shell_cmd = SDUP(ft_strsplitstr(cmd, symbol[j])[0]);
+				return (shell_cmd);
+			}
+		}
+	}
+	return (shell_cmd);
+}
 
 void	pipe_manager(t_group *grp, char *cmd_first, char *cmd_second)
 {
@@ -69,25 +100,14 @@ void	pipe_manager(t_group *grp, char *cmd_first, char *cmd_second)
 
 	ft_putendl("PARS_DONE -> |");
 	pipe_cmd[0] = SDUP(cmd_first);
-	pipe_cmd[1] = SDUP(ft_strsplit(cmd_second, '>')[0]);
-		if (ft_strcmp(pipe_cmd[1], cmd_second) == 0)
-			pipe_cmd[1] = SDUP(ft_strsplit(cmd_second, '<')[0]);
+	pipe_cmd[1] = get_cmd(grp, cmd_second);
 	ft_putstr("first pipe_cmd -> ");
 	ft_putendl(pipe_cmd[0]);
 	ft_putstr("second pipe_cmd -> ");
 	ft_putendl(pipe_cmd[1]);
-	make_redir(grp);
 	create_pipe(grp, pipe_cmd);
 }
 // RECUPERER LES COMMANDES PLUS PROPREMENT ET LES VERIFIER
-
-char	*save_first_cmd(t_group *grp, char *cmd)
-{
-	grp->curr_cmd = SDUP(ft_strsplit(cmd, '>')[0]);
-	if (ft_strcmp(grp->curr_cmd, cmd) == 0)
-		grp->curr_cmd = SDUP(ft_strsplit(cmd, '<')[0]);
-	return (grp->curr_cmd);
-}
 
 int		main_pipe(t_group *grp, char **split_cmd)
 {
@@ -98,11 +118,11 @@ int		main_pipe(t_group *grp, char **split_cmd)
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
-		save_first_cmd(grp, split_cmd[i]);
+		grp->curr_cmd = get_cmd(grp, split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
 		if (i > 0)
 			pipe_manager(grp, cmd_first, split_cmd[i]);
-		cmd_first = save_first_cmd(grp, split_cmd[i]);
+		cmd_first = get_cmd(grp, split_cmd[i]);
 	}
 	return (1);
 }
