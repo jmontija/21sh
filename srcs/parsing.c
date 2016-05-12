@@ -6,11 +6,42 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/12 02:20:33 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/12 04:03:11 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+
+char	*get_cmd(t_group *grp, char *cmd)
+{
+	char	**symbol;
+	char	*shell_cmd;
+	char	*tofind;
+	size_t 	symlen;
+	size_t		i;
+	int			j;
+
+	i = -1;
+	tofind = SDUP("> >> < <<");
+	symbol = ft_spacesplit(tofind);
+	shell_cmd = SDUP(cmd);
+	while (cmd[++i] != '\0')
+	{
+		j = -1;
+		while (symbol[++j] != NULL)
+		{
+			symlen = ft_strlen(symbol[j]);
+			if ( (symlen > 1 && strncmp(cmd + i, symbol[j], symlen) == 0) ||
+				(symlen == 1 && *symbol[j] == cmd[i] && cmd[i - 1] && cmd[i + 1] &&
+					cmd[i + 1] != *symbol[j] && cmd[i - 1] != *symbol[j]) )
+			{
+				shell_cmd = SDUP(ft_strsplitstr(cmd, symbol[j])[0]);
+				return (shell_cmd);
+			}
+		}
+	}
+	return (shell_cmd);
+}
 
 char	*ft_strchrsym(char *str, char *tofind)
 {
@@ -49,8 +80,6 @@ char	*ft_findocc(char *to_pars, char *symbol)
 // ls -i DIR > FILE | CMD1 | CMD2 > FILE2 < OK
 // ls < TETS | CMD0 > FILE | CMD1 | CMD2 > FILE2 < OK
 
-
-
 int		ft_parsing(int exec, char *to_pars)
 {
 	t_group	*grp;
@@ -60,7 +89,7 @@ int		ft_parsing(int exec, char *to_pars)
 
 	i = -1;
 	grp = init_grp();
-	if ((splitw = ft_findocc(to_pars, "| > >> < <<")) == NULL)
+	if ((splitw = ft_findocc(to_pars, "| >> > < <<")) == NULL)
 		return (-1);
 	printf("PARSER -> '%s'\n", splitw);
 	split_cmd = ft_strsplitstr(to_pars, splitw);	

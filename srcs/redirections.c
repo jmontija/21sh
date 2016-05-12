@@ -6,7 +6,7 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/12 02:38:56 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/12 03:50:21 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,21 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 	return (cmd_line);
 }
 */
+void	exec_cmd_redir(t_group *grp, char *cmd_to_exec)
+{
+	char	**exec_cmd;
+	int		i;
 
-/*void	create_redirection_to(t_group *grp, int action)
+	i = -1;
+	exec_cmd = ft_spacesplit(cmd_to_exec);
+	while (exec_cmd[++i])
+			exec_cmd[i] = ft_strtrim(exec_cmd[i]);
+	execve(search_exec(grp, exec_cmd[0]), exec_cmd, NULL) < 1 ? ft_putendl("error pipe execve") : 0;
+	// env a placer a la place de NULL le stocker dans grp->env !
+	exit(0);
+}
+
+void	create_redirection_to(t_group *grp, t_redir *curr, int action)
 {
 	int			fd;
 	pid_t		pid;
@@ -94,18 +107,20 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
 	{
-		fd = open(cmd_line[idx + 2], O_WRONLY | action | O_CREAT, 0644);
-		dup2(grp->fd_save, STDIN_FILENO);
+		fd = open(curr->name, O_WRONLY | action | O_CREAT, 0644);
+		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
+		exec_cmd_redir(grp, curr->command);
 		close(fd);
 	}
 	else if (pid != 0)
 		waitpid(pid, &buf, 0);
-}*/
+}
 
-int		exec_redir(t_group *grp)
+int		exec_redir(t_group *grp, char *cmd)
 {
 	t_redir *curr;
+	t_bool	tmp = false;
 
 	if (grp->redirect == NULL)
 		return(-1);
@@ -113,16 +128,22 @@ int		exec_redir(t_group *grp)
 	curr = grp->redirect;
 	while (curr != NULL)
 	{
-		ft_putstr(curr->command);
-		//REMOVE(&curr->command);
-		ft_putstr(curr->symbol);
-		//REMOVE(&curr->symbol);
-		ft_putendl(curr->name);
-		//REMOVE(&curr->name);
+		if (ft_strcmp(cmd, curr->command) == 0)
+		{
+			ft_putstr(curr->command);
+			ft_putstr(curr->symbol);
+			ft_putendl(curr->name);
+			if (ft_strcmp(">", curr->symbol) == 0)
+				create_redirection_to(grp, curr, O_TRUNC);
+			else if (ft_strcmp(">>", curr->symbol) == 0)
+				create_redirection_to(grp, curr, O_APPEND);
+			tmp = true;
+			/* supprimer après avoir traité les redirs*/
+		}
 		curr = curr->next;
 	}
 	grp->redirect = NULL;
-	return (0);
+	return (tmp ? 0 : -1);
 }
 
 int		insert_redir(t_group *grp, char *cmd, char *symbol)
@@ -131,8 +152,7 @@ int		insert_redir(t_group *grp, char *cmd, char *symbol)
 	t_redir	*curr;
 	int		action;
 
-	ft_putstr("insert redirection -> ");
-	ft_putendl(cmd);
+	ft_putstr("insert redirection -> "); ft_putendl(cmd);
 	action = ft_strcmp(symbol, ">") == 0 ? O_TRUNC : O_APPEND;
 	new = (t_redir *)malloc(sizeof(t_redir));
 	new->name = SDUP(cmd);
@@ -147,9 +167,7 @@ int		insert_redir(t_group *grp, char *cmd, char *symbol)
 	}
 	curr = grp->redirect;
 	while (curr->next != NULL)
-	{
 		curr = curr->next;
-	}
 	curr->next = new;
 	return (1);
 }
@@ -157,7 +175,7 @@ int		insert_redir(t_group *grp, char *cmd, char *symbol)
 int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 {
 	int	i;
-	char *cmp;
+	char *cmd;
 
 	i = -1;
 	printf("IN REDIRECTION with %s\n", symbol);
@@ -167,15 +185,10 @@ int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 		ft_parsing(1, split_cmd[i]);
 		if (i > 0)
 		{
-			cmp = get_cmd(grp, split_cmd[i]);
-			insert_redir(grp, cmp, symbol);
+			cmd = get_cmd(grp, split_cmd[i]);
+			insert_redir(grp, cmd, symbol);
 		}
 
 	}
-/*
-	idée tout stocké dans une liste (fd, sign, name)
-	creer function qui boucle sur liste et exectuter make_redirection() avant un create_pipe
-	ou si il ny a pas de pipe avant lexecv de base
-*/
 	return (1);
 }

@@ -63,8 +63,8 @@ int		key_selection(t_group *grp, char *order, char **cmd)
 		handling_backspace(grp, cmd);
 	else if (key == CTRL_L)
 	{
-		ft_putstr("fsh-> ");
 		ft_tputs("cl", NULL);
+		ft_putstr("fsh-> ");
 	}
 	else if (key == ARROW_L || key == ARROW_R || key == ARROW_U || key == ARROW_D)
 		handling_arrow(grp, cmd, key);

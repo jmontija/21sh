@@ -6,7 +6,7 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/12 02:35:24 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/12 04:03:22 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	create_pipe(t_group *grp, char **pipe_cmd)
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
 	{
-		exec_redir(grp);
+		exec_redir(grp, pipe_cmd[0]);
 		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
@@ -56,42 +56,13 @@ void	create_pipe(t_group *grp, char **pipe_cmd)
 			pipe_counter = 0;
 			grp->pipe = 0;
 			grp->curr_cmd = NULL;
-			dup2(fd[0], STDIN_FILENO);
-			//exec_redir(grp);
-			exec_cmd_pipe(grp, pipe_cmd[1]);
-		}
-	}
-}
-
-char	*get_cmd(t_group *grp, char *cmd)
-{
-	char	**symbol;
-	char	*shell_cmd;
-	char	*tofind;
-	size_t 	symlen;
-	size_t		i;
-	int			j;
-
-	i = -1;
-	tofind = SDUP("> >> < <<");
-	symbol = ft_spacesplit(tofind);
-	shell_cmd = SDUP(cmd);
-	while (cmd[++i] != '\0')
-	{
-		j = -1;
-		while (symbol[++j] != NULL)
-		{
-			symlen = ft_strlen(symbol[j]);
-			if ( (symlen > 1 && strncmp(cmd + i, symbol[j], symlen) == 0) ||
-				(symlen == 1 && *symbol[j] == cmd[i] && cmd[i - 1] && cmd[i + 1] &&
-					cmd[i + 1] != *symbol[j] && cmd[i - 1] != *symbol[j]) )
+			if (exec_redir(grp, pipe_cmd[1]) < 0)
 			{
-				shell_cmd = SDUP(ft_strsplitstr(cmd, symbol[j])[0]);
-				return (shell_cmd);
+				dup2(fd[0], STDIN_FILENO);
+				exec_cmd_pipe(grp, pipe_cmd[1]);
 			}
 		}
 	}
-	return (shell_cmd);
 }
 
 void	pipe_manager(t_group *grp, char *cmd_first, char *cmd_second)
