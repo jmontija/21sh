@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/13 01:12:52 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/13 19:02:00 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ char					*ft_getenv(t_group *grp, char *tofind);
 int 					ft_parsing(int exec, char *to_pars);
 char					*ft_findocc(int idx, char *order, char *symbol);
 int						main_redirection(t_group *grp, char **split_cmd, char *symbol);
-int						exec_redir(t_group *grp, char *cmd);
+int						exec_redir(int exec, t_group *grp, char *cmd);
 char					*get_cmd(t_group *grp, char *cmd);
 int						main_pipe(t_group *grp, char **split_cmd);
 int						list_to_tab(t_env *env, char ***env_tab);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/13 01:13:14 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/13 20:21:27 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int		launch_parser(t_group *grp, char *path, char **cmd_line, char **env)
 	grp->curr_cmd = get_cmd(grp, grp->order);
 	ret = ft_parsing(1, grp->order);
 	if (ret < 0)
-		ret = exec_redir(grp, grp->curr_cmd);
+		ret = exec_redir(1, grp, grp->curr_cmd);
+	printf("COMMAND TO EXEC -> %s\n", grp->curr_cmd);
 	return (ret);
 }
 

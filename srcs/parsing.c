@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/13 01:13:12 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/13 20:35:08 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ char	*get_cmd(t_group *grp, char *cmd)
 	tofind = SDUP("> >> < <<");
 	symbol = ft_spacesplit(tofind);
 	shell_cmd = SDUP(cmd);
+	printf("GET COMMAND\n");
 	while (cmd[++i] != '\0')
 	{
 		j = -1;
@@ -92,7 +93,7 @@ int		ft_parsing(int exec, char *to_pars)
 	if ((splitw = ft_findocc(false, to_pars, "| >> > < <<")) == NULL)
 		return (-1);
 	printf("PARSER -> '%s'\n", splitw);
-	split_cmd = ft_strsplitstr(to_pars, splitw);	
+	split_cmd = ft_strsplitstr(to_pars, splitw);
 	if (exec)
 		splitw[0] != '|' ? main_redirection(grp, split_cmd, splitw) : main_pipe(grp, split_cmd);
 	return (splitw[0] != '|' ? -1 : 0);

@@ -27,14 +27,14 @@ void	print_cmd(t_group *grp, int key, char *order, char **cmd)
 	while (order[++i] != '\0')
 		if (ft_isprint(order[i]) == false)
 			return ;
-	ft_putstr(order);
+	ft_putstr_fd(order, 2);
 	if (grp->curs_col < START_POS + LEN(*cmd))
 	{
 		beg_cmd = SUB(*cmd, 0, grp->curs_col - START_POS);
 		beg_cmd = JOIN(beg_cmd, order);
 		end_cmd = SUB(*cmd, grp->curs_col - START_POS, LEN(*cmd));
 		*cmd = JOIN(beg_cmd, end_cmd);
-		ft_putstr(end_cmd);
+		ft_putstr_fd(end_cmd, 2);
 		i = LEN(end_cmd);
 		while (i-- > 0)
 			ft_tputs("le", NULL);
@@ -54,7 +54,7 @@ int		key_selection(t_group *grp, char *order, char **cmd)
 	if (key == CTRL_D || key == ESC)
 	{
 		reset_shell();
-		ft_putchar('\n');
+		ft_putchar_fd('\n', 2);
 		exit(0);
 	}
 	if (key == ENTER)
@@ -64,7 +64,7 @@ int		key_selection(t_group *grp, char *order, char **cmd)
 	else if (key == CTRL_L)
 	{
 		ft_tputs("cl", NULL);
-		ft_putstr("fsh-> ");
+		ft_putstr_fd("fsh-> ", 2);
 	}
 	else if (key == ARROW_L || key == ARROW_R || key == ARROW_U || key == ARROW_D)
 		handling_arrow(grp, cmd, key);
@@ -84,7 +84,7 @@ void	read_cmd(t_group *grp, int fd, char **cmd)
 		order[ret] = '\0';
 		if (key_selection(grp, order, cmd) == ENTER)
 		{
-			ft_putchar('\n');
+			ft_putchar_fd('\n', 2);
 			insert_hist(grp, *cmd);
 			grp->curs_col = START_POS;
 			break ;

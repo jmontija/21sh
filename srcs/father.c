@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   father.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/03 23:53:16 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/12 02:51:45 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/13 20:20:49 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ char	**get_command(t_group *grp ,int const fd)
 	char	*order;
 
 	order = SDUP("");
-	ft_putstr("\033[1;32m");
-	ft_putstr("fsh-> ");
-	ft_putstr("\033[1;37m");
+	ft_putstr_fd("\033[1;32m", 2);
+	ft_putstr_fd("fsh-> ", 2);
+	ft_putstr_fd("\033[1;37m", 2);
 	read_cmd(grp, fd, &order);
 	return (ft_strsplit(order, ';'));
 }
