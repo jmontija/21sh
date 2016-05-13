@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_lib.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/05/10 20:00:57 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/13 01:15:37 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,13 +116,16 @@ t_group	*set_grp(void)
 	grp->last = NULL;
 	grp->cmd = NULL;
 	grp->hist = NULL;
-	grp->redirect = NULL;
+	grp->redirect = (t_redir **)malloc(sizeof(t_redir *) * 4);
+	while (++i < 4)
+		grp->redirect[i] = NULL;
 	grp->curr_hist = NULL;
 	grp->curs_col = START_POS;
 	grp->fd_in_save = STDIN_FILENO;
 	grp->curr_cmd = NULL;
 	grp->pipe = 0;
 	grp->define_cmd = (int *)malloc(sizeof(int) * 4);
+	i = -1;
 	while (++i < 4)
 		grp->define_cmd[i] = false;
 	grp->options = (t_options *)malloc(sizeof(t_options));

@@ -6,7 +6,7 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/12 03:50:21 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/13 16:07:16 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ char	*last_pars_redir(char *new_cmd, t_redir *curr)
 
 	i = 0;
 	file = ft_spacesplit(curr->name);
+	curr->name = file[0];
 	if (file[1] != NULL)
 	{
 		while (file[++i])
@@ -114,10 +115,6 @@ char	*last_pars_redir(char *new_cmd, t_redir *curr)
 			new_cmd = JOIN(new_cmd, file[i]);
 		}
 	}
-	curr->name = ft_spacesplit(curr->name)[0];
-	/*'>' == curr->symbol[0] ? : 0;
-	ft_strcmp("<<", curr->symbol) == 0) ? : 0;
-	ft_strcmp("<", curr->symbol) == 0) ? : 0;*/
 	printf("NEW CMD WITH ARG %s\n", new_cmd);
 	return (new_cmd);
 }
@@ -127,30 +124,34 @@ int		exec_redir(t_group *grp, char *cmd)
 	t_redir *curr;
 	char	*new_cmd;
 	t_bool	tmp = false;
+	int		i = -1;	
 
-	if (grp->redirect == NULL)
-		return(-1);
-	curr = grp->redirect;
-	new_cmd = SDUP(cmd);
+
+	/*if (grp->redirect == NULL)
+		return(-1);*/
 	ft_putstr("EXEC REDIRECTION with ");
 	ft_putendl(cmd);
-	while (curr != NULL)
+	while (++i < 5)
 	{
-		if (ft_strcmp(cmd, curr->command) == 0)
+		curr = grp->redirect[i];
+		while (curr != NULL)
 		{
-			new_cmd = last_pars_redir(new_cmd, curr);
-			ft_putstr(curr->symbol); ft_putendl(curr->name);
-			/*if (ft_strcmp(">", curr->symbol) == 0)
-				create_redirection_to(grp, curr, O_TRUNC);
-			else if (ft_strcmp(">>", curr->symbol) == 0)
-				create_redirection_to(grp, curr, O_APPEND);
-			else if (ft_strcmp("<", curr->symbol) == 0)*/
-			tmp = true;
-			/* supprimer après avoir traité les redirs*/
+			//if (ft_strcmp(cmd, ft_spacesplit(curr->command)[0]) == 0)
+			//{
+				//new_cmd = last_pars_redir(new_cmd, curr);
+				ft_putstr(curr->symbol); ft_putendl(curr->name);
+				/*if (ft_strcmp(">", curr->symbol) == 0)
+					create_redirection_to(grp, curr, O_TRUNC);
+				else if (ft_strcmp(">>", curr->symbol) == 0)
+					create_redirection_to(grp, curr, O_APPEND);
+				else if (ft_strcmp("<", curr->symbol) == 0)*/
+				//tmp = true;
+				/* supprimer après avoir traité les redirs*/
+			//}
+			curr = curr->next;
 		}
-		curr = curr->next;
 	}
-	grp->redirect = NULL;
+	//grp->redirect = NULL;
 	return (tmp ? 0 : -1);
 }
 
@@ -158,22 +159,26 @@ int		insert_redir(t_group *grp, char *file, char *symbol)
 {
 	t_redir	*new;
 	t_redir	*curr;
-	int		action;
+	char	*symbol_tmp;
+	int		sym;
 
 	ft_putstr("insert redirection -> "); ft_putendl(file);
-	action = ft_strcmp(symbol, ">") == 0 ? O_TRUNC : O_APPEND;
+	symbol_tmp = ft_charjoin("", *symbol);
+	sym = ft_atoi(ft_findocc(1, symbol_tmp, "< >")); // rajouter << si on doit les executr avnt les < a check !
+	printf("sym = %d\n", sym);
 	new = (t_redir *)malloc(sizeof(t_redir));
 	new->name = SDUP(file);
-	new->action = action;
+	new->action = ft_strcmp(symbol, ">") == 0 ? O_TRUNC : O_APPEND;
 	new->symbol = symbol;
+	grp->curr_cmd = last_pars_redir(grp->curr_cmd, new);
 	new->command = SDUP(grp->curr_cmd);
 	new->next = NULL;
-	if (grp->redirect == NULL)
+	if (grp->redirect[sym] == NULL)
 	{
-		grp->redirect = new;
+		grp->redirect[sym] = new;
 		return (1);
 	}
-	curr = grp->redirect;
+	curr = grp->redirect[sym];
 	while (curr->next != NULL)
 		curr = curr->next;
 	curr->next = new;
@@ -190,13 +195,12 @@ int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
-		ft_parsing(1, split_cmd[i]);
 		if (i > 0)
 		{
 			cmd = get_cmd(grp, split_cmd[i]);
 			insert_redir(grp, cmd, symbol);
 		}
-
+		ft_parsing(1, split_cmd[i]);
 	}
 	return (1);
 }

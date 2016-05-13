@@ -6,7 +6,7 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/12 04:03:22 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/13 16:06:44 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ void	create_pipe(t_group *grp, char **pipe_cmd)
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
 	{
-		exec_redir(grp, pipe_cmd[0]);
 		dup2(grp->fd_in_save, STDIN_FILENO);
+		exec_redir(grp, pipe_cmd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		exec_cmd_pipe(grp, pipe_cmd[0]);
@@ -86,11 +86,27 @@ int		main_pipe(t_group *grp, char **split_cmd)
 	char	*cmd_first;
 
 	i = -1;
+	cmd_first = NULL;
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
 		grp->curr_cmd = get_cmd(grp, split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
+		/*if (i == grp->pipe)
+		{
+			grp->pipe = 0;
+			grp->curr_cmd = NULL;
+			if (exec_redir(grp, grp->curr_cmd) < 0)
+			{
+				dup2(grp->fd_in_save, STDIN_FILENO);
+				exec_cmd_pipe(grp, grp->curr_cmd);
+			}
+		}
+		else
+		{
+			ft_putendl(grp->curr_cmd);
+			create_pipe(grp, grp->curr_cmd);	
+		}*/
 		if (i > 0)
 			pipe_manager(grp, cmd_first, split_cmd[i]);
 		cmd_first = get_cmd(grp, split_cmd[i]);

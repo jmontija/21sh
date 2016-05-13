@@ -6,7 +6,7 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/12 04:02:48 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/13 01:12:52 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ typedef struct			s_hist
 
 typedef struct			s_redir
 {
-
 	char				*name;
 	char				*symbol;
 	int					action;
@@ -87,12 +86,12 @@ typedef struct			s_redir
 	struct s_redir		*next;
 }						t_redir;
 
-typedef struct			s_redir_group
+/*typedef struct			s_redir_group
 {
 	struct s_redir		*redir_to;
 	struct s_redir		*redir_from;
 	struct s_redir		*redir_heredoc;
-}						t_redir_group;
+}						t_redir_group;*/
 
 typedef struct			s_group
 {
@@ -111,8 +110,8 @@ typedef struct			s_group
 	struct s_env			*last;
 	struct s_hist			*hist;
 	struct s_hist			*curr_hist;
-	struct s_redir			*redirect;
-	struct s_redir_group	*redirect_grp;
+	struct s_redir			**redirect;
+	//struct s_redir_group	**redirect_grp;
 }						t_group;
 
 t_group					*init_grp(void);
@@ -133,7 +132,7 @@ char					*child_process(t_group *grp, char *order);
 char					*search_exec(t_group *grp, char *cmd);
 char					*ft_getenv(t_group *grp, char *tofind);
 int 					ft_parsing(int exec, char *to_pars);
-char					*ft_findocc(char *order, char *symbol);
+char					*ft_findocc(int idx, char *order, char *symbol);
 int						main_redirection(t_group *grp, char **split_cmd, char *symbol);
 int						exec_redir(t_group *grp, char *cmd);
 char					*get_cmd(t_group *grp, char *cmd);

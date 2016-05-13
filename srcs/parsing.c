@@ -6,7 +6,7 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/12 04:03:11 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/13 01:13:12 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	*ft_strchrsym(char *str, char *tofind)
 	return (NULL);
 }
 
-char	*ft_findocc(char *to_pars, char *symbol)
+char	*ft_findocc(int idx, char *to_pars, char *symbol)
 {
 	size_t	i;
 	char	**tofind;
@@ -72,7 +72,7 @@ char	*ft_findocc(char *to_pars, char *symbol)
 	tofind = ft_spacesplit(symbol);
 	while (tofind[++i] != NULL)
 		if (ft_strchrsym(to_pars, tofind[i]) != NULL)
-			return (tofind[i]);
+			return (idx ? ft_itoa(i) : tofind[i]);
 	return (NULL);
 }
 
@@ -89,7 +89,7 @@ int		ft_parsing(int exec, char *to_pars)
 
 	i = -1;
 	grp = init_grp();
-	if ((splitw = ft_findocc(to_pars, "| >> > < <<")) == NULL)
+	if ((splitw = ft_findocc(false, to_pars, "| >> > < <<")) == NULL)
 		return (-1);
 	printf("PARSER -> '%s'\n", splitw);
 	split_cmd = ft_strsplitstr(to_pars, splitw);	
