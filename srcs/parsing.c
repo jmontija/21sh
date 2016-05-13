@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/13 20:35:08 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/13 22:22:16 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,6 @@ char	*ft_findocc(int idx, char *to_pars, char *symbol)
 	return (NULL);
 }
 
-// ls | CMD0 > FILE | CMD1 | CMD2 > FILE2 < OK
-// ls -i DIR > FILE | CMD1 | CMD2 > FILE2 < OK
-// ls < TETS | CMD0 > FILE | CMD1 | CMD2 > FILE2 < OK
-
 int		ft_parsing(int exec, char *to_pars)
 {
 	t_group	*grp;
@@ -96,5 +92,5 @@ int		ft_parsing(int exec, char *to_pars)
 	split_cmd = ft_strsplitstr(to_pars, splitw);
 	if (exec)
 		splitw[0] != '|' ? main_redirection(grp, split_cmd, splitw) : main_pipe(grp, split_cmd);
-	return (splitw[0] != '|' ? -1 : 0);
+	return (splitw[0] == '|' ? 0 : -1);
 }

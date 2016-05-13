@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/13 20:29:26 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/13 22:24:17 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,49 @@
 		ls | grep -i ZKJSj < dkld | wc > TEST | grep -i 0 | wc -l ; cat TEST
 */
 
+void	exec_cmd_redir(t_group *grp, char *cmd_to_exec)
+{
+	char	**exec_cmd;
+	int		i;
+
+	i = -1;
+	//printf("COMMAND TO EXEC BY REDIR -> %s\n", cmd_to_exec);
+	exec_cmd = ft_spacesplit(cmd_to_exec);
+	while (exec_cmd[++i])
+	{
+		ft_putendl_fd(JOIN("COMMAND TO EXEC BY REDIRECTION -> " ,exec_cmd[i]), 2);
+		exec_cmd[i] = ft_strtrim(exec_cmd[i]);
+	}
+	execve(search_exec(grp, exec_cmd[0]), exec_cmd, NULL) < 1 ? ft_putendl("error pipe execve") : 0;
+	// env a placer a la place de NULL le stocker dans grp->env !
+	exit(0);
+}
+
+void	create_redirection_to(t_group *grp, t_redir *curr)
+{
+	int			fd;
+	pid_t		pid;
+	int			buf;
+
+	ft_putendl("create_redir_to");
+	pid = fork();
+	pid == -1 ? exit(270) : 0;
+	if (pid == 0)
+	{
+		fd = open(curr->name, O_WRONLY | curr->action | O_CREAT, 0644);
+		dup2(grp->fd_in_save, STDIN_FILENO);
+		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
+		exec_cmd_redir(grp, curr->command);
+		close(fd);
+	}
+	else if (pid != 0)
+		waitpid(pid, &buf, 0);
+}
+
 /*
 char	**create_redirection_from(char **cmd_line, int idx, int action)
 {
 	int	fd;
-
-	if (cmd_line[idx + 2] == NULL)
-	{
-		error_cmd("error pars near", cmd_line[idx + 1]);
-		return (NULL);
-	}
 
 	si plusieurs '<', redirigé chaque file dans un nouveau file avec '>>'
 		exple :
@@ -61,46 +94,68 @@ char	**create_redirection_from(char **cmd_line, int idx, int action)
 	fd = open(cmd_line[idx + 2], O_RDONLY);
 	dup2(fd, STDIN_FILENO);
 	close(fd);
-	return (cmd_line);
 }
 */
-void	exec_cmd_redir(t_group *grp, char *cmd_to_exec)
-{
-	char	**exec_cmd;
-	int		i;
 
-	i = -1;
-	//printf("COMMAND TO EXEC BY REDIR -> %s\n", cmd_to_exec);
-	exec_cmd = ft_spacesplit(cmd_to_exec);
-	while (exec_cmd[++i])
-	{
-		ft_putendl_fd(JOIN("COMMAND TO EXEC BY PIPE -> " ,exec_cmd[i]), 2);
-		exec_cmd[i] = ft_strtrim(exec_cmd[i]);
-	}
-	execve(search_exec(grp, exec_cmd[0]), exec_cmd, NULL) < 1 ? ft_putendl("error pipe execve") : 0;
-	// env a placer a la place de NULL le stocker dans grp->env !
-	exit(0);
+void	create_redirection_from(void)
+{
+	printf("LAST REDIR FROM\n");
 }
 
-void	create_redirection_to(t_group *grp, t_redir *curr, int action)
+void	manage_redirection_from(t_group *grp, t_redir *curr)
 {
-	int			fd;
+	/*int			fd;
 	pid_t		pid;
 	int			buf;
+	char		*cmd_to_exec;
 
-	ft_putendl("create_redir_to");
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
+	cmd_to_exec = JOIN("cat ", curr->name);
 	if (pid == 0)
 	{
-		fd = open(curr->name, O_WRONLY | curr->action | O_CREAT, 0644);
-		dup2(grp->fd_in_save, STDIN_FILENO);
+		fd = open("TESTFINAL", O_WRONLY | O_APPEND | O_CREAT, 0644);
 		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
-		exec_cmd_redir(grp, curr->command);
+		exec_cmd_redir(grp, cmd_to_exec);
 		close(fd);
 	}
 	else if (pid != 0)
-		waitpid(pid, &buf, 0);
+		waitpid(pid, &buf, 0);*/
+}
+
+int		exec_redir(int exec, t_group *grp, char *cmd)
+{
+	int		i;
+	t_redir *curr;
+	t_redir *trash;
+	int		find_redir = false;
+
+	i = -1;
+	exec ? ft_putstr("EXEC REDIRECTION with ") : ft_putstr("FREE REDIRECTION for ");
+	ft_putendl(cmd);
+	while (++i < 3)
+	{
+		curr = grp->redirect[i];
+		while (curr != NULL)
+		{
+			find_redir = true; // set a false la commande de base sera executer avec les > < etc ..
+			if (exec == 1)
+			{
+				ft_putstr(curr->symbol); ft_putendl(curr->name);
+				i == 0 ? manage_redirection_from(grp, curr) : create_redirection_to(grp, curr);
+			}
+			REMOVE(&curr->name);
+			REMOVE(&curr->symbol);
+			REMOVE(&curr->command);
+			curr->action = false;
+			trash = curr;
+			curr = curr->next;
+			ft_memdel((void *)trash);
+		}
+		i == 0 ? create_redirection_from() : 0;
+		grp->redirect[i] = NULL;
+	}
+	return (find_redir ? 0 : -1);
 }
 
 char	*last_pars_redir(char *new_cmd, t_redir *curr)
@@ -121,39 +176,6 @@ char	*last_pars_redir(char *new_cmd, t_redir *curr)
 	}
 	printf("NEW CMD WITH ARG %s\n", new_cmd);
 	return (new_cmd);
-}
-
-int		exec_redir(int exec, t_group *grp, char *cmd)
-{
-	int		i;
-	t_redir *curr;
-	t_redir *trash;
-	int		find_redir = false;
-
-
-	i = -1;
-	exec ? ft_putstr("EXEC REDIRECTION with ") : ft_putstr("FREE REDIRECTION for ");
-	ft_putendl(cmd);
-	while (++i < 3)
-	{
-		curr = grp->redirect[i];
-		while (curr != NULL)
-		{
-			find_redir = true; // set a false la commande de base sera executer avec les > < etc ..
-			if (exec == 1)
-				ft_putstr(curr->symbol); ft_putendl(curr->name);
-			REMOVE(&curr->name);
-			REMOVE(&curr->symbol);
-			REMOVE(&curr->command);
-			curr->action = false;
-			trash = curr;
-			curr = curr->next;
-			free(trash);
-			trash = NULL;
-		}
-		grp->redirect[i] = NULL;
-	}
-	return (find_redir ? 0 : -1);
 }
 
 int		insert_redir(t_group *grp, char *file, char *symbol)

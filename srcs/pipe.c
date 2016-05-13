@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/13 20:32:28 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/13 21:14:05 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int		main_pipe(t_group *grp, char **split_cmd)
 				grp->pipe = 0;
 				dup2(grp->fd_in_save, STDIN_FILENO);
 				exec_cmd_pipe(grp, grp->curr_cmd);
-				grp->curr_cmd = NULL;
+				REMOVE(&grp->curr_cmd);
 			}
 		}
 		else

@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/13 20:21:27 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/13 22:22:19 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int		launch_parser(t_group *grp, char *path, char **cmd_line, char **env)
 	ret = ft_parsing(1, grp->order);
 	if (ret < 0)
 		ret = exec_redir(1, grp, grp->curr_cmd);
-	printf("COMMAND TO EXEC -> %s\n", grp->curr_cmd);
+	if (ret < 0)
+		printf("COMMAND TO EXEC BASIC WAY -> %s\n", grp->curr_cmd);
 	return (ret);
 }
 
