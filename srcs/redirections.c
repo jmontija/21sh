@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/14 20:39:21 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/14 20:41:26 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@
 
 	ATTENTION ZSH CREER LES FICHIER POUR LES REDIR > AVANT LEXECUTION DE LA COMMANDE
 	exple
-		-> ls | wc -l > TEST = ls avec TEST
+		-> ls | wc -l > TEST
+		result = sizeof(ls + TEST) ;
 
 */
 
@@ -45,7 +46,6 @@ void	exec_cmd_redir(t_group *grp, char *cmd_to_exec)
 	int		i;
 
 	i = -1;
-	//printf("COMMAND TO EXEC BY REDIR -> %s\n", cmd_to_exec);
 	exec_cmd = ft_spacesplit(cmd_to_exec);
 	while (exec_cmd[++i])
 	{
