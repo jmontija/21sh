@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/13 22:24:17 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/14 00:27:13 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@
 			-> comportement indeterminé (spamer la cmd) !
 		ls | grep -i ZKJSj < dkld | wc > TEST | grep -i 0 | wc -l > TEST ; cat TEST
 		ls | grep -i ZKJSj < dkld | wc > TEST | grep -i 0 | wc -l ; cat TEST
+
+		pour "<<" le pipe ne prend pas en compte la sortie eof, << et < redirige seulment la sortie
+		exple_test: ls | grep -i OK <(<) FILE | grep -i "word_in_FILE" | wc -l
+	/!\ Attention: modifie l'entrée de sa cmd (ici grep) et modifie donc sa sortie
+
 */
 
 void	exec_cmd_redir(t_group *grp, char *cmd_to_exec)
@@ -53,7 +58,8 @@ void	create_redirection_to(t_group *grp, t_redir *curr)
 	pid_t		pid;
 	int			buf;
 
-	ft_putendl("create_redir_to");
+	ft_putstr("create_redir_to");
+	ft_putendl(curr->name);
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
@@ -68,59 +74,54 @@ void	create_redirection_to(t_group *grp, t_redir *curr)
 		waitpid(pid, &buf, 0);
 }
 
-/*
-char	**create_redirection_from(char **cmd_line, int idx, int action)
+void	manage_redirection_from(t_group *grp, char *cmd, char *arg)
 {
-	int	fd;
-
-	si plusieurs '<', redirigé chaque file dans un nouveau file avec '>>'
-		exple :
-			-> wc < TEST < TEST2 < TEST3
-				->	tab = {TEST, TEST2, TEST3};
-					fd = open("TESTFINAL", O_WRONLY | O_APPEND | O_CREAT, 0644);
-					while (tab[++i])
-					{
-						buf = strdup(tab[i]);
-						size = strlen(buf);
-						write(fd, buf, size);
-					}
-				->	wc < TESTFINAL ; rm -rf TESTFINAL
-
-	pour "<<" le pipe ne prend pas en compte la sortie eof, << et < redirige seulment la sortie
-		exple_test: ls | grep -i OK <(<) FILE | grep -i "word_in_FILE" | wc -l
-	/!\ Attention: modifie l'entrée de sa cmd (ici grep) et modifie donc sa sortie
-
-
-	fd = open(cmd_line[idx + 2], O_RDONLY);
-	dup2(fd, STDIN_FILENO);
-	close(fd);
-}
-*/
-
-void	create_redirection_from(void)
-{
-	printf("LAST REDIR FROM\n");
-}
-
-void	manage_redirection_from(t_group *grp, t_redir *curr)
-{
-	/*int			fd;
+	int			fd;
 	pid_t		pid;
 	int			buf;
 	char		*cmd_to_exec;
 
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
-	cmd_to_exec = JOIN("cat ", curr->name);
+	cmd_to_exec = JOIN(cmd, arg);
 	if (pid == 0)
 	{
-		fd = open("TESTFINAL", O_WRONLY | O_APPEND | O_CREAT, 0644);
-		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
+		if (ft_strcmp(cmd, "cat ") == 0)
+		{
+			fd = open("TESTFINAL", O_WRONLY | O_APPEND | O_CREAT, 0644);
+			dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
+		}
 		exec_cmd_redir(grp, cmd_to_exec);
 		close(fd);
 	}
 	else if (pid != 0)
-		waitpid(pid, &buf, 0);*/
+		waitpid(pid, &buf, 0);
+}
+
+void	create_redirection_from(t_group *grp)
+{
+	printf("LAST REDIR FROM\n");
+	int			fd;
+	pid_t		pid;
+	int			buf;
+
+	ft_putendl("create_redir_from TESTFINAL");
+	pid = fork();
+	pid == -1 ? exit(270) : 0;
+	if (pid == 0)
+	{
+		fd = open("TESTFINAL", O_RDONLY);
+		grp->fd_in_save = fd;
+		if (ft_findocc(true, grp->order, "| >> >") == NULL)
+		{
+			dup2(fd, STDIN_FILENO);
+			exec_cmd_redir(grp, grp->curr_cmd);
+		}
+		close(fd);
+	}
+	else if (pid != 0)
+		waitpid(pid, &buf, 0);
+	manage_redirection_from(grp, "rm ", "TESTFINAL");
 }
 
 int		exec_redir(int exec, t_group *grp, char *cmd)
@@ -128,34 +129,47 @@ int		exec_redir(int exec, t_group *grp, char *cmd)
 	int		i;
 	t_redir *curr;
 	t_redir *trash;
-	int		find_redir = false;
+	int		*find_redir;
+	int		ret;
 
 	i = -1;
 	exec ? ft_putstr("EXEC REDIRECTION with ") : ft_putstr("FREE REDIRECTION for ");
 	ft_putendl(cmd);
+	find_redir = (int *)malloc(sizeof(int) * 3);
+	ret = -1;
 	while (++i < 3)
 	{
+		find_redir[i] = false;
 		curr = grp->redirect[i];
 		while (curr != NULL)
 		{
-			find_redir = true; // set a false la commande de base sera executer avec les > < etc ..
+			find_redir[i] = true; // set a false la commande de base sera executer avec les > < etc ..
 			if (exec == 1)
 			{
 				ft_putstr(curr->symbol); ft_putendl(curr->name);
-				i == 0 ? manage_redirection_from(grp, curr) : create_redirection_to(grp, curr);
+				i == 0 ? manage_redirection_from(grp, "cat ",curr->name) : create_redirection_to(grp, curr);
 			}
-			REMOVE(&curr->name);
-			REMOVE(&curr->symbol);
-			REMOVE(&curr->command);
+			//REMOVE(&curr->name);
+			//REMOVE(&curr->symbol);
+			//REMOVE(&curr->command);
 			curr->action = false;
 			trash = curr;
 			curr = curr->next;
 			ft_memdel((void *)trash);
 		}
-		i == 0 ? create_redirection_from() : 0;
+		if (find_redir[0] == true)
+		{
+			find_redir[0] = false;
+			create_redirection_from(grp);
+			ret = 0;
+		}
 		grp->redirect[i] = NULL;
 	}
-	return (find_redir ? 0 : -1);
+	i = -1;
+	while (++i < 3)
+		if (find_redir[i])
+			return (0);
+	return (ret);
 }
 
 char	*last_pars_redir(char *new_cmd, t_redir *curr)
@@ -186,7 +200,7 @@ int		insert_redir(t_group *grp, char *file, char *symbol)
 	int		sym;
 
 	symbol_tmp = ft_charjoin("", *symbol);
-	sym = ft_atoi(ft_findocc(1, symbol_tmp, "< >")); // rajouter << si on doit les executr avnt les < a check !
+	sym = ft_atoi(ft_findocc(true, symbol_tmp, "< >")); // rajouter << si on doit les executr avnt les < a check !
 	printf("sym = %d\n", sym);
 	new = (t_redir *)malloc(sizeof(t_redir));
 	new->name = SDUP(file);
