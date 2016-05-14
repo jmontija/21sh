@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/14 00:27:13 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/14 20:39:21 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
 /*
+
 	<> file -> make file
 	cmd (> < >> <<) file [file1 file2 ...]options_cmd
 	traité de gauche a droite
@@ -31,6 +32,10 @@
 		pour "<<" le pipe ne prend pas en compte la sortie eof, << et < redirige seulment la sortie
 		exple_test: ls | grep -i OK <(<) FILE | grep -i "word_in_FILE" | wc -l
 	/!\ Attention: modifie l'entrée de sa cmd (ici grep) et modifie donc sa sortie
+
+	ATTENTION ZSH CREER LES FICHIER POUR LES REDIR > AVANT LEXECUTION DE LA COMMANDE
+	exple
+		-> ls | wc -l > TEST = ls avec TEST
 
 */
 
@@ -58,7 +63,7 @@ void	create_redirection_to(t_group *grp, t_redir *curr)
 	pid_t		pid;
 	int			buf;
 
-	ft_putstr("create_redir_to");
+	ft_putstr("CREATE_REDIR_TO");
 	ft_putendl(curr->name);
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
@@ -100,28 +105,31 @@ void	manage_redirection_from(t_group *grp, char *cmd, char *arg)
 
 void	create_redirection_from(t_group *grp)
 {
-	printf("LAST REDIR FROM\n");
 	int			fd;
 	pid_t		pid;
 	int			buf;
 
-	ft_putendl("create_redir_from TESTFINAL");
+	ft_putendl("CREATE_REDIR_FROM TESTFINAL");
+	fd = open("TESTFINAL", O_RDONLY);
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
 	{
-		fd = open("TESTFINAL", O_RDONLY);
-		grp->fd_in_save = fd;
 		if (ft_findocc(true, grp->order, "| >> >") == NULL)
 		{
 			dup2(fd, STDIN_FILENO);
 			exec_cmd_redir(grp, grp->curr_cmd);
 		}
 		close(fd);
+		exit(0);
 	}
 	else if (pid != 0)
+	{
 		waitpid(pid, &buf, 0);
-	manage_redirection_from(grp, "rm ", "TESTFINAL");
+		grp->fd_in_save = fd;
+	}
+	int ret = unlink("./TESTFINAL"); //manage_redirection_from(grp, "rm ", "TESTFINAL");
+	printf("DELETE = %d\n", ret);
 }
 
 int		exec_redir(int exec, t_group *grp, char *cmd)
@@ -143,9 +151,9 @@ int		exec_redir(int exec, t_group *grp, char *cmd)
 		curr = grp->redirect[i];
 		while (curr != NULL)
 		{
-			find_redir[i] = true; // set a false la commande de base sera executer avec les > < etc ..
 			if (exec == 1)
 			{
+				find_redir[i] = true;
 				ft_putstr(curr->symbol); ft_putendl(curr->name);
 				i == 0 ? manage_redirection_from(grp, "cat ",curr->name) : create_redirection_to(grp, curr);
 			}
@@ -168,7 +176,7 @@ int		exec_redir(int exec, t_group *grp, char *cmd)
 	i = -1;
 	while (++i < 3)
 		if (find_redir[i])
-			return (0);
+			ret = 0;
 	return (ret);
 }
 
