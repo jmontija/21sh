@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+         #
+#    By: julio <julio@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/10 17:28:13 by jmontija          #+#    #+#              #
-#    Updated: 2016/05/07 18:39:26 by jmontija         ###   ########.fr        #
+#    Updated: 2016/05/15 18:49:33 by julio            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,8 +32,10 @@ SRCS			+=	srcs/builtins.c
 SRCS			+=	srcs/set_opt.c
 SRCS			+=	srcs/env_opt.c
 SRCS			+=	srcs/parsing.c
+SRCS			+=	srcs/parsing_lib.c
 SRCS			+=	srcs/pipe.c
-SRCS			+=	srcs/redirections.c
+SRCS			+=	srcs/redir_manager.c
+SRCS			+=	srcs/redir_exec.c
 SRCS			+=	srcs/exec_cmd.c
 
 OBJS			=	$(SRCS:srcs/%.c=srco/%.o)

@@ -3,31 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/14 17:55:04 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/15 19:20:16 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
-
-void	exec_cmd_pipe(t_group *grp, char *cmd_to_exec)
-{
-	char	**exec_cmd;
-	int		i;
-
-	i = -1;
-	exec_cmd = ft_spacesplit(cmd_to_exec);
-	while (exec_cmd[++i])
-	{
-		ft_putendl_fd(JOIN("COMMAND TO EXEC BY PIPE -> " ,exec_cmd[i]), 2);
-		exec_cmd[i] = ft_strtrim(exec_cmd[i]);
-	}
-	execve(search_exec(grp, exec_cmd[0]), exec_cmd, NULL) < 1 ? ft_putendl_fd("error pipe execve", 2) : 0;
-	// env a placer a la place de NULL le stocker dans grp->env !
-	exit(0);
-}
 
 void	create_pipe(t_group *grp, char *pipe_cmd)
 {
@@ -45,7 +28,7 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
-		exec_cmd_pipe(grp, pipe_cmd);
+		split_exec_cmd(grp, pipe_cmd, "COMMAND TO EXEC BY PIPE -> ");
 	}
 	else if (pid != 0)
 	{
@@ -58,11 +41,9 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 
 int		main_pipe(t_group *grp, char **split_cmd)
 {
-	int		i;
-	char	*cmd_first;
+	int	i;
 
 	i = -1;
-	cmd_first = NULL;
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
@@ -76,13 +57,12 @@ int		main_pipe(t_group *grp, char **split_cmd)
 			{
 				grp->pipe = 0;
 				dup2(grp->fd_in_save, STDIN_FILENO);
-				exec_cmd_pipe(grp, grp->curr_cmd);
+				split_exec_cmd(grp, grp->curr_cmd, "COMMAND TO EXEC BY PIPE -> ");
 				REMOVE(&grp->curr_cmd);
 			}
 		}
 		else
 			create_pipe(grp, grp->curr_cmd);
-		cmd_first = get_cmd(grp, split_cmd[i]);
 	}
-	return (1);
+	return (0);
 }

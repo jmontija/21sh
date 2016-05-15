@@ -6,21 +6,40 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/14 00:03:34 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/15 21:20:01 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-int		launch_parser(t_group *grp, char *path, char **cmd_line, char **env)
+int		launch_parser(t_group *grp)
 {
 	int	i;
 	int ret;
+	int synth;
+
+	char	*order;
 
 	i = -1;
-	while (grp->order[++i])
-		if (grp->order[i] == '|')
+	synth = false;
+	while (grp->order[++i] != '\0')
+	{
+		synth = check_parenthese(grp->order[i], synth);
+		if (synth == false && grp->order[i] == '|')
 			grp->pipe += 1;
+	}
+	while (synth)
+	{
+		order = SDUP("");
+		ft_putstr_fd("\033[1;34m", 2);
+		ft_putstr_fd("dquote> ", 2);
+		ft_putstr_fd("\033[1;37m", 2);
+		read_cmd(grp, 0, &order);
+		grp->order = JOIN(grp->order, order);
+		synth = check_parenthese(order[ft_strlen(order) - 1], synth);
+		REMOVE(&order);
+	}
+	printf("ORDER = %s\n", grp->order);
 	grp->curr_cmd = get_cmd(grp, grp->order);
 	ret = ft_parsing(1, grp->order);
 	if (ret < 0)
@@ -45,8 +64,7 @@ void	create_process(t_group *grp, char *path, char **cmd_line, char **env)
 	}
 	else if (pid == 0)
 	{
-		if (launch_parser(grp, path, cmd_line, env) < 0 &&
-			execve(path, cmd_line, env) < 1)
+		if (launch_parser(grp) < 0 && execve(path, cmd_line, env) < 1)
 		{
 			(fd = open(path, O_RDONLY)) != -1 ?
 			parse_cmd(fd, grp) : error_cmd("unknown command", cmd_line[0]);

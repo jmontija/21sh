@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/13 19:02:00 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/15 20:31:40 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ typedef struct			s_group
 	struct s_hist			*hist;
 	struct s_hist			*curr_hist;
 	struct s_redir			**redirect;
-	//struct s_redir_group	**redirect_grp;
 }						t_group;
 
 t_group					*init_grp(void);
@@ -131,12 +130,14 @@ void					ft_tputs(char *cap_code, char *what);
 char					*child_process(t_group *grp, char *order);
 char					*search_exec(t_group *grp, char *cmd);
 char					*ft_getenv(t_group *grp, char *tofind);
+int						check_parenthese(char cmd, int synth);
 int 					ft_parsing(int exec, char *to_pars);
 char					*ft_findocc(int idx, char *order, char *symbol);
 int						main_redirection(t_group *grp, char **split_cmd, char *symbol);
 int						exec_redir(int exec, t_group *grp, char *cmd);
 char					*get_cmd(t_group *grp, char *cmd);
 int						main_pipe(t_group *grp, char **split_cmd);
+void					split_exec_cmd(t_group *grp, char *cmd_to_exec, char *print);
 int						list_to_tab(t_env *env, char ***env_tab);
 int						exec_builtin(t_group *grp, char *order);
 int						is_env(char *env);

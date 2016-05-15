@@ -6,59 +6,29 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/14 00:10:30 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/15 20:38:18 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-char	*get_cmd(t_group *grp, char *cmd)
-{
-	char	**symbol;
-	char	*shell_cmd;
-	char	*tofind;
-	size_t 	symlen;
-	size_t		i;
-	int			j;
-
-	i = -1;
-	tofind = SDUP("> >> < <<");
-	symbol = ft_spacesplit(tofind);
-	shell_cmd = SDUP(cmd);
-	printf("GET COMMAND\n");
-	while (cmd[++i] != '\0')
-	{
-		j = -1;
-		while (symbol[++j] != NULL)
-		{
-			symlen = ft_strlen(symbol[j]);
-			if ( (symlen > 1 && strncmp(cmd + i, symbol[j], symlen) == 0) ||
-				(symlen == 1 && *symbol[j] == cmd[i] && cmd[i - 1] && cmd[i + 1] &&
-					cmd[i + 1] != *symbol[j] && cmd[i - 1] != *symbol[j]) )
-			{
-				shell_cmd = SDUP(ft_strsplitstr(cmd, symbol[j])[0]);
-				return (shell_cmd);
-			}
-		}
-	}
-	return (shell_cmd);
-}
-
-char	*ft_strchrsym(char *str, char *tofind)
+char	*ft_strchrsym(char *to_pars, char *tofind)
 {
 	size_t	i;
 	char	*tocmp;
+	int synth = false;
 
 	i = -1;
-	while (str[++i] != '\0')
+	while (to_pars[++i] != '\0')
 	{
-		tocmp = ft_charjoin("", str[i]);
-		if (str[i + 1] && str[i] == str[i + 1])
+		synth = check_parenthese(to_pars[i], synth);
+		tocmp = ft_charjoin("", to_pars[i]);
+		if (to_pars[i + 1] && to_pars[i] == to_pars[i + 1])
 		{
-			tocmp = ft_charjoin(tocmp, str[i + 1]);
+			tocmp = ft_charjoin(tocmp, to_pars[i + 1]);
 			i++;
 		}
-		if (strcmp(tocmp, tofind) == 0)
+		if (synth == 0 && strcmp(tocmp, tofind) == 0)
 			return (tofind);
 	}
 	return (NULL);
