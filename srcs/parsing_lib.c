@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_lib.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/15 21:47:41 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/16 19:31:20 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ char	*get_cmd(t_group *grp, char *cmd)
 	int			j;
 
 	i = -1;
-	tofind = SDUP("> >> < <<");
+	tofind = SDUP("1>&2 2>&1 2>&- 1>&- >&- > >> < <<");
 	symbol = ft_spacesplit(tofind);
 	shell_cmd = SDUP(cmd);
-	printf("GET COMMAND\n");
+	printf("GET COMMAND %s\n", shell_cmd);
 	while (cmd[++i] != '\0')
 	{
 		j = -1;
@@ -52,7 +52,7 @@ int		ft_isdquote(char c)
 }
 
 int		check_parenthese(char cmd, int synth)
-{	
+{
 	if (synth == 0 && ft_isdquote(cmd))
 		synth = 1;
 	else if (synth == 1 && ft_isdquote(cmd))

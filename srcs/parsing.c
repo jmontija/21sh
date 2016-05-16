@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/15 20:38:18 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/16 19:33:20 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,19 @@ char	*ft_strchrsym(char *to_pars, char *tofind)
 {
 	size_t	i;
 	char	*tocmp;
-	int synth = false;
+	int 	synth;
+	int		symlen;
 
 	i = -1;
+	synth = false;
+	symlen = ft_strlen(tofind);
 	while (to_pars[++i] != '\0')
 	{
 		synth = check_parenthese(to_pars[i], synth);
-		tocmp = ft_charjoin("", to_pars[i]);
-		if (to_pars[i + 1] && to_pars[i] == to_pars[i + 1])
-		{
-			tocmp = ft_charjoin(tocmp, to_pars[i + 1]);
-			i++;
-		}
-		if (synth == 0 && strcmp(tocmp, tofind) == 0)
+		if (synth == 0 &&
+			((symlen > 1 && ft_strncmp(to_pars + i, tofind, symlen) == 0) ||
+			(symlen == 1 && tofind[0] == to_pars[i] /*&& to_pars[i - 1] && to_pars[i + 1] &&
+			to_pars[i + 1] != *tofind && to_pars[i - 1] != *tofind*/)) )
 			return (tofind);
 	}
 	return (NULL);
@@ -54,11 +54,28 @@ int		ft_parsing(int exec, char *to_pars)
 	char	*splitw;
 	char	**split_cmd;
 
-	i = -1;
 	grp = init_grp();
-	if ((splitw = ft_findocc(false, to_pars, "| >> > < <<")) == NULL)
+	if ((splitw = ft_findocc(false, to_pars, "| 1>&2 2>&1 2>&- 1>&- >&- >> > << <")) == NULL)
 		return (-1);
 	printf("PARSER -> '%s'\n", splitw);
+	while (ft_strlen(splitw) > 2)
+	{
+		printf("NEED TO CLOSE OR REDIRECT FD %s\n", splitw);
+		ft_putendl(to_pars);
+		split_cmd = ft_strsplitstr(to_pars, splitw);
+		REMOVE(&to_pars);
+		to_pars = SDUP("");
+		i = -1;
+		while (split_cmd[++i])
+		{
+			to_pars = JOIN(to_pars, split_cmd[i]);
+			to_pars = ft_charjoin(to_pars, ' ');
+		}
+		ft_putendl(to_pars);
+		if ((splitw = ft_findocc(false, to_pars, "| 1>&2 2>&1 2>&- 1>&- >&- >> > << <")) == NULL)
+			return (-1);
+		printf("PARSER -> '%s'\n", splitw);
+	}
 	split_cmd = ft_strsplitstr(to_pars, splitw);
 	if (exec)
 		splitw[0] != '|' ? main_redirection(grp, split_cmd, splitw) : main_pipe(grp, split_cmd);

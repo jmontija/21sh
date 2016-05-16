@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_manager.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:41:52 by julio             #+#    #+#             */
-/*   Updated: 2016/05/15 19:20:18 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/16 19:02:47 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,14 @@ int		insert_redir(t_group *grp, char *file, char *symbol)
 	char	*symbol_tmp;
 	int		sym;
 
-	symbol_tmp = ft_charjoin("", *symbol);
-	sym = ft_atoi(ft_findocc(true, symbol_tmp, "< >")); // rajouter << si on doit les executr avnt les < a check !
+	/*symbol_tmp = ft_charjoin("", *symbol);
+	printf("sym = %s\n", symbol);*/
+	printf("sym = %s\n", symbol);
+	sym = ft_atoi(ft_findocc(true, symbol, "< >")); // rajouter << si on doit les executr avnt les < a check !
 	printf("sym = %d\n", sym);
 	new = (t_redir *)malloc(sizeof(t_redir));
 	new->name = SDUP(file);
-	new->action = ft_strcmp(symbol, ">") == 0 ? O_TRUNC : O_APPEND;
+	new->action = ft_strcmp(symbol, ">") == 0 ? O_TRUNC : O_APPEND; /* faire un systeme pour savoir que cest un close fd */
 	new->symbol = symbol;
 	grp->curr_cmd = last_pars_redir(grp->curr_cmd, new);
 	new->command = SDUP(grp->curr_cmd);

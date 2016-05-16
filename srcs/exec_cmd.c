@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/15 21:20:01 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/16 15:17:51 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int		launch_parser(t_group *grp)
 	int	i;
 	int ret;
 	int synth;
-
 	char	*order;
 
 	i = -1;
@@ -32,9 +31,10 @@ int		launch_parser(t_group *grp)
 	{
 		order = SDUP("");
 		ft_putstr_fd("\033[1;34m", 2);
-		ft_putstr_fd("dquote> ", 2);
+		ft_putstr_fd("quote> ", 2);
 		ft_putstr_fd("\033[1;37m", 2);
 		read_cmd(grp, 0, &order);
+		grp->order = ft_charjoin(grp->order, '\n');
 		grp->order = JOIN(grp->order, order);
 		synth = check_parenthese(order[ft_strlen(order) - 1], synth);
 		REMOVE(&order);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsplitstr.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/10 19:59:55 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/15 20:30:22 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/16 18:16:08 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char		**ft_fillstr(char **t, char *cmd, char *symbol)
 	int		idx;
 	size_t	symlen;
 	int		synth = 0;
-	
+
 	i = 0;
 	pos = 0;
 	idx = 0;
@@ -54,7 +54,7 @@ char		**ft_fillstr(char **t, char *cmd, char *symbol)
 			synth = 1;
 		else if (synth == 1 && cmd[i] == '"')
 			synth = 0;
-		if (synth == 0 && 
+		if (synth == 0 &&
 			((symlen > 1 && strncmp(cmd + i, symbol, symlen) == 0) ||
 			(symlen == 1 && *symbol == cmd[i] && cmd[i - 1] && cmd[i + 1] &&
 			cmd[i + 1] != *symbol && cmd[i - 1] != *symbol)) )

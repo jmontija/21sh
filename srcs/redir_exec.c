@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_exec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/15 21:21:49 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/16 18:41:49 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,13 @@
 	exple
 		-> ls | wc -l > TEST
 		result = sizeof(ls + TEST) ;
+
+	redirection de sortie dans la ligne de commande !
+		-> >& FILE: redirige tout les fd(STDERR, STDOUT) vers FILE
+		-> 1>&-: ferme le fd 1
+		-> 1>&2: redirige le STDOUT vers STDERR
+		-> CMD &> FILE mets en background la commande recuperable avec fg -> equivalent a un ctrl+Z sur un prog en cour
+
 */
 
 void	create_redirection_to(t_group *grp, t_redir *curr)
@@ -44,7 +51,7 @@ void	create_redirection_to(t_group *grp, t_redir *curr)
 	pid_t		pid;
 	int			buf;
 
-	ft_putstr("CREATE_REDIR_TO");
+	ft_putstr("CREATE_REDIR_TO ");
 	ft_putendl(curr->name);
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
@@ -132,11 +139,11 @@ int		exec_redir(int exec, t_group *grp, char *cmd)
 			if (exec == 1)
 			{
 				ret = 0;
-				ft_putstr(curr->symbol); ft_putendl(curr->name);
+				ft_putstr(curr->symbol); ft_putchar(' '); ft_putendl(curr->name);
 				i == 0 ? manage_redirection_from(grp, "cat ",curr->name) : create_redirection_to(grp, curr);
 			}
 			//REMOVE(&curr->name);
-			//REMOVE(&curr->symbol);
+			//REMOVE(&curr->symbol)
 			//REMOVE(&curr->command);
 			curr->action = false;
 			trash = curr;
