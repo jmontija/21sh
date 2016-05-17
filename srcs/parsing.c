@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/16 19:33:20 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/17 16:44:07 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,31 @@ char	*ft_findocc(int idx, char *to_pars, char *symbol)
 	return (NULL);
 }
 
+char	*check_close_fd(char *to_pars, char **splitw, char **split_cmd)
+{
+	int	i;
+
+	while (LEN(*splitw) > 2)
+	{
+		printf("NEED TO CLOSE OR REDIRECT FD %s\n", *splitw);
+		ft_putendl(to_pars);
+		split_cmd = ft_strsplitstr(to_pars, *splitw);
+		REMOVE(&to_pars);
+		to_pars = SDUP("");
+		i = -1;
+		while (split_cmd[++i])
+		{
+			to_pars = JOIN(to_pars, split_cmd[i]);
+			to_pars = ft_charjoin(to_pars, ' ');
+		}
+		ft_putendl(to_pars);
+		if ((*splitw = ft_findocc(false, to_pars, "| 1>&2 2>&1 2>&- 1>&- >&- >> > << <")) == NULL)
+			return (NULL);
+		printf("PARSER -> '%s'\n", *splitw);
+	}
+	return (to_pars);
+}
+
 int		ft_parsing(int exec, char *to_pars)
 {
 	t_group	*grp;
@@ -58,24 +83,9 @@ int		ft_parsing(int exec, char *to_pars)
 	if ((splitw = ft_findocc(false, to_pars, "| 1>&2 2>&1 2>&- 1>&- >&- >> > << <")) == NULL)
 		return (-1);
 	printf("PARSER -> '%s'\n", splitw);
-	while (ft_strlen(splitw) > 2)
-	{
-		printf("NEED TO CLOSE OR REDIRECT FD %s\n", splitw);
-		ft_putendl(to_pars);
-		split_cmd = ft_strsplitstr(to_pars, splitw);
-		REMOVE(&to_pars);
-		to_pars = SDUP("");
-		i = -1;
-		while (split_cmd[++i])
-		{
-			to_pars = JOIN(to_pars, split_cmd[i]);
-			to_pars = ft_charjoin(to_pars, ' ');
-		}
-		ft_putendl(to_pars);
-		if ((splitw = ft_findocc(false, to_pars, "| 1>&2 2>&1 2>&- 1>&- >&- >> > << <")) == NULL)
-			return (-1);
-		printf("PARSER -> '%s'\n", splitw);
-	}
+	to_pars = check_close_fd(to_pars, &splitw, split_cmd);
+	if (to_pars == NULL)
+		return (-1);
 	split_cmd = ft_strsplitstr(to_pars, splitw);
 	if (exec)
 		splitw[0] != '|' ? main_redirection(grp, split_cmd, splitw) : main_pipe(grp, split_cmd);

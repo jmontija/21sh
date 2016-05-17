@@ -6,27 +6,16 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/16 15:17:51 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/17 15:51:17 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-int		launch_parser(t_group *grp)
+void	is_parenthese_closed(t_group *grp, int synth)
 {
-	int	i;
-	int ret;
-	int synth;
 	char	*order;
 
-	i = -1;
-	synth = false;
-	while (grp->order[++i] != '\0')
-	{
-		synth = check_parenthese(grp->order[i], synth);
-		if (synth == false && grp->order[i] == '|')
-			grp->pipe += 1;
-	}
 	while (synth)
 	{
 		order = SDUP("");
@@ -40,6 +29,23 @@ int		launch_parser(t_group *grp)
 		REMOVE(&order);
 	}
 	printf("ORDER = %s\n", grp->order);
+}
+
+int		launch_parser(t_group *grp)
+{
+	int	i;
+	int ret;
+	int synth;
+
+	i = -1;
+	synth = false;
+	while (grp->order[++i] != '\0')
+	{
+		synth = check_parenthese(grp->order[i], synth);
+		if (synth == false && grp->order[i] == '|')
+			grp->pipe += 1;
+	}
+	is_parenthese_closed(grp, synth);
 	grp->curr_cmd = get_cmd(grp, grp->order);
 	ret = ft_parsing(1, grp->order);
 	if (ret < 0)

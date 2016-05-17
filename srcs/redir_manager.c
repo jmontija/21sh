@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:41:52 by julio             #+#    #+#             */
-/*   Updated: 2016/05/16 19:02:47 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/17 16:01:50 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,9 @@ int		insert_redir(t_group *grp, char *file, char *symbol)
 	char	*symbol_tmp;
 	int		sym;
 
-	/*symbol_tmp = ft_charjoin("", *symbol);
-	printf("sym = %s\n", symbol);*/
-	printf("sym = %s\n", symbol);
-	sym = ft_atoi(ft_findocc(true, symbol, "< >")); // rajouter << si on doit les executr avnt les < a check !
+	symbol_tmp = ft_charjoin("", *symbol);
+	printf("sym = %s\n", symbol_tmp);
+	sym = ft_atoi(ft_findocc(true, symbol_tmp, "< >")); // rajouter << si on doit les executr avnt les < a check !
 	printf("sym = %d\n", sym);
 	new = (t_redir *)malloc(sizeof(t_redir));
 	new->name = SDUP(file);
