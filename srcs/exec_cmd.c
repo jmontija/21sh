@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/17 15:51:17 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/18 23:18:51 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	is_parenthese_closed(t_group *grp, int synth)
 {
 	char	*order;
+	int		i;
 
 	while (synth)
 	{
@@ -25,7 +26,9 @@ void	is_parenthese_closed(t_group *grp, int synth)
 		read_cmd(grp, 0, &order);
 		grp->order = ft_charjoin(grp->order, '\n');
 		grp->order = JOIN(grp->order, order);
-		synth = check_parenthese(order[ft_strlen(order) - 1], synth);
+		i = -1;
+		while (order[++i])
+			synth = check_parenthese(order[i], synth);
 		REMOVE(&order);
 	}
 	printf("ORDER = %s\n", grp->order);

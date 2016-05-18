@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:41:52 by julio             #+#    #+#             */
-/*   Updated: 2016/05/17 16:01:50 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/18 23:49:31 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,11 @@ int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 			insert_redir(grp, cmd, symbol);
 		}
 		ft_parsing(1, split_cmd[i]);
+	}
+	if (split_cmd[i] == NULL)
+	{
+		error_cmd("error parsing near", "\\n");
+		exit(0);
 	}
 	return (1);
 }

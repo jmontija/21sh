@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/17 16:44:07 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/18 23:27:33 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*ft_strchrsym(char *to_pars, char *tofind)
 		synth = check_parenthese(to_pars[i], synth);
 		if (synth == 0 &&
 			((symlen > 1 && ft_strncmp(to_pars + i, tofind, symlen) == 0) ||
-			(symlen == 1 && tofind[0] == to_pars[i] /*&& to_pars[i - 1] && to_pars[i + 1] &&
+			(symlen == 1 && tofind[0] == to_pars[i] && to_pars[i + 1] != '&'/*&& to_pars[i - 1] && to_pars[i + 1] &&
 			to_pars[i + 1] != *tofind && to_pars[i - 1] != *tofind*/)) )
 			return (tofind);
 	}
@@ -65,7 +65,7 @@ char	*check_close_fd(char *to_pars, char **splitw, char **split_cmd)
 			to_pars = ft_charjoin(to_pars, ' ');
 		}
 		ft_putendl(to_pars);
-		if ((*splitw = ft_findocc(false, to_pars, "| 1>&2 2>&1 2>&- 1>&- >&- >> > << <")) == NULL)
+		if ((*splitw = ft_findocc(false, to_pars, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-")) == NULL)
 			return (NULL);
 		printf("PARSER -> '%s'\n", *splitw);
 	}
@@ -80,7 +80,7 @@ int		ft_parsing(int exec, char *to_pars)
 	char	**split_cmd;
 
 	grp = init_grp();
-	if ((splitw = ft_findocc(false, to_pars, "| 1>&2 2>&1 2>&- 1>&- >&- >> > << <")) == NULL)
+	if ((splitw = ft_findocc(false, to_pars, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-")) == NULL)
 		return (-1);
 	printf("PARSER -> '%s'\n", splitw);
 	to_pars = check_close_fd(to_pars, &splitw, split_cmd);

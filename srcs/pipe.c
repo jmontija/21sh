@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/16 19:02:43 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/18 23:56:24 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,75 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 	}
 }
 
+int		check_pipe(char cmd, int synth)
+{
+	if (synth == 0 && cmd == '|')
+		synth = 1;
+	else if (synth == 1 && cmd != '|')
+		synth = 0;
+	else if (synth == 1 && cmd == '|')
+		synth = -1;
+	return (synth);
+}
+
+void	finalize_cmd(t_group *grp, int synth)
+{
+	int		i;
+	char	*order;
+
+	while (synth)
+	{
+		order = SDUP("");
+		ft_putstr_fd("\033[1;34m", 2);
+		ft_putstr_fd("pipe> ", 2);
+		ft_putstr_fd("\033[1;37m", 2);
+		read_cmd(grp, 0, &order);
+		grp->order = ft_charjoin(grp->order, '\n');
+		grp->order = JOIN(grp->order, order);
+		i = -1;
+		while (order[++i])
+		{
+			synth = check_pipe(order[i], synth);
+			if (synth < 0)
+			{
+				error_cmd("error parsing near", "|");
+				exit(0);
+			}
+		}
+		REMOVE(&order);
+	}
+	printf("ORDER = %s\n", grp->order);
+}
+
+int		check_synth(t_group *grp, char **split_cmd)
+{
+	int		i;
+	char	*new_cmd;
+
+	i = -1;
+	while (split_cmd[++i])
+	{
+		if (i == grp->pipe)
+			return (0);
+	}
+	printf("I = %d GRP_PIPE %d\n", i, grp->pipe);
+	if (i < grp->pipe)
+	{
+		error_cmd("error parsing near", "|");
+		exit(0);
+	}
+	finalize_cmd(grp, 1);
+	ft_parsing(1, grp->order);
+	return (-1);
+}
+
 int		main_pipe(t_group *grp, char **split_cmd)
 {
 	int	i;
 
 	i = -1;
+	if (check_synth(grp, split_cmd) < 0)
+		return (0);
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
@@ -52,7 +116,6 @@ int		main_pipe(t_group *grp, char **split_cmd)
 		printf("I = %d, PIPE = %d\n", i, grp->pipe);
 		if (i == grp->pipe)
 		{
-
 			if (exec_redir(1, grp, grp->curr_cmd) < 0)
 			{
 				grp->pipe = 0;

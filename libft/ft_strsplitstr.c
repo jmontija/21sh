@@ -6,11 +6,12 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/10 19:59:55 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/17 16:44:03 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/18 21:42:04 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdio.h>
 
 int		ft_cnt_words(char *cmd, char *symbol)
 {
@@ -24,8 +25,8 @@ int		ft_cnt_words(char *cmd, char *symbol)
 	while (cmd[i] != '\0')
 	{
 		if ( (symlen > 1 && strncmp(cmd + i, symbol, symlen) == 0) ||
-			(symlen == 1 && *symbol == cmd[i] && cmd[i - 1] && cmd[i + 1] &&
-				cmd[i + 1] != *symbol && cmd[i - 1] != *symbol) )
+			(symlen == 1 && *symbol == cmd[i] && cmd[i + 1] != '&' /*&& cmd[i - 1] && cmd[i + 1] &&
+				cmd[i + 1] != *symbol && cmd[i - 1] != *symbol*/) )
 		{
 			cnt++;
 			i += symlen;
@@ -56,7 +57,7 @@ char		**ft_fillstr(char **t, char *cmd, char *symbol)
 			synth = 0;
 		if (synth == 0 &&
 			((symlen > 1 && strncmp(cmd + i, symbol, symlen) == 0) ||
-			(symlen == 1 && *symbol == cmd[i] /*&& cmd[i - 1] && cmd[i + 1] &&
+			(symlen == 1 && *symbol == cmd[i] && cmd[i + 1] != '&' /*&& cmd[i - 1] && cmd[i + 1] &&
 			cmd[i + 1] != *symbol && cmd[i - 1] != *symbol*/)) )
 		{
 			t[idx] = ft_strsub(cmd, pos, i - pos);
