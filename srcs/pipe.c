@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/19 18:15:57 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 20:02:31 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,7 @@ void	finalize_cmd(t_group *grp, int synth)
 		{
 			synth = check_pipe(grp, order[i], synth);
 			if (synth < 0)
-			{
-				error_cmd("error parsing near", "|");
-				exit(0);
-			}
+				error_synthax("error parsing near", "|");
 		}
 		REMOVE(&order);
 	}
@@ -96,18 +93,12 @@ int		check_synth(t_group *grp, char **split_cmd)
 		pipe_cmd = ft_spacesplit(get_cmd(grp, split_cmd[i]));
 		path = search_exec(grp, pipe_cmd[0]);
 		if (lstat(path, &s_buf) < 0)
-		{
-			error_cmd("unknown command", pipe_cmd[0]);
-			exit(0);
-		}
+			error_synthax("unknown command", pipe_cmd[0]);
 		if (i == grp->pipe)
 			return (0);
 	}
 	if (i < grp->pipe)
-	{
-		error_cmd("error parsing near", "|");
-		exit(0);
-	}
+		error_synthax("error parsing near", "|");
 	finalize_cmd(grp, 1);
 	ft_parsing(1, grp->order);
 	return (-1);

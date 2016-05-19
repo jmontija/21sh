@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/19 18:09:25 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 19:55:26 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,17 @@ int		check_parenthese(char cmd, int synth)
 	else if (synth == 1 && ft_isdquote(cmd))
 		synth = 0;
 	return (synth);
+}
+
+void	error_synthax(char *error, char *file)
+{
+	t_group *grp;
+
+	grp =init_grp();
+	error_cmd(error, file);
+	grp->fd_in_save = 0;
+	unlink("./TESTFINAL");
+	exit(0);
 }
 
 void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)

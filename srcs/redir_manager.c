@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:41:52 by julio             #+#    #+#             */
-/*   Updated: 2016/05/19 17:42:47 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 19:52:07 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,11 +104,9 @@ int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
+		grp->curr_pipe_cmd = SDUP(split_cmd[i]); // ATTENTIOn
 		if (split_cmd[i][0] == '>' || split_cmd[i][0] == '<')
-		{
-			error_cmd("error parsing near", symbol);
-			exit(0);
-		}
+			error_synthax("error parsing near", symbol);
 		if (i > 0)
 		{
 			cmd = get_cmd(grp, split_cmd[i]);
@@ -117,9 +115,6 @@ int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 		ft_parsing(1, split_cmd[i]);
 	}
 	if (i < cnt_redir + 1)
-	{
-		error_cmd("error parsing near", symbol);
-		exit(0);
-	}
+		error_synthax("error parsing near", symbol);
 	return (1);
 }

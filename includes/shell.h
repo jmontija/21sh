@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/15 20:31:40 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/19 19:49:48 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,5 +147,6 @@ int						unset_env(t_group *grp, char *todel);
 int						manage_opt(t_group *grp);
 int						error_opt(char opt, char *what);
 void					error_cmd(char *what, char *who);
+void					error_synthax(char *error, char *file);
 
 #endif
