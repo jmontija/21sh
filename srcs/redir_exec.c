@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/18 22:19:24 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 02:16:18 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ void	manage_redirection_from(t_group *grp, char *cmd, char *arg)
 
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
+	// checker ici avec lstat si le fichier existe sinon exit
 	cmd_to_exec = JOIN(cmd, arg);
 	if (pid == 0)
 	{

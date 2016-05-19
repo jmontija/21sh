@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/19 01:05:16 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 02:16:27 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
+		/// checker ici avec lstat si le fichier existe sinon exit
 		split_exec_cmd(grp, pipe_cmd, "COMMAND TO EXEC BY PIPE -> ");
 	}
 	else if (pid != 0)
