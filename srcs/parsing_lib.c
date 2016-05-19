@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/19 02:30:16 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 18:09:25 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,6 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 	char	**exec_cmd;
 	char	*path;
 	int		i;
-	struct stat	s_buf;
-	int			ret;
 
 	i = -1;
 	exec_cmd = ft_spacesplit(cmd_to_exec);
@@ -77,11 +75,7 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 		exec_cmd[i] = ft_strtrim(exec_cmd[i]);
 	}
 	path = search_exec(grp, exec_cmd[0]);
-	ret = lstat(path, &s_buf);
-	if (ret < 0)
-		error_cmd("unknown command", exec_cmd[0]);
-	else
-		execve(path, exec_cmd, NULL) < 1 ? ft_putendl("error pipe execve") : 0;
+	execve(path, exec_cmd, NULL) < 1 ? ft_putendl("error pipe execve") : 0;
 	// env a placer a la place de NULL le stocker dans grp->env !
 	exit(0);
 }

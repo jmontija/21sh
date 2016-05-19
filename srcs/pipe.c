@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/19 02:16:27 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 18:15:57 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
-		/// checker ici avec lstat si le fichier existe sinon exit
 		split_exec_cmd(grp, pipe_cmd, "COMMAND TO EXEC BY PIPE -> ");
 	}
 	else if (pid != 0)
@@ -85,16 +84,25 @@ void	finalize_cmd(t_group *grp, int synth)
 
 int		check_synth(t_group *grp, char **split_cmd)
 {
-	int		i;
-	char	*new_cmd;
+	int			i;
+	char		*path;
+	char		**pipe_cmd;
+	struct stat	s_buf;
 
 	i = -1;
 	while (split_cmd[++i])
 	{
+
+		pipe_cmd = ft_spacesplit(get_cmd(grp, split_cmd[i]));
+		path = search_exec(grp, pipe_cmd[0]);
+		if (lstat(path, &s_buf) < 0)
+		{
+			error_cmd("unknown command", pipe_cmd[0]);
+			exit(0);
+		}
 		if (i == grp->pipe)
 			return (0);
 	}
-	printf("I = %d GRP_PIPE %d\n", i, grp->pipe);
 	if (i < grp->pipe)
 	{
 		error_cmd("error parsing near", "|");
@@ -118,7 +126,6 @@ int		main_pipe(t_group *grp, char **split_cmd)
 		printf("CURR_PIPE_CMD = %s\n", split_cmd[i]);
 		grp->curr_cmd = get_cmd(grp, split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
-		printf("I = %d, PIPE = %d\n", i, grp->pipe);
 		if (i == grp->pipe)
 		{
 			if (exec_redir(1, grp, grp->curr_cmd) < 0)

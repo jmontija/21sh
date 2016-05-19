@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/19 02:16:18 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 17:46:01 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,10 +102,17 @@ void	manage_redirection_from(t_group *grp, char *cmd, char *arg)
 	pid_t		pid;
 	int			buf;
 	char		*cmd_to_exec;
+	struct stat	s_buf;
 
+	if (lstat(arg, &s_buf) < 0)
+	{
+		error_cmd("no such file or directory", arg);
+		grp->fd_in_save = fd;
+		unlink("./TESTFINAL");
+		exit(0);
+	}
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
-	// checker ici avec lstat si le fichier existe sinon exit
 	cmd_to_exec = JOIN(cmd, arg);
 	if (pid == 0)
 	{
