@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/18 23:56:24 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 01:05:16 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,13 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 	}
 }
 
-int		check_pipe(char cmd, int synth)
+int		check_pipe(t_group *grp, char cmd, int synth)
 {
 	if (synth == 0 && cmd == '|')
+	{
 		synth = 1;
+		grp->pipe += 1;
+	}
 	else if (synth == 1 && cmd != '|')
 		synth = 0;
 	else if (synth == 1 && cmd == '|')
@@ -67,7 +70,7 @@ void	finalize_cmd(t_group *grp, int synth)
 		i = -1;
 		while (order[++i])
 		{
-			synth = check_pipe(order[i], synth);
+			synth = check_pipe(grp, order[i], synth);
 			if (synth < 0)
 			{
 				error_cmd("error parsing near", "|");
@@ -110,7 +113,8 @@ int		main_pipe(t_group *grp, char **split_cmd)
 		return (0);
 	while (split_cmd[++i])
 	{
-		ft_putendl(split_cmd[i]);
+		grp->curr_pipe_cmd = SDUP(split_cmd[i]);
+		printf("CURR_PIPE_CMD = %s\n", split_cmd[i]);
 		grp->curr_cmd = get_cmd(grp, split_cmd[i]);
 		ft_parsing(1, split_cmd[i]);
 		printf("I = %d, PIPE = %d\n", i, grp->pipe);
@@ -126,6 +130,7 @@ int		main_pipe(t_group *grp, char **split_cmd)
 		}
 		else
 			create_pipe(grp, grp->curr_cmd);
+		REMOVE(&grp->curr_pipe_cmd);
 	}
 	return (0);
 }

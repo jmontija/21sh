@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/18 23:19:34 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 02:00:24 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ char	*get_cmd(t_group *grp, char *cmd)
 				(symlen == 1 && *symbol[j] == cmd[i] && cmd[i + 1] != '&'/*&& cmd[i - 1] && cmd[i + 1] &&
 					cmd[i + 1] != *symbol[j] && cmd[i - 1] != *symbol[j]*/) )
 			{
+				/* strsplitstr segftl si seulement le symbol est envoyée en 1ere pos de la cmd */
 				shell_cmd = SDUP(ft_strsplitstr(cmd, symbol[j])[0]);
 				return (shell_cmd);
 			}

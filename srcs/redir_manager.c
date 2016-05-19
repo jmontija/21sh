@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:41:52 by julio             #+#    #+#             */
-/*   Updated: 2016/05/18 23:49:31 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/19 02:08:01 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,51 @@ int		insert_redir(t_group *grp, char *file, char *symbol)
 	return (1);
 }
 
+int		count_redirection(char *curr_pipe_cmd, char *symbol)
+{
+	int symlen;
+	int	cnt;
+	int	i;
+
+	i = 0;
+	cnt = 0;
+	symlen = ft_strlen(symbol);
+	while (curr_pipe_cmd && curr_pipe_cmd[i] != '\0')
+	{
+		if ( (symlen > 1 && strncmp(curr_pipe_cmd + i, symbol, symlen) == 0) ||
+			(symlen == 1 && *symbol == curr_pipe_cmd[i] /*&& curr_pipe_cmd[i + 1] != '&' &&
+				curr_pipe_cmd[i + 1] != *symbol && curr_pipe_cmd[i - 1] != *symbol*/) )
+		{
+			cnt++;
+			i += symlen;
+		}
+		else
+			i++;
+	}
+	printf("IN REDIRECTION with '%dx %s'\nCURR_PIPE_CMD = %s\n", cnt, symbol, curr_pipe_cmd);
+	return (cnt);
+}
+
 int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 {
-	int	i;
-	char *cmd;
+	int		i;
+	int		cnt_redir;
+	char	*cmd;
 
 	i = -1;
-	printf("IN REDIRECTION with %s\n", symbol);
+
+	if (grp->curr_pipe_cmd)
+		cnt_redir = count_redirection(grp->curr_pipe_cmd, symbol);
+	else
+		cnt_redir = count_redirection(grp->order, symbol);
 	while (split_cmd[++i])
 	{
 		ft_putendl(split_cmd[i]);
+		if (split_cmd[i][0] == '>' || split_cmd[i][0] == '<')
+		{
+			error_cmd("error parsing near", symbol);
+			exit(0);
+		}
 		if (i > 0)
 		{
 			cmd = get_cmd(grp, split_cmd[i]);
@@ -81,9 +116,9 @@ int		main_redirection(t_group *grp, char **split_cmd, char *symbol)
 		}
 		ft_parsing(1, split_cmd[i]);
 	}
-	if (split_cmd[i] == NULL)
+	if (i < cnt_redir + 1)
 	{
-		error_cmd("error parsing near", "\\n");
+		error_cmd("error parsing near", symbol);
 		exit(0);
 	}
 	return (1);

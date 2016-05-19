@@ -95,14 +95,15 @@ typedef struct			s_redir
 
 typedef struct			s_group
 {
-	char				**cmd;
-	char				*order;
-	char				*curr_cmd;
+	char					**cmd;
+	int						*define_cmd;
 
-	int					*define_cmd;
-	int					curs_col;
-	int					fd_in_save;
-	int					pipe;
+	char					*order;
+	char					*curr_cmd;
+	char					*curr_pipe_cmd;
+	int						pipe;
+	int						fd_in_save;
+	int						curs_col;
 
 	struct termios			cpy_term;
 	struct s_options		*options;
