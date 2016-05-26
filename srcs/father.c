@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/03 23:53:16 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/19 18:49:53 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/26 16:53:04 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,14 @@ void	parse_cmd(int const fd, t_group *grp)
 			grp->cmd[j] = ft_strtrim(grp->cmd[j]);
 		if (j > 0)
 		{
-			if (grp->cmd[0][0] != '.' && grp->cmd[0][0] != '/')
+			all_cmd[i] = ft_strtrim(all_cmd[i]);
+			grp->order = SDUP(all_cmd[i]);
+			create_process(grp);
+			/*if (grp->cmd[0][0] != '.' && grp->cmd[0][0] != '/')
 				path = child_process(grp, all_cmd[i]);
 			else
 				path = SDUP(grp->cmd[0]);
-			path ? exec_cmd(grp, path, grp->cmd) : 0;
+			path ? exec_cmd(grp, path, grp->cmd) : 0;*/
 		}
 	}
 }

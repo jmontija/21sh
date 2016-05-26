@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/19 19:49:48 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/26 18:50:21 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ typedef struct			s_redir
 typedef struct			s_group
 {
 	char					**cmd;
+	char					**env;
 	int						*define_cmd;
 
 	char					*order;
@@ -120,6 +121,7 @@ int						set_shell(int lflag);
 int						reset_shell(void);
 void					parse_cmd(int const fd, t_group *grp);
 void					read_cmd(t_group *grp, int fd, char **cmd);
+void					create_process(t_group *grp);
 void					exec_cmd(t_group *grp, char *path, char **cmd_line);
 void					exec_env(t_group *grp, int show_env);
 void					handling_arrow(t_group *grp, char **cmd, int key);
@@ -140,7 +142,7 @@ char					*get_cmd(t_group *grp, char *cmd);
 int						main_pipe(t_group *grp, char **split_cmd);
 void					split_exec_cmd(t_group *grp, char *cmd_to_exec, char *print);
 int						list_to_tab(t_env *env, char ***env_tab);
-int						exec_builtin(t_group *grp, char *order);
+int						exec_builtin(int exec, t_group *grp, char *order);
 int						is_env(char *env);
 int						insert_env(t_group *grp, char *env);
 int						unset_env(t_group *grp, char *todel);

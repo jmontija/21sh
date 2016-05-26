@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/19 19:55:26 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/26 19:44:14 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*get_cmd(t_group *grp, char *cmd)
 	tofind = SDUP("| 1>&2 2>&1 2>&- 1>&- >&- > >> < <<");
 	symbol = ft_spacesplit(tofind);
 	shell_cmd = SDUP(cmd);
-	printf("GET COMMAND %s\n", shell_cmd);
+	//printf("GET COMMAND %s\n", shell_cmd);
 	while (cmd[++i] != '\0')
 	{
 		j = -1;
@@ -82,11 +82,16 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 	exec_cmd = ft_spacesplit(cmd_to_exec);
 	while (exec_cmd[++i])
 	{
-		ft_putendl_fd(JOIN(toprint, exec_cmd[i]), 2);
+		ft_putendl_fd(JOIN(toprint, exec_cmd[i]), 2); // penser a supprimer les guillemets etc ...
 		exec_cmd[i] = ft_strtrim(exec_cmd[i]);
 	}
-	path = search_exec(grp, exec_cmd[0]);
-	execve(path, exec_cmd, NULL) < 1 ? ft_putendl("error pipe execve") : 0;
-	// env a placer a la place de NULL le stocker dans grp->env !
+	grp->cmd = exec_cmd;
+	ft_putendl_fd(grp->cmd[0], 2);
+	if (grp->cmd[0][0] != '.' && grp->cmd[0][0] != '/')
+		path = child_process(grp, grp->cmd[0]);
+	else
+		path = SDUP(grp->cmd[0]);
+	if (path != NULL)
+		execve(path, grp->cmd, grp->env) < 1 ? ft_putendl("execve failed") : 0; //ATTTENTION LENV a ete copié par adresse peut creer des bug !
 	exit(0);
 }

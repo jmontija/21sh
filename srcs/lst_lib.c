@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/05/19 19:55:11 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/26 16:39:35 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ t_group	*set_grp(void)
 	grp->first = NULL;
 	grp->last = NULL;
 	grp->cmd = NULL;
+	grp->env = NULL;
 	grp->hist = NULL;
 	grp->redirect = (t_redir **)malloc(sizeof(t_redir *) * 4);
 	while (++i < 4)

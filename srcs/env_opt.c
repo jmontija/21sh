@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/05 03:07:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/03 17:17:35 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/26 19:23:17 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	exec_env(t_group *grp, int display)
 		path = search_exec(grp, grp->cmd[bin]);
 		if (grp->cmd[bin][0] == '.' || grp->cmd[bin][0] == '/')
 			path = SDUP(grp->cmd[bin]);
-		exec_cmd(grp, path, cmd);
+		//exec_cmd(grp, path, cmd);
 	}
 	else if (grp->options->on[P] == true)
 	{
@@ -125,6 +125,6 @@ void	exec_env(t_group *grp, int display)
 		path = ft_getenv(grp, "PATH") == NULL ?
 		ft_getenv(grp, "_") : SDUP(grp->options->params[P]);
 		grp->options->on[v] == true ? opt_v(grp, cmd) : 0;
-		exec_cmd(grp, path, cmd);
+		//exec_cmd(grp, path, cmd);
 	}
 }

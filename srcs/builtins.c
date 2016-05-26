@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/23 17:29:45 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/12 03:17:04 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/26 19:22:57 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	manage_cd(t_group *grp)
 	cderr_pwd(grp, path, s_buf);
 }
 
-int		exec_builtin(t_group *grp, char *order)
+int		exec_builtin(int exec, t_group *grp, char *order)
 {
 	int		active;
 
@@ -95,18 +95,18 @@ int		exec_builtin(t_group *grp, char *order)
 	if (ft_strcmp(grp->cmd[0], "env") == 0)
 	{
 		active++;
-		if (manage_opt(grp) < 0)
+		if (manage_opt(grp) < 0 || exec == false)
 			return (active);
 		(grp->options->on[u] == true ||
 			(grp->define_cmd[namenv] > 0 && grp->define_cmd[utils] == false) ||
 			grp->cmd[1] == NULL) ? exec_env(grp, 1) : exec_env(grp, 0);
 	}
 	else if (ft_strcmp(grp->cmd[0], "cd") == 0)
-		(active += 1) ? manage_cd(grp) : 0;
+		((active += 1) && exec) ? manage_cd(grp) : 0;
 	else if (ft_strcmp(grp->cmd[0], "setenv") == 0)
-		(active += 1) ? ft_setenv(grp) : 0;
+		((active += 1) && exec) ? ft_setenv(grp) : 0;
 	else if (ft_strcmp(grp->cmd[0], "unsetenv") == 0)
-		(active += 1) ? ft_unsetenv(grp) : 0;
+		((active += 1) && exec) ? ft_unsetenv(grp) : 0;
 	else if (ft_strcmp(grp->cmd[0], "exit") == 0)
 		grp->cmd[1] ? exit(ft_atoi(grp->cmd[1])) : exit(0);
 	return (active);
