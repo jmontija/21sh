@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/26 19:44:14 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 16:05:30 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 		exec_cmd[i] = ft_strtrim(exec_cmd[i]);
 	}
 	grp->cmd = exec_cmd;
-	ft_putendl_fd(grp->cmd[0], 2);
 	if (grp->cmd[0][0] != '.' && grp->cmd[0][0] != '/')
 		path = child_process(grp, grp->cmd[0]);
 	else

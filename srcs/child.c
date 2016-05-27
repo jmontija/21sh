@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 14:17:42 by julio             #+#    #+#             */
-/*   Updated: 2016/05/26 19:05:28 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 16:25:38 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,7 @@ char	*child_process(t_group *grp, char *order)
 	int	i;
 
 	i = 0;
-	printf("CHILD\n");
-	if (exec_builtin(1, grp, order) <= 0)
+	if (exec_builtin(0, grp, order) <= 0)
 		return (search_exec(grp, grp->cmd[0]));
-	printf("CHILDNULL\n");
 	return (NULL);
 }

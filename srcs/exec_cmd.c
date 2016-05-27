@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/26 19:22:27 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 16:08:33 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,9 @@ void	create_process(t_group *grp)
 	pid_t	pid;
 	int		buf;
 	int		fd;
+	char	**split_cmd;
+	char	*splitw;
+	int 	i = 0;
 
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
@@ -92,7 +95,23 @@ void	create_process(t_group *grp)
 	{
 		waitpid(pid, &buf, 0);
 		buf == SIGSEGV ? error_cmd("segmentation fault", grp->curr_cmd) : 0;
-		exec_builtin(1, grp, grp->order);
+		if ((splitw = ft_findocc(false, grp->order, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-")) == NULL)
+			splitw = SDUP("|");
+		split_cmd = ft_strsplitstr(grp->order, splitw);
+		while (split_cmd[i])
+			i++;
+		if (splitw[0] == '|')
+			split_cmd = ft_spacesplit(split_cmd[i - 1]);
+		else
+			split_cmd = ft_spacesplit(split_cmd[0]);
+		i = -1;
+		while (split_cmd[++i])
+		{
+			ft_putendl_fd(JOIN("BUILTIN TO MAKE -> ", split_cmd[i]), 2);
+			split_cmd[i] = ft_strtrim(split_cmd[i]);
+		}
+		grp->cmd = split_cmd;
+		exec_builtin(1, grp, split_cmd[i - 1]);
 	}
 	else if (pid == 0)
 	{

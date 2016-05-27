@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/05/26 16:39:35 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 16:15:02 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ t_env	*create_env_line(t_group *grp, char *env, int i)
 	new->val = SUB(env, i + 1, LEN(env));
 	while (curr_env != NULL)
 	{
-		if (ft_strncmp(curr_env->name, new->name, LEN(curr_env->name)) == 0)
+		if (ft_strcmp(new->name, curr_env->name) == 0)
 		{
 			new->exist = true;
 			curr_env->val = new->val;
