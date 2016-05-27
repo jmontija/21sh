@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/27 16:08:33 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 16:39:22 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void	create_process(t_group *grp)
 	pid == -1 ? exit(270) : 0;
 	if (pid != 0)
 	{
+		manage_env(grp);
 		waitpid(pid, &buf, 0);
 		buf == SIGSEGV ? error_cmd("segmentation fault", grp->curr_cmd) : 0;
 		if ((splitw = ft_findocc(false, grp->order, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-")) == NULL)
@@ -115,14 +116,34 @@ void	create_process(t_group *grp)
 	}
 	else if (pid == 0)
 	{
-		manage_env(grp);
+		//manage_env(grp);
 		launch_parser(grp);
 		exit(0);
 	}
 }
 
+void	create_process_env(t_group *grp, char *path, char **cmd_line)
+{
+	pid_t	pid;
+	int		buf;
+	int		fd;
 
-/*void	exec_cmd(t_group *grp, char *path, char **cmd_line)
+	pid = fork();
+	pid == -1 ? exit(270) : 0;
+	if (pid != 0)
+	{
+		waitpid(pid, &buf, 0);
+		buf == SIGSEGV ? error_cmd("segmentation fault", cmd_line[0]) : 0;
+	}
+	else if (pid == 0 && execve(path, cmd_line, grp->env) < 1)
+	{
+		(fd = open(path, O_RDONLY)) != -1 ?
+		parse_cmd(fd, grp) : error_cmd("unknown command", cmd_line[0]);
+		exit(0);
+	}
+}
+
+void	exec_cmd(t_group *grp, char *path, char **cmd_line)
 {
 	struct stat	s_buf;
 	mode_t		val;
@@ -137,5 +158,8 @@ void	create_process(t_group *grp)
 	else if (!(val & S_IXUSR) || S_ISDIR(s_buf.st_mode))
 		error_cmd("Permission denied", cmd_line[0]);
 	else
-		manage_env(grp, path, cmd_line);
-}*/
+	{
+		//manage_env(grp);
+		create_process_env(grp, path, cmd_line);
+	}
+}

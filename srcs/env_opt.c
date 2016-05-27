@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/05 03:07:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/26 19:23:17 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 17:36:32 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,41 +66,6 @@ void	show_env(t_group *grp)
 	}
 }
 
-void	opt_v(t_group *grp, char **cmd)
-{
-	int	i;
-
-	i = -1;
-	grp->options->on[ii] ? ft_putendl("#env clearing -> environ") : 0;
-	ft_putstr("#env executing -> ");
-	ft_putendl(cmd[0]);
-	while (cmd[++i] != NULL)
-	{
-		ft_putstr("#env arg[");
-		ft_putnbr(i);
-		ft_putstr("] -> ");
-		ft_putendl(cmd[i]);
-	}
-}
-
-char	**env_cmd(t_group *grp, int opt)
-{
-	char	**cmd;
-	int		cmd_nb;
-	int		i;
-
-	i = -1;
-	cmd = NULL;
-	cmd_nb = (opt == P) ? (grp->define_cmd[utils] + 1) : grp->define_cmd[utils];
-	if (ft_getenv(grp, "PATH") != NULL)
-		cmd = ft_spacesplit(ft_strstr(grp->order, grp->cmd[cmd_nb]));
-	else
-		cmd = ft_spacesplit(grp->order);
-	while (cmd[++i])
-		cmd[i] = ft_strtrim(cmd[i]);
-	return (cmd);
-}
-
 void	exec_env(t_group *grp, int display)
 {
 	char	*path;
@@ -109,22 +74,8 @@ void	exec_env(t_group *grp, int display)
 
 	if (display)
 		return (show_env(grp));
-	bin = grp->define_cmd[utils];
-	if (grp->options->on[P] == false && grp->options->on[u] == false)
-	{
-		cmd = env_cmd(grp, v);
-		grp->options->on[v] == true ? opt_v(grp, cmd) : 0;
-		path = search_exec(grp, grp->cmd[bin]);
-		if (grp->cmd[bin][0] == '.' || grp->cmd[bin][0] == '/')
-			path = SDUP(grp->cmd[bin]);
-		//exec_cmd(grp, path, cmd);
-	}
-	else if (grp->options->on[P] == true)
-	{
-		cmd = env_cmd(grp, P);
-		path = ft_getenv(grp, "PATH") == NULL ?
-		ft_getenv(grp, "_") : SDUP(grp->options->params[P]);
-		grp->options->on[v] == true ? opt_v(grp, cmd) : 0;
-		//exec_cmd(grp, path, cmd);
-	}
+	path = search_exec(grp, grp->cmd[0]);
+	if (grp->cmd[0][0] == '.' || grp->cmd[0][0] == '/')
+		path = SDUP(grp->cmd[0]);
+	exec_cmd(grp, path, grp->cmd);
 }

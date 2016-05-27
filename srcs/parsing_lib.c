@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/27 16:05:30 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 17:40:42 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 	}
 	grp->cmd = exec_cmd;
 	if (grp->cmd[0][0] != '.' && grp->cmd[0][0] != '/')
-		path = child_process(grp, grp->cmd[0]);
+		path = search_exec(grp, grp->cmd[0]); //child_process(grp, grp->cmd[0]);
 	else
 		path = SDUP(grp->cmd[0]);
 	if (path != NULL)
