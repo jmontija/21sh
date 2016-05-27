@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:05:11 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/15 20:39:58 by julio            ###   ########.fr       */
+/*   Updated: 2016/05/27 17:58:26 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int		key_selection(t_group *grp, char *order, char **cmd)
 	key = KEY(order[0], order[1], order[2], order[3]);
 	if (key != ARROW_U && key != ARROW_D)
 		grp->curr_hist = NULL;
-	if (key == CTRL_D || key == ESC)
+	if (key == CTRL_D)
 	{
 		reset_shell();
 		ft_putchar_fd('\n', 2);

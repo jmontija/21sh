@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/27 15:08:25 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 20:19:37 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ char	*ft_strchrsym(char *to_pars, char *tofind)
 		synth = check_parenthese(to_pars[i], synth);
 		if (synth == 0 &&
 			((symlen > 1 && ft_strncmp(to_pars + i, tofind, symlen) == 0) ||
-			(symlen == 1 && tofind[0] == to_pars[i] && to_pars[i + 1] != '&'/*&& to_pars[i - 1] && to_pars[i + 1] &&
-			to_pars[i + 1] != *tofind && to_pars[i - 1] != *tofind*/)) )
+			(symlen == 1 && tofind[0] == to_pars[i] && to_pars[i + 1] != '&')) )
 			return (tofind);
 	}
 	return (NULL);

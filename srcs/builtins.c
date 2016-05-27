@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/23 17:29:45 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/27 16:34:14 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 20:19:40 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,11 +91,10 @@ int		exec_builtin(int exec, t_group *grp, char *order)
 	int		active;
 
 	active = 0;
-	order = ft_strtrim(order);
 	if (ft_strcmp(grp->cmd[0], "env") == 0)
 	{
-		active += 10;
-		if (manage_opt(grp) < 0 || exec == false)
+		active += 1;
+		if (exec == false || manage_opt(grp) < 0)
 			return (active);
 		(grp->options->on[u] == true ||
 			(grp->define_cmd[namenv] > 0 && grp->define_cmd[utils] == false) ||

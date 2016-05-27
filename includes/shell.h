@@ -86,13 +86,6 @@ typedef struct			s_redir
 	struct s_redir		*next;
 }						t_redir;
 
-/*typedef struct			s_redir_group
-{
-	struct s_redir		*redir_to;
-	struct s_redir		*redir_from;
-	struct s_redir		*redir_heredoc;
-}						t_redir_group;*/
-
 typedef struct			s_group
 {
 	char					**cmd;

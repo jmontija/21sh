@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/27 17:40:42 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 18:52:36 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ char	*get_cmd(t_group *grp, char *cmd)
 		{
 			symlen = ft_strlen(symbol[j]);
 			if ( (symlen > 1 && strncmp(cmd + i, symbol[j], symlen) == 0) ||
-				(symlen == 1 && *symbol[j] == cmd[i] && cmd[i + 1] != '&'/*&& cmd[i - 1] && cmd[i + 1] &&
-					cmd[i + 1] != *symbol[j] && cmd[i - 1] != *symbol[j]*/) )
+				(symlen == 1 && *symbol[j] == cmd[i] && cmd[i + 1] != '&') )
 			{
 				/* strsplitstr segftl si seulement le symbol est envoyée en 1ere pos de la cmd */
 				shell_cmd = SDUP(ft_strsplitstr(cmd, symbol[j])[0]);
@@ -87,10 +86,12 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 	}
 	grp->cmd = exec_cmd;
 	if (grp->cmd[0][0] != '.' && grp->cmd[0][0] != '/')
-		path = search_exec(grp, grp->cmd[0]); //child_process(grp, grp->cmd[0]);
+		path = child_process(grp, NULL);
 	else
 		path = SDUP(grp->cmd[0]);
 	if (path != NULL)
 		execve(path, grp->cmd, grp->env) < 1 ? ft_putendl("execve failed") : 0; //ATTTENTION LENV a ete copié par adresse peut creer des bug !
+	else
+		exec_builtin(1, grp, NULL); // a douille
 	exit(0);
 }

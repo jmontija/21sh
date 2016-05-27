@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/27 16:39:22 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/27 20:20:56 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	manage_env(t_group *grp)
 		grp->cmd[i + grp->define_cmd[e_opt] + 1])
 		env[pos + i] = SDUP(grp->cmd[i + grp->define_cmd[e_opt] + 1]);
 	grp->env = env;
+	// A REVOIR CETTE LIGNE DE COMMANDE EST SUREMENT OUTDATED POUR 21SH
 }
 
 void	create_process(t_group *grp)
@@ -158,8 +159,5 @@ void	exec_cmd(t_group *grp, char *path, char **cmd_line)
 	else if (!(val & S_IXUSR) || S_ISDIR(s_buf.st_mode))
 		error_cmd("Permission denied", cmd_line[0]);
 	else
-	{
-		//manage_env(grp);
 		create_process_env(grp, path, cmd_line);
-	}
 }
