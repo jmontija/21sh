@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/27 20:20:56 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/28 17:50:30 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,9 @@ void	create_process(t_group *grp)
 			split_cmd[i] = ft_strtrim(split_cmd[i]);
 		}
 		grp->cmd = split_cmd;
-		exec_builtin(1, grp, split_cmd[i - 1]);
+		if (ft_findocc(false, grp->order, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-") == NULL
+			|| ft_strcmp(split_cmd[0], "env") != 0)
+			exec_builtin(1, grp, split_cmd[i - 1]);
 	}
 	else if (pid == 0)
 	{
@@ -121,43 +123,4 @@ void	create_process(t_group *grp)
 		launch_parser(grp);
 		exit(0);
 	}
-}
-
-void	create_process_env(t_group *grp, char *path, char **cmd_line)
-{
-	pid_t	pid;
-	int		buf;
-	int		fd;
-
-	pid = fork();
-	pid == -1 ? exit(270) : 0;
-	if (pid != 0)
-	{
-		waitpid(pid, &buf, 0);
-		buf == SIGSEGV ? error_cmd("segmentation fault", cmd_line[0]) : 0;
-	}
-	else if (pid == 0 && execve(path, cmd_line, grp->env) < 1)
-	{
-		(fd = open(path, O_RDONLY)) != -1 ?
-		parse_cmd(fd, grp) : error_cmd("unknown command", cmd_line[0]);
-		exit(0);
-	}
-}
-
-void	exec_cmd(t_group *grp, char *path, char **cmd_line)
-{
-	struct stat	s_buf;
-	mode_t		val;
-	int			ret;
-
-	ret = lstat(path, &s_buf);
-	val = (s_buf.st_mode & ~S_IFMT);
-	if (ret != 0)
-		error_cmd("unknown command", cmd_line[0]);
-	else if (s_buf.st_size <= 0)
-		error_cmd("executable format error", cmd_line[0]);
-	else if (!(val & S_IXUSR) || S_ISDIR(s_buf.st_mode))
-		error_cmd("Permission denied", cmd_line[0]);
-	else
-		create_process_env(grp, path, cmd_line);
 }

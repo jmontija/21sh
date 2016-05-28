@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/27 18:52:36 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/28 17:51:58 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,25 +71,44 @@ void	error_synthax(char *error, char *file)
 	exit(0);
 }
 
+int		exec_cmd(t_group *grp, char *path, char **cmd_line)
+{
+	struct stat	s_buf;
+	mode_t		val;
+	int			ret;
+
+	ret = lstat(path, &s_buf);
+	val = (s_buf.st_mode & ~S_IFMT);
+	if (ret != 0)
+		error_cmd("unknown command", cmd_line[0]);
+	else if (s_buf.st_size <= 0)
+		error_cmd("executable format error", cmd_line[0]);
+	else if (!(val & S_IXUSR) || S_ISDIR(s_buf.st_mode))
+		error_cmd("Permission denied", cmd_line[0]);
+	else
+		return (1);
+	return (-1);
+}
+
 void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 {
-	char	**exec_cmd;
+	char	**exec;
 	char	*path;
 	int		i;
 
 	i = -1;
-	exec_cmd = ft_spacesplit(cmd_to_exec);
-	while (exec_cmd[++i])
+	exec = ft_spacesplit(cmd_to_exec);
+	while (exec[++i])
 	{
-		ft_putendl_fd(JOIN(toprint, exec_cmd[i]), 2); // penser a supprimer les guillemets etc ...
-		exec_cmd[i] = ft_strtrim(exec_cmd[i]);
+		ft_putendl_fd(JOIN(toprint, exec[i]), 2); // penser a supprimer les guillemets etc ...
+		exec[i] = ft_strtrim(exec[i]);
 	}
-	grp->cmd = exec_cmd;
+	grp->cmd = exec;
 	if (grp->cmd[0][0] != '.' && grp->cmd[0][0] != '/')
 		path = child_process(grp, NULL);
 	else
 		path = SDUP(grp->cmd[0]);
-	if (path != NULL)
+	if (path != NULL && exec_cmd(grp, path, grp->cmd) > 0)
 		execve(path, grp->cmd, grp->env) < 1 ? ft_putendl("execve failed") : 0; //ATTTENTION LENV a ete copié par adresse peut creer des bug !
 	else
 		exec_builtin(1, grp, NULL); // a douille

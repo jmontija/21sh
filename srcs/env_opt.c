@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/05 03:07:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/27 17:36:32 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/28 17:51:12 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,27 @@ void	show_env(t_group *grp)
 	}
 }
 
+void	create_process_env(t_group *grp, char *path, char **cmd_line)
+{
+	pid_t	pid;
+	int		buf;
+	int		fd;
+
+	pid = fork();
+	pid == -1 ? exit(270) : 0;
+	if (pid != 0)
+	{
+		waitpid(pid, &buf, 0);
+		buf == SIGSEGV ? error_cmd("segmentation fault", cmd_line[0]) : 0;
+	}
+	else if (pid == 0 && execve(path, cmd_line, grp->env) < 1)
+	{
+		(fd = open(path, O_RDONLY)) != -1 ?
+		parse_cmd(fd, grp) : error_cmd("unknown command", cmd_line[0]);
+		exit(0);
+	}
+}
+
 void	exec_env(t_group *grp, int display)
 {
 	char	*path;
@@ -77,5 +98,6 @@ void	exec_env(t_group *grp, int display)
 	path = search_exec(grp, grp->cmd[0]);
 	if (grp->cmd[0][0] == '.' || grp->cmd[0][0] == '/')
 		path = SDUP(grp->cmd[0]);
-	exec_cmd(grp, path, grp->cmd);
+	if (exec_cmd(grp, path, grp->cmd) > 0)
+		create_process_env(grp, path, grp->cmd);
 }

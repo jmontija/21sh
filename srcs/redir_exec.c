@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/19 19:54:21 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/28 19:04:37 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,35 +67,6 @@ void	create_redirection_to(t_group *grp, t_redir *curr)
 		waitpid(pid, &buf, 0);
 }
 
-void	create_redirection_from(t_group *grp)
-{
-	int			fd;
-	pid_t		pid;
-	int			buf;
-
-	ft_putendl("CREATE_REDIR_FROM TESTFINAL");
-	fd = open("TESTFINAL", O_RDONLY);
-	pid = fork();
-	pid == -1 ? exit(270) : 0;
-	if (pid == 0)
-	{
-		if (ft_findocc(true, grp->order, "| >> >") == NULL)
-		{
-			dup2(fd, STDIN_FILENO);
-			split_exec_cmd(grp, grp->curr_cmd, "COMMAND TO EXEC BY REDIRECTION_FROM -> ");
-		}
-		close(fd);
-		exit(0);
-	}
-	else if (pid != 0)
-	{
-		waitpid(pid, &buf, 0);
-		grp->fd_in_save = fd;
-		unlink("./TESTFINAL");
-	}
-	//manage_redirection_from(grp, "rm ", "TESTFINAL");
-}
-
 void	manage_redirection_from(t_group *grp, char *cmd, char *arg)
 {
 	int			fd;
@@ -104,7 +75,7 @@ void	manage_redirection_from(t_group *grp, char *cmd, char *arg)
 	char		*cmd_to_exec;
 	struct stat	s_buf;
 
-	if (lstat(arg, &s_buf) < 0)
+	if (lstat(arg, &s_buf) < 0 && ft_strcmp(arg, " ") != 0)
 		error_synthax("no such file or directory", arg);
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
@@ -121,6 +92,39 @@ void	manage_redirection_from(t_group *grp, char *cmd, char *arg)
 	}
 	else if (pid != 0)
 		waitpid(pid, &buf, 0);
+}
+
+void	create_redirection_from(t_group *grp)
+{
+	int			fd;
+	pid_t		pid;
+	int			buf;
+
+	ft_putendl("CREATE_REDIR_FROM TESTFINAL");
+	fd = open("TESTFINAL", O_RDONLY);
+	pid = fork();
+	pid == -1 ? exit(270) : 0;
+	if (pid == 0)
+	{
+		if (grp->fd_in_save)
+		{
+			dup2(grp->fd_in_save, STDIN_FILENO);
+			manage_redirection_from(grp, "cat ", " ");
+		}
+		if (ft_findocc(true, grp->order, "| >> >") == NULL)
+		{
+			dup2(fd, STDIN_FILENO);
+			split_exec_cmd(grp, grp->curr_cmd, "COMMAND TO EXEC BY REDIRECTION_FROM -> ");
+		}
+		close(fd);
+		exit(0);
+	}
+	else if (pid != 0)
+	{
+		waitpid(pid, &buf, 0);
+		grp->fd_in_save = fd;
+		unlink("./TESTFINAL");
+	}
 }
 
 int		exec_redir(int exec, t_group *grp, char *cmd)
@@ -154,7 +158,10 @@ int		exec_redir(int exec, t_group *grp, char *cmd)
 			ft_memdel((void *)trash);
 		}
 		if (i == 0 && ret == 0)
+		{
 			create_redirection_from(grp);
+			grp->pipe ? ret = -1 : 0;
+		}
 		grp->redirect[i] = NULL;
 	}
 	return (ret);

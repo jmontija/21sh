@@ -115,7 +115,7 @@ int						reset_shell(void);
 void					parse_cmd(int const fd, t_group *grp);
 void					read_cmd(t_group *grp, int fd, char **cmd);
 void					create_process(t_group *grp);
-void					exec_cmd(t_group *grp, char *path, char **cmd_line);
+int						exec_cmd(t_group *grp, char *path, char **cmd_line);
 void					exec_env(t_group *grp, int show_env);
 void					handling_arrow(t_group *grp, char **cmd, int key);
 void					handling_backspace(t_group *grp, char **cmd);

@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/27 14:55:46 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/28 18:48:32 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ int		check_synth(t_group *grp, char **split_cmd)
 			error_synthax("error parsing near", "|");
 		pipe_cmd = ft_spacesplit(get_cmd(grp, split_cmd[i]));
 		path = search_exec(grp, pipe_cmd[0]);
-		/*if (lstat(path, &s_buf) < 0)
-			error_synthax("unknown command", pipe_cmd[0]);*/
+		if (lstat(path, &s_buf) < 0)
+			error_synthax("unknown command", pipe_cmd[0]);
 		if (i == grp->pipe)
 			return (0);
 	}
