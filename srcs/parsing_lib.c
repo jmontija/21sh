@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/28 17:51:58 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/28 20:17:24 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,9 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 		path = child_process(grp, NULL);
 	else
 		path = SDUP(grp->cmd[0]);
+	printf("CMD = %s FD_IN = %d\n", grp->cmd[0], grp->fd_in_save);
 	if (path != NULL && exec_cmd(grp, path, grp->cmd) > 0)
-		execve(path, grp->cmd, grp->env) < 1 ? ft_putendl("execve failed") : 0; //ATTTENTION LENV a ete copié par adresse peut creer des bug !
+		execve(path, grp->cmd, grp->env) < 1 ? ft_putendl_fd("execve failed", 2) : 0; //ATTTENTION LENV a ete copié par adresse peut creer des bug !
 	else
 		exec_builtin(1, grp, NULL); // a douille
 	exit(0);

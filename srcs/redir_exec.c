@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/28 19:04:37 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/28 20:33:13 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@
 		-> 1>&2: redirige le STDOUT vers STDERR
 		-> CMD &> FILE mets en background la commande recuperable avec fg -> equivalent a un ctrl+Z sur un prog en cour
 
+		cat Makefile | grep -i srcs > TEST2 < TESTS|cat -> fail sur le cat
+		cat Makefile | grep -i srcs < TESTS|cat - > work ! problem with >
+
 */
 
 void	create_redirection_to(t_group *grp, t_redir *curr)
@@ -57,11 +60,12 @@ void	create_redirection_to(t_group *grp, t_redir *curr)
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
 	{
-		fd = open(curr->name, O_WRONLY | curr->action | O_CREAT, 0644);
+		/*fd = open(curr->name, O_WRONLY | curr->action | O_CREAT, 0644);
 		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
 		split_exec_cmd(grp, curr->command, "COMMAND TO EXEC BY REDIRECTION_TO -> ");
-		close(fd);
+		close(fd);*/
+		//ERREUR SUR CMD cat Makefile | grep -i srcs >EJDK < TESTS | cat
 	}
 	else if (pid != 0)
 		waitpid(pid, &buf, 0);

@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/28 18:48:32 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/28 20:06:45 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,9 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 	{
 		waitpid(pid, &buf, 0);
 		close(fd[1]);
-		grp->fd_in_save = fd[0];
 		exec_redir(0, grp, pipe_cmd); // <- pour free
+		grp->fd_in_save = fd[0];
+		printf("FD_IN SAVE = %d\n", grp->fd_in_save);
 	}
 }
 
