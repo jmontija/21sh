@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/27 16:38:26 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/29 19:08:28 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ typedef struct			s_group
 	char					*curr_pipe_cmd;
 	int						pipe;
 	int						fd_in_save;
+	int						last_fd_in_save;
 	int						curs_col;
 
 	struct termios			cpy_term;
@@ -114,6 +115,7 @@ int						set_shell(int lflag);
 int						reset_shell(void);
 void					parse_cmd(int const fd, t_group *grp);
 void					read_cmd(t_group *grp, int fd, char **cmd);
+int						check_synth_cmd(t_group *grp);
 void					create_process(t_group *grp);
 int						exec_cmd(t_group *grp, char *path, char **cmd_line);
 void					exec_env(t_group *grp, int show_env);
@@ -142,6 +144,6 @@ int						unset_env(t_group *grp, char *todel);
 int						manage_opt(t_group *grp);
 int						error_opt(char opt, char *what);
 void					error_cmd(char *what, char *who);
-void					error_synthax(char *error, char *file);
+int						error_synthax(char *error, char *file);
 
 #endif

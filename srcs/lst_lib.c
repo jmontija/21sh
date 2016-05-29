@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/05/27 16:15:02 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/29 17:16:21 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ t_group	*set_grp(void)
 	grp->curr_hist = NULL;
 	grp->curs_col = START_POS;
 	grp->fd_in_save = STDIN_FILENO;
+	grp->last_fd_in_save = STDIN_FILENO;
 	grp->curr_cmd = NULL;
 	grp->curr_pipe_cmd = NULL;
 	grp->pipe = 0;

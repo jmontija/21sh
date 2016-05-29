@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/28 20:33:13 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/29 18:48:22 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,18 @@ void	create_redirection_to(t_group *grp, t_redir *curr)
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
 	{
-		/*fd = open(curr->name, O_WRONLY | curr->action | O_CREAT, 0644);
+		fd = open(curr->name, O_WRONLY | curr->action | O_CREAT, 0644);
 		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
 		split_exec_cmd(grp, curr->command, "COMMAND TO EXEC BY REDIRECTION_TO -> ");
-		close(fd);*/
-		//ERREUR SUR CMD cat Makefile | grep -i srcs >EJDK < TESTS | cat
+		close(fd);
+		exit(0);
+		//ERREUR SUR CMD cat Makefile|grep -i srcs>TEST|cat
 	}
 	else if (pid != 0)
+	{
 		waitpid(pid, &buf, 0);
+	}
 }
 
 void	manage_redirection_from(t_group *grp, char *cmd, char *arg)

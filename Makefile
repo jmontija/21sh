@@ -6,7 +6,7 @@
 #    By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/10 17:28:13 by jmontija          #+#    #+#              #
-#    Updated: 2016/05/19 18:36:28 by jmontija         ###   ########.fr        #
+#    Updated: 2016/05/29 19:08:59 by jmontija         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,7 @@ SRCS			+=	srcs/pipe.c
 SRCS			+=	srcs/redir_manager.c
 SRCS			+=	srcs/redir_exec.c
 SRCS			+=	srcs/exec_cmd.c
+SRCS			+=	srcs/remake_cmd.c
 
 OBJS			=	$(SRCS:srcs/%.c=srco/%.o)
 

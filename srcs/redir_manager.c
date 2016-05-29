@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:41:52 by julio             #+#    #+#             */
-/*   Updated: 2016/05/28 20:20:53 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/29 18:48:36 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*last_pars_redir(char *new_cmd, t_redir *curr)
 			new_cmd = JOIN(new_cmd, file[i]);
 		}
 	}
-	printf("NEW CMD WITH ARG %s\n", new_cmd);
+	//printf("NEW CMD WITH ARG %s\n", new_cmd);
 	return (new_cmd);
 }
 
@@ -40,9 +40,9 @@ int		insert_redir(t_group *grp, char *file, char *symbol)
 	int		sym;
 
 	symbol_tmp = ft_charjoin("", *symbol);
-	printf("sym = %s\n", symbol_tmp);
+	//printf("sym = %s\n", symbol_tmp);
 	sym = ft_atoi(ft_findocc(true, symbol_tmp, "< >")); // rajouter << si on doit les executr avnt les < a check !
-	printf("sym = %d\n", sym);
+	//printf("sym = %d\n", sym);
 	new = (t_redir *)malloc(sizeof(t_redir));
 	new->name = SDUP(file);
 	new->action = ft_strcmp(symbol, ">") == 0 ? O_TRUNC : O_APPEND; /* faire un systeme pour savoir que cest un close fd */
@@ -76,8 +76,7 @@ int		count_redirection(char *curr_pipe_cmd, char *symbol)
 	while (curr_pipe_cmd && curr_pipe_cmd[i] != '\0')
 	{
 		if ( (symlen > 1 && strncmp(curr_pipe_cmd + i, symbol, symlen) == 0) ||
-			(symlen == 1 && *symbol == curr_pipe_cmd[i] /*&& curr_pipe_cmd[i + 1] != '&' &&
-				curr_pipe_cmd[i + 1] != *symbol && curr_pipe_cmd[i - 1] != *symbol*/) )
+			(symlen == 1 && *symbol == curr_pipe_cmd[i] && curr_pipe_cmd[i + 1] != '&') )
 		{
 			cnt++;
 			i += symlen;
@@ -85,7 +84,7 @@ int		count_redirection(char *curr_pipe_cmd, char *symbol)
 		else
 			i++;
 	}
-	printf("IN REDIRECTION with '%dx %s'\nCURR_PIPE_CMD = %s\n", cnt, symbol, curr_pipe_cmd);
+	//printf("IN REDIRECTION with '%dx %s'\nCURR_PIPE_CMD = %s\n", cnt, symbol, curr_pipe_cmd);
 	return (cnt);
 }
 

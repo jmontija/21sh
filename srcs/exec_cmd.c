@@ -6,49 +6,16 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/28 17:50:30 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/29 19:04:49 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-void	is_parenthese_closed(t_group *grp, int synth)
-{
-	char	*order;
-	int		i;
-
-	while (synth)
-	{
-		order = SDUP("");
-		ft_putstr_fd("\033[1;34m", 2);
-		ft_putstr_fd("quote> ", 2);
-		ft_putstr_fd("\033[1;37m", 2);
-		read_cmd(grp, 0, &order);
-		grp->order = ft_charjoin(grp->order, '\n');
-		grp->order = JOIN(grp->order, order);
-		i = -1;
-		while (order[++i])
-			synth = check_parenthese(order[i], synth);
-		REMOVE(&order);
-	}
-	printf("ORDER = %s\n", grp->order);
-}
-
 int		launch_parser(t_group *grp)
 {
-	int	i;
 	int ret;
-	int synth;
 
-	i = -1;
-	synth = false;
-	while (grp->order[++i] != '\0')
-	{
-		synth = check_parenthese(grp->order[i], synth);
-		if (synth == false && grp->order[i] == '|')
-			grp->pipe += 1;
-	}
-	is_parenthese_closed(grp, synth);
 	grp->curr_cmd = get_cmd(grp, grp->order);
 	ret = ft_parsing(1, grp->order);
 	if (ret < 0)
@@ -56,7 +23,7 @@ int		launch_parser(t_group *grp)
 	if (ret < 0)
 	{
 		ret = exec_builtin(0, grp, grp->order);
-		printf("RET = %d\n", ret);
+		//printf("RET = %d\n", ret);
 		if (ret <= 0)
 			split_exec_cmd(grp, grp->curr_cmd, "COMMAND TO EXEC BASIC WAY ");
 	}
@@ -90,11 +57,11 @@ void	create_process(t_group *grp)
 	char	*splitw;
 	int 	i = 0;
 
+	//manage_env(grp);
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
 	if (pid != 0)
 	{
-		manage_env(grp);
 		waitpid(pid, &buf, 0);
 		buf == SIGSEGV ? error_cmd("segmentation fault", grp->curr_cmd) : 0;
 		if ((splitw = ft_findocc(false, grp->order, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-")) == NULL)
@@ -119,7 +86,6 @@ void	create_process(t_group *grp)
 	}
 	else if (pid == 0)
 	{
-		//manage_env(grp);
 		launch_parser(grp);
 		exit(0);
 	}

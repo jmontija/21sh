@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/28 20:17:24 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/29 19:17:27 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,16 @@ int		check_parenthese(char cmd, int synth)
 	return (synth);
 }
 
-void	error_synthax(char *error, char *file)
+int		error_synthax(char *error, char *file)
 {
 	t_group *grp;
 
-	grp =init_grp();
+	grp = init_grp();
 	error_cmd(error, file);
 	grp->fd_in_save = 0;
+	grp->pipe = 0;
 	unlink("./TESTFINAL");
-	exit(0);
+	return (-1);
 }
 
 int		exec_cmd(t_group *grp, char *path, char **cmd_line)
@@ -108,10 +109,12 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 		path = child_process(grp, NULL);
 	else
 		path = SDUP(grp->cmd[0]);
-	printf("CMD = %s FD_IN = %d\n", grp->cmd[0], grp->fd_in_save);
 	if (path != NULL && exec_cmd(grp, path, grp->cmd) > 0)
-		execve(path, grp->cmd, grp->env) < 1 ? ft_putendl_fd("execve failed", 2) : 0; //ATTTENTION LENV a ete copié par adresse peut creer des bug !
+	{
+		ft_putendl_fd(JOIN(JOIN(grp->cmd[0], " fd_in = "), ft_itoa(grp->fd_in_save)), 2);
+		execve(path, grp->cmd, grp->env) < 1 ? ft_putendl_fd("execve failed", 2) : 0;
+	}
 	else
-		exec_builtin(1, grp, NULL); // a douille
+		exec_builtin(1, grp, NULL);
 	exit(0);
 }

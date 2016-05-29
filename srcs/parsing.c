@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/07 18:38:38 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/28 17:29:43 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/29 19:17:14 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ char	*check_close_fd(char *to_pars, char **splitw, char **split_cmd)
 
 	while (LEN(*splitw) > 2)
 	{
-		printf("NEED TO CLOSE OR REDIRECT FD %s\n", *splitw);
+		//printf("NEED TO CLOSE OR REDIRECT FD %s\n", *splitw);
 		ft_putendl(to_pars);
 		split_cmd = ft_strsplitstr(to_pars, *splitw);
 		REMOVE(&to_pars);
@@ -66,7 +66,7 @@ char	*check_close_fd(char *to_pars, char **splitw, char **split_cmd)
 		ft_putendl(to_pars);
 		if ((*splitw = ft_findocc(false, to_pars, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-")) == NULL)
 			return (NULL);
-		printf("PARSER -> '%s'\n", *splitw);
+		//printf("PARSER -> '%s'\n", *splitw);
 	}
 	return (to_pars);
 }
@@ -81,7 +81,7 @@ int		ft_parsing(int exec, char *to_pars)
 	grp = init_grp();
 	if ((splitw = ft_findocc(false, to_pars, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-")) == NULL)
 		return (-1);
-	printf("PARSER -> '%s'\n", splitw);
+	//printf("PARSER -> '%s'\n", splitw);
 	to_pars = check_close_fd(to_pars, &splitw, split_cmd);
 	if (to_pars == NULL)
 		return (-1);

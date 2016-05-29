@@ -1,2 +1,3 @@
 http://www.linux-france.org/article/dalox/unix04.htm
 wc | setenv jo=ejo | echo -> fail zsh
+SRCS TOJ
