@@ -6,11 +6,11 @@
 #    By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/10 17:28:13 by jmontija          #+#    #+#              #
-#    Updated: 2016/05/29 19:08:59 by jmontija         ###   ########.fr        #
+#    Updated: 2016/05/29 19:51:57 by jmontija         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-
+# -fsanitize=address (force segflt)
 NAME			=	21sh
 COMPIL			=	gcc
 

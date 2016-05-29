@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/29 18:48:22 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/29 20:23:36 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,6 @@
 		-> 1>&-: ferme le fd 1
 		-> 1>&2: redirige le STDOUT vers STDERR
 		-> CMD &> FILE mets en background la commande recuperable avec fg -> equivalent a un ctrl+Z sur un prog en cour
-
-		cat Makefile | grep -i srcs > TEST2 < TESTS|cat -> fail sur le cat
-		cat Makefile | grep -i srcs < TESTS|cat - > work ! problem with >
-
 */
 
 void	create_redirection_to(t_group *grp, t_redir *curr)
@@ -66,7 +62,12 @@ void	create_redirection_to(t_group *grp, t_redir *curr)
 		split_exec_cmd(grp, curr->command, "COMMAND TO EXEC BY REDIRECTION_TO -> ");
 		close(fd);
 		exit(0);
-		//ERREUR SUR CMD cat Makefile|grep -i srcs>TEST|cat
+		//ERREUR SUR CMD
+			// -> cat Makefile|grep -i srcs>TEST|cat
+			// -> suggestion grep ne peut etre executé qu'une fois comme make cat Makefile|make>TEST|cat
+			// -> solution copier dans un fichier tmp le resultat des redir et pipe le resultat !
+		//WORK WITH
+			// -> cat Makefile|wc -l>TEST|cat
 	}
 	else if (pid != 0)
 	{
