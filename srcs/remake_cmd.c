@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/29 19:02:34 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/29 19:22:50 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/29 20:57:36 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,8 +118,8 @@ int		check_synth_cmd(t_group *grp)
 		if (synth == false && grp->order[i] == '|')
 			grp->pipe += 1;
 	}
-	is_parenthese_closed(grp, synth);
+	is_parenthese_closed(grp, synth); // <- attention verifier sil ne rajoute pas de pipe
 	if (grp->pipe > 0)
-		return (check_synth_pipe(grp, ft_strsplitstr(grp->order, "|")));
+		return (check_synth_pipe(grp, ft_strsplitstr(grp->order, "|"))); // <- attention verifier sil ne rajoute pas de "guillemets"
 	return (0);
 }
