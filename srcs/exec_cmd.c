@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/29 19:04:49 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/30 20:11:34 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	create_process(t_group *grp)
 	{
 		waitpid(pid, &buf, 0);
 		buf == SIGSEGV ? error_cmd("segmentation fault", grp->curr_cmd) : 0;
+		manage_redirections(0, grp, NULL);
 		if ((splitw = ft_findocc(false, grp->order, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-")) == NULL)
 			splitw = SDUP("|");
 		split_cmd = ft_strsplitstr(grp->order, splitw);

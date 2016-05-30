@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/29 19:49:54 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/30 20:11:06 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,15 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
 	{
-		exec_redir(1, grp, pipe_cmd);
-		dup2(grp->fd_in_save, STDIN_FILENO);
+		manage_redirections(1, grp, pipe_cmd);
 		dup2(fd[1], STDOUT_FILENO);
-		split_exec_cmd(grp, pipe_cmd, "COMMAND TO EXEC BY PIPE -> ");
-		//close(fd[0]);
+		split_exec_cmd(grp, SDUP("cat tmp"), "COMMAND TO EXEC BY PIPE -> ");
+		close(fd[0]);
 	}
 	else if (pid != 0)
 	{
 		waitpid(pid, &buf, 0);
-		exec_redir(0, grp, pipe_cmd); // <- pour free
+		manage_redirections(0, grp, pipe_cmd); // <- pour free
 		grp->fd_in_save = fd[0];
 		printf("FD_IN SAVE = %d\n", grp->fd_in_save);
 		close(fd[1]);
@@ -53,11 +52,10 @@ int		main_pipe(t_group *grp, char **split_cmd)
 		ft_parsing(1, split_cmd[i]);
 		if (i == grp->pipe)
 		{
-			if (exec_redir(1, grp, grp->curr_cmd) < 0)
+			if (manage_redirections(1, grp, grp->curr_cmd) <= 0)
 			{
 				grp->pipe = 0;
-				dup2(grp->fd_in_save, STDIN_FILENO);
-				split_exec_cmd(grp, grp->curr_cmd, "LAST COMMAND TO EXEC BY PIPE -> ");
+				split_exec_cmd(grp, SDUP("cat tmp"), "LAST COMMAND TO EXEC BY PIPE -> ");
 				REMOVE(&grp->curr_cmd);
 			}
 		}

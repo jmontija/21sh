@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/29 19:08:28 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/30 20:00:54 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,7 @@ int 					ft_parsing(int exec, char *to_pars);
 char					*ft_findocc(int idx, char *order, char *symbol);
 int						main_redirection(t_group *grp, char **split_cmd, char *symbol);
 int						exec_redir(int exec, t_group *grp, char *cmd);
+int						manage_redirections(int exec, t_group *grp, char *pipe_cmd);
 char					*get_cmd(t_group *grp, char *cmd);
 int						main_pipe(t_group *grp, char **split_cmd);
 void					split_exec_cmd(t_group *grp, char *cmd_to_exec, char *print);
