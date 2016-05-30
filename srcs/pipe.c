@@ -34,7 +34,6 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 		waitpid(pid, &buf, 0);
 		manage_redirections(0, grp, pipe_cmd); // <- pour free
 		grp->fd_in_save = fd[0];
-		printf("FD_IN SAVE = %d\n", grp->fd_in_save);
 		close(fd[1]);
 	}
 }

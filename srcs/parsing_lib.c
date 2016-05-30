@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/29 19:17:27 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/30 20:20:15 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 	exec = ft_spacesplit(cmd_to_exec);
 	while (exec[++i])
 	{
-		ft_putendl_fd(JOIN(toprint, exec[i]), 2); // penser a supprimer les guillemets etc ...
+		ft_putendl_fd(JOIN(toprint, exec[i]), 2); // penser a supprimer les guillemets etc ....
 		exec[i] = ft_strtrim(exec[i]);
 	}
 	grp->cmd = exec;
@@ -110,10 +110,7 @@ void	split_exec_cmd(t_group *grp, char *cmd_to_exec, char *toprint)
 	else
 		path = SDUP(grp->cmd[0]);
 	if (path != NULL && exec_cmd(grp, path, grp->cmd) > 0)
-	{
-		ft_putendl_fd(JOIN(JOIN(grp->cmd[0], " fd_in = "), ft_itoa(grp->fd_in_save)), 2);
 		execve(path, grp->cmd, grp->env) < 1 ? ft_putendl_fd("execve failed", 2) : 0;
-	}
 	else
 		exec_builtin(1, grp, NULL);
 	exit(0);

@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/30 20:11:34 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/30 20:25:30 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	create_process(t_group *grp)
 	char	*splitw;
 	int 	i = 0;
 
-	//manage_env(grp);
+	manage_env(grp);
 	pid = fork();
 	pid == -1 ? exit(270) : 0;
 	if (pid != 0)
