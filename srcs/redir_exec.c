@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/30 20:11:00 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/30 20:52:11 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,45 +87,18 @@ void	manage_redirection_from(t_group *grp, char *arg, char *fd_to_open)
 	{
 		fd = open(fd_to_open, O_WRONLY | O_APPEND | O_CREAT, 0644);
 		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
-		split_exec_cmd(grp, cmd_to_exec, "COMMAND TO STOCK -> ");
+		split_exec_cmd(grp, cmd_to_exec, "COMMAND TO STOCK IN TESTFINAL-> ");
 		close(fd);
 	}
 	else if (pid != 0)
 		waitpid(pid, &buf, 0);
-}
-
-void	create_redirection_from(t_group *grp)
-{
-	int			fd;
-	pid_t		pid;
-	int			buf;
-
-	ft_putendl("CREATE_REDIR_FROM TESTFINAL");
-	fd = open("TESTFINAL", O_RDONLY);
-	pid = fork();
-	pid == -1 ? exit(270) : 0;
-	if (pid == 0)
-	{
-		if (ft_findocc(true, grp->order, "| >> >") == NULL)
-		{
-			dup2(fd, STDIN_FILENO);
-			split_exec_cmd(grp, grp->curr_cmd, "COMMAND TO EXEC BY REDIRECTION_FROM -> ");
-		}
-		close(fd);
-		exit(0);
-	}
-	else if (pid != 0)
-	{
-		waitpid(pid, &buf, 0);
-		grp->fd_in_save = fd;
-		unlink("./TESTFINAL");
-	}
 }
 
 void	redir_from(t_group *grp)
 {
 	t_redir *curr;
 	int		exec;
+	int		fd;
 
 	curr = grp->redirect[0];
 	exec = false;
@@ -134,15 +107,20 @@ void	redir_from(t_group *grp)
 		ft_putstr(curr->symbol); ft_putchar(' '); ft_putendl(curr->name);
 		if (grp->fd_in_save && exec == false)
 		{
-			exec = true;
 			dup2(grp->fd_in_save, STDIN_FILENO);
 			manage_redirection_from(grp, " ", "TESTFINAL");
 			dup2(STDIN_FILENO, grp->fd_in_save);
 		}
+		exec = true;
 		manage_redirection_from(grp, curr->name, "TESTFINAL");
 		curr = curr->next;
 	}
-	exec ? create_redirection_from(grp) : 0;
+	if (exec)
+	{
+		fd = open("TESTFINAL", O_RDONLY);
+		grp->fd_in_save = fd;
+		unlink("./TESTFINAL");
+	}
 }
 
 void	create_redirection_to(t_group *grp, t_redir *curr, char *cmd)
@@ -222,7 +200,7 @@ int		manage_redirections(int exec, t_group *grp, char *pipe_cmd)
 	return (ret);
 }
 
-int		exec_redir(int exec, t_group *grp, char *cmd)
+/*int		exec_redir(int exec, t_group *grp, char *cmd)
 {
 	return (-1);
-}
+}*/
