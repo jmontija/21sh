@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/30 20:32:37 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/31 17:00:33 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	create_pipe(t_group *grp, char *pipe_cmd)
 	{
 		manage_redirections(1, grp, pipe_cmd);
 		dup2(fd[1], STDOUT_FILENO);
-		split_exec_cmd(grp, SDUP("cat tmp"), "COMMAND TO EXEC BY PIPE -> ");
+		split_exec_cmd(grp, SDUP(CAT_TMP_FILE), "COMMAND TO EXEC BY PIPE -> ");
 		close(fd[0]);
 	}
 	else if (pid != 0)
@@ -54,7 +54,7 @@ int		main_pipe(t_group *grp, char **split_cmd)
 			if (manage_redirections(1, grp, grp->curr_cmd) <= 0)
 			{
 				grp->pipe = 0;
-				split_exec_cmd(grp, SDUP("cat tmp"), "LAST COMMAND TO EXEC BY PIPE -> ");
+				split_exec_cmd(grp, SDUP(CAT_TMP_FILE), "LAST COMMAND TO EXEC BY PIPE -> ");
 				REMOVE(&grp->curr_cmd);
 			}
 		}

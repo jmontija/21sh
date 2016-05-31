@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/27 17:14:40 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/30 20:33:06 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/31 17:00:41 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,14 @@ int		launch_parser(t_group *grp)
 	grp->curr_cmd = get_cmd(grp, grp->order);
 	ret = ft_parsing(1, grp->order);
 	if (ret < 0)
-		ret = manage_redirections(1, grp, grp->curr_cmd);
-	if (ret <= 0)
 	{
-		ret = exec_builtin(0, grp, grp->order);
+		ret = manage_redirections(1, grp, grp->curr_cmd);
 		if (ret <= 0)
-			split_exec_cmd(grp, SDUP("cat tmp"), "COMMAND TO EXEC BASIC WAY ");
+		{
+			ret = exec_builtin(0, grp, grp->order);
+			if (ret <= 0)
+				split_exec_cmd(grp, SDUP(CAT_TMP_FILE), "COMMAND TO EXEC BASIC WAY ");
+		}
 	}
 	return (ret);
 }

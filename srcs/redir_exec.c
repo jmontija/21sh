@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/05/30 20:52:11 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/31 17:06:53 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	redir_clean(t_group *grp)
 		}
 		grp->redirect[i] = NULL;
 	}
-	unlink("./tmp");
+	unlink(TMP_FILE);
 	ft_putendl("REDIRECTIONS ARE FREE");
 }
 
@@ -87,7 +87,7 @@ void	manage_redirection_from(t_group *grp, char *arg, char *fd_to_open)
 	{
 		fd = open(fd_to_open, O_WRONLY | O_APPEND | O_CREAT, 0644);
 		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
-		split_exec_cmd(grp, cmd_to_exec, "COMMAND TO STOCK IN TESTFINAL-> ");
+		split_exec_cmd(grp, cmd_to_exec, "COMMAND TO STOCK IN /private/tmp/.tmp_from -> ");
 		close(fd);
 	}
 	else if (pid != 0)
@@ -108,18 +108,18 @@ void	redir_from(t_group *grp)
 		if (grp->fd_in_save && exec == false)
 		{
 			dup2(grp->fd_in_save, STDIN_FILENO);
-			manage_redirection_from(grp, " ", "TESTFINAL");
+			manage_redirection_from(grp, " ", TMP_FROM);
 			dup2(STDIN_FILENO, grp->fd_in_save);
 		}
 		exec = true;
-		manage_redirection_from(grp, curr->name, "TESTFINAL");
+		manage_redirection_from(grp, curr->name, TMP_FROM);
 		curr = curr->next;
 	}
 	if (exec)
 	{
-		fd = open("TESTFINAL", O_RDONLY);
+		fd = open(TMP_FROM, O_RDONLY);
 		grp->fd_in_save = fd;
-		unlink("./TESTFINAL");
+		unlink(TMP_FROM);
 	}
 }
 
@@ -171,10 +171,10 @@ void	stock_cmd(t_group *grp, char *pipe_cmd)
 	pid == -1 ? exit(270) : 0;
 	if (pid == 0)
 	{
-		fd = open("tmp", O_WRONLY | O_APPEND | O_CREAT, 0644);
+		fd = open(TMP_FILE, O_WRONLY | O_APPEND | O_CREAT, 777);
 		dup2(grp->fd_in_save, STDIN_FILENO);
 		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
-		split_exec_cmd(grp, pipe_cmd, "COMMAND TO STOCK IN tmp -> ");
+		split_exec_cmd(grp, pipe_cmd, "COMMAND TO STOCK IN /private/tmp/.tmp_file -> ");
 		close(fd);
 		exit(0);
 	}
@@ -188,7 +188,7 @@ int		manage_redirections(int exec, t_group *grp, char *pipe_cmd)
 	int		ret;
 
 	ret = 0;
-	cmd = SDUP("cat tmp");
+	cmd = SDUP(CAT_TMP_FILE);
 	if (exec == 0)
 	{
 		redir_clean(grp);
@@ -199,8 +199,3 @@ int		manage_redirections(int exec, t_group *grp, char *pipe_cmd)
 	ret = redir_to(grp, cmd);
 	return (ret);
 }
-
-/*int		exec_redir(int exec, t_group *grp, char *cmd)
-{
-	return (-1);
-}*/

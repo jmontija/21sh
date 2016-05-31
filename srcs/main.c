@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 18:38:24 by julio             #+#    #+#             */
-/*   Updated: 2016/05/26 17:36:41 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/31 17:06:09 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ int		stock_env(t_group *grp, char **env)
 int		main(int argc, char **argv, char **env)
 {
 	t_group	*grp;
+	struct stat	s_buf;
+
 	(!argc || !argv) ? exit(0) : 0;
 	grp = init_grp();
 	init_shell();
@@ -75,6 +77,8 @@ int		main(int argc, char **argv, char **env)
 	signal(SIGINT, ft_prompt);
 	signal(SIGTSTP, ft_prompt);
 	signal(SIGQUIT, ft_prompt);
+	/*if (lstat(TMP_DIR, &s_buf) < 0)
+		mkdir(TMP_DIR, 0644);*/
 	while (7)
 		parse_cmd(0, grp);
 	return (0);

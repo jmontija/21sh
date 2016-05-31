@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/30 20:20:15 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/31 17:06:31 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int		error_synthax(char *error, char *file)
 	error_cmd(error, file);
 	grp->fd_in_save = 0;
 	grp->pipe = 0;
-	unlink("./TESTFINAL");
+	unlink(TMP_FROM);
 	return (-1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/30 20:00:54 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/31 17:06:37 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@
 # define STRCHR(a, b)	(ft_strchr(a, b))
 # define REMOVE(x)		(ft_strdel(x))
 # define KEY(a, b, c, d) ((d << 24) + (c << 16) + (b << 8) + a)
+# define TMP_FILE		"/private/tmp/.tmp_file"
+# define CAT_TMP_FILE	"cat /private/tmp/.tmp_file"
+# define TMP_FROM		"/private/tmp/.tmp_from"
 # define BUF_SIZE 1500
 # define START_POS 7
 # define ENTER 10
