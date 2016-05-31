@@ -6,14 +6,14 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/29 19:02:34 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/31 16:12:39 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/31 18:16:56 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
 
-int		check_pipe(t_group *grp, char cmd, int synth)
+/*int		check_pipe(t_group *grp, char cmd, int synth)
 {
 	if (synth == 0 && cmd == '|')
 	{
@@ -52,7 +52,8 @@ int		finalize_cmd(t_group *grp, int synth)
 	}
 	return (0);
 	//printf("ORDER = %s\n", grp->order);
-}
+	return (error_synthax("Invalid null command near", "|"));
+}*/
 
 int		check_synth_pipe(t_group *grp, char **split_cmd)
 {
@@ -80,7 +81,7 @@ int		check_synth_pipe(t_group *grp, char **split_cmd)
 	}
 	if (i < grp->pipe)
 		return (error_synthax("error parsing near", "|"));
-	return (finalize_cmd(grp, 1));
+	return (error_synthax("Invalid null command near", "|")); //return (finalize_cmd(grp, 1));
 }
 
 void	is_parenthese_closed(t_group *grp, int synth)
@@ -102,6 +103,13 @@ void	is_parenthese_closed(t_group *grp, int synth)
 			synth = check_parenthese(order[i], synth);
 		REMOVE(&order);
 	}
+	i = -1;
+	while (grp->order[++i] != '\0')
+	{
+		synth = check_parenthese(grp->order[i], synth);
+		if (synth == false && grp->order[i] == '|')
+			grp->pipe += 1;
+	}
 	printf("ORDER RECOMPOSED = %s\n", grp->order);
 }
 
@@ -113,13 +121,9 @@ int		check_synth_cmd(t_group *grp)
 	i = -1;
 	synth = false;
 	while (grp->order[++i] != '\0')
-	{
 		synth = check_parenthese(grp->order[i], synth);
-		if (synth == false && grp->order[i] == '|')
-			grp->pipe += 1;
-	}
-	is_parenthese_closed(grp, synth); // <- attention verifier sil ne rajoute pas de pipe
+	is_parenthese_closed(grp, synth);
 	if (grp->pipe > 0)
-		return (check_synth_pipe(grp, ft_strsplitstr(grp->order, "|"))); // <- attention verifier sil ne rajoute pas de "guillemets"
+		return (check_synth_pipe(grp, ft_strsplitstr(grp->order, "|")));
 	return (0);
 }
