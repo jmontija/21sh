@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/29 19:02:34 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/31 20:34:34 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/31 20:36:18 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int		check_synth_pipe(t_group *grp, char **split_cmd)
 		{
 			ret = error_synthax("unknown command", pipe_cmd[0]);
 			break ;
-		}														// to here
+		}														// to here // prendre le getting cmd du parsing lib et le foutre dans une lib
 		if ((splitw = ft_findocc(false, split_cmd[i], ">> > << <")) != NULL)
 			ret = check_synth_redir(grp, ft_strsplitstr(split_cmd[i], splitw), splitw);
 		if (ret == 0 && i == grp->pipe)
