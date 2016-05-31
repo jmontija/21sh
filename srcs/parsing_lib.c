@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/15 18:43:19 by julio             #+#    #+#             */
-/*   Updated: 2016/05/31 18:13:28 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/05/31 20:24:31 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int		exec_cmd(t_group *grp, char *path, char **cmd_line)
 	ret = lstat(path, &s_buf);
 	val = (s_buf.st_mode & ~S_IFMT);
 	if (ret != 0)
-		error_cmd("unknown command", cmd_line[0]);
+		error_cmd("unknown comMand", cmd_line[0]);
 	else if (s_buf.st_size <= 0)
 		error_cmd("executable format error", cmd_line[0]);
 	else if (!(val & S_IXUSR) || S_ISDIR(s_buf.st_mode))
