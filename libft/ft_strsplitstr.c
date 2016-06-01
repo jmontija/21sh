@@ -83,7 +83,10 @@ char			**ft_strsplitstr(char *cmd, char *symbol)
 	if (t == NULL)
 		return (NULL);
 	t = ft_fillstr(t, cmd, symbol);
-	while (t[++i])
+	while (t[++i] != NULL)
+	{
 		t[i] = ft_strtrim(t[i]);
+		t[i] == NULL ? t[i] = ft_strnew(0) : 0;
+	}
 	return (t);
 }
