@@ -6,11 +6,13 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/29 19:02:34 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/01 21:42:24 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/01 22:08:28 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+
+char *actual = NULL;
 
 char	**cmd_remake(t_group *grp, char *cmd_to_rmk, char *symbol)
 {
@@ -22,28 +24,19 @@ char	**cmd_remake(t_group *grp, char *cmd_to_rmk, char *symbol)
 	cmd_line = ft_spacesplit(cmd_to_rmk);
 	if (cmd_line[0] && cmd_line[1])
 	{
-		printf("HERE %s %s\n", cmd_line[0], cmd_line[1]);
 		tmp = cmd_line[0];
 		cmd_line[0] = cmd_line[1];
 		cmd_line[1] = tmp;
 		i = 1;
 		while (cmd_line[++i])
 		{
-			cmd_line[1] = ft_charjoin(cmd_line[1], ' ');
-			cmd_line[1] = JOIN(cmd_line[1], cmd_line[i]);
+			printf("RMK REST %s\n", cmd_line[i]);
+			/*cmd_line[1] = ft_charjoin(cmd_line[1], ' ');
+			cmd_line[1] = JOIN(cmd_line[1], cmd_line[i]);*/
 		}
+		cmd_line[2] = NULL;
 		return (cmd_line);
 	}
-	/*if (cmd_line[0] && cmd_line[1])
-	{
-		rmk = JOIN(cmd_line[1], symbol);
-		rmk = JOIN(rmk, cmd_line[0]);
-		i = 1;
-		while (cmd_line[++i])
-			rmk = JOIN(rmk, cmd_line[i]);
-		printf("cmd remade %s\n", rmk);
-		return (rmk);
-	}*/
 	return (NULL);
 }
 
@@ -94,6 +87,19 @@ int		check_synth_redir(t_group *grp, char **split_cmd, char *symbol)
 		if ((split_cmd = cmd_remake(grp, split_cmd[1], symbol)) == NULL)
 			return (error_synthax("error parsing near", symbol));
 	}
+	if (actual == NULL)
+	{
+		actual = SDUP("");
+		while (split_cmd[++i])
+		{
+			/*actual = JOIN(actual, split_cmd[i]);
+			if (split_cmd[i + 1] != NULL)
+				actual = JOIN(actual, symbol);*/
+			printf("ACTUAL RMK = %s\n", split_cmd[i]);
+		}
+	}
+
+	i =-1;
 	while (split_cmd[++i])
 	{
 		printf("split_cmd %s\n", split_cmd[i]);
@@ -121,6 +127,7 @@ int		check_synth_redir(t_group *grp, char **split_cmd, char *symbol)
 				break ;
 		}
 	}
+	grp->pipe == 0 ? REMOVE(&actual) : 0;
 	//printf("ORDER RECOMPOSED QUOTE = %s\n", grp->order);
 	return (ret);
 }
@@ -148,10 +155,12 @@ int		check_synth_pipe(t_group *grp, char **split_cmd)
 			if (ret < 0)
 				break ;
 		}
+		printf("Actual PIpe = %s\n", actual);
 		if ((ret = cmd_checker(grp, split_cmd[i], "unknown command pipe")) < 0)
 			break ;
 		/*grp->order = JOIN(grp->order, split_cmd[i]);
 		grp->pipe != i ? grp->order = ft_charjoin(grp->order, '|') : 0;*/
+		REMOVE(&actual);
 	}
 	printf("ORDER RECOMPOSED PIPE = %s\n", grp->order);
 	return (ret);
