@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/13 16:17:39 by jmontija          #+#    #+#             */
-/*   Updated: 2016/03/30 16:37:32 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/02 13:42:51 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,14 @@ char			*ft_strtrim(char const *s)
 				while (s[i] && ft_isspace(s[i]))
 					i++;
 				if (!s[i])
-					return (ft_strdup(""));
+					return (ft_strnew(0));
 				ft_strncpy(result, &s[i], len);
 				result[len] = '\0';
 				return (result);
 			}
 		}
+		else
+			return (ft_strnew(0));
 	}
 	return (NULL);
 }

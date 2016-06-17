@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_lib.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/05/31 16:12:26 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/17 03:01:30 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,27 +106,30 @@ int		insert_env(t_group *grp, char *env)
 t_group	*set_grp(void)
 {
 	t_group	*grp;
+	struct winsize	w;
 	int		i;
 
 	i = -1;
 	grp = (t_group *)malloc(sizeof(t_group));
 	if (!(grp))
 		exit(0);
+	ioctl(0, TIOCGWINSZ, &w);
 	grp->first = NULL;
 	grp->last = NULL;
 	grp->cmd = NULL;
+	grp->curr_cmd = NULL;
+	grp->cmd_save = NULL;
 	grp->env = NULL;
 	grp->hist = NULL;
-	grp->redirect = (t_redir **)malloc(sizeof(t_redir *) * 4);
-	while (++i < 4)
-		grp->redirect[i] = NULL;
+	grp->quotes = (int *)malloc(sizeof(int) * 6);
+	while (++i < 6)
+		grp->quotes[i] = 0;
 	grp->curr_hist = NULL;
-	grp->curs_col = START_POS;
 	grp->fd_in_save = STDIN_FILENO;
-	grp->last_fd_in_save = STDIN_FILENO;
-	grp->curr_cmd = NULL;
-	grp->curr_pipe_cmd = NULL;
+	//grp->fd_out_save = open("/tmp/.tmp_file", O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	grp->pipe = 0;
+	grp->exit[0] = 0;
+	grp->exit[1] = 0;
 	grp->define_cmd = (int *)malloc(sizeof(int) * 4);
 	i = -1;
 	while (++i < 4)
@@ -140,6 +143,14 @@ t_group	*set_grp(void)
 		grp->options->on[i] = false;
 		grp->options->params[i] = NULL;
 	}
+	grp->term = (t_term *)malloc(sizeof(t_term));
+	grp->term->curs_pos = 0;
+	grp->term->cmd_size = 0;
+	grp->term->other_read = 0;
+	grp->term->cmd_line = NULL;
+	grp->term->window = (t_window *)malloc(sizeof(t_window));
+	grp->term->window->width = w.ws_col;
+	grp->term->window->heigth = w.ws_row;
 	return (grp);
 }
 

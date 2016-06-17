@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_lib.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:06:08 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/03 16:25:30 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/11 18:04:27 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,6 @@
 int		ft_getchar(int c)
 {
 	return (write(2, &c, 1));
-}
-
-void	ft_tputs(char *cap_code, char *cap_code_bis)
-{
-	t_group	*grp;
-
-	grp = init_grp();
-	if (cap_code_bis == NULL)
-		tputs(tgetstr(cap_code, NULL), 1, ft_getchar);
-	else
-		tputs(tgoto(tgetstr(cap_code_bis, NULL), 0, grp->curs_col), 1, ft_getchar);
 }
 
 int		reset_shell(void)

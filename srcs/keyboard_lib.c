@@ -6,35 +6,40 @@
 /*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/02 15:43:58 by julio             #+#    #+#             */
-/*   Updated: 2016/05/10 02:54:58 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/14 00:44:05 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-void	get_cursor_pos()
+void		ft_go_home(t_group *grp)
 {
-	struct winsize	window;
-
-	ioctl(0, TIOCGWINSZ, &window);
-
+	while (TERM(curs_pos) > 0)
+		ft_left_arrow(grp);
 }
 
-void	remove_line(t_group *grp, char **cmd)
+void		ft_go_end(t_group *grp)
 {
-	size_t	i;
+	while (TERM(curs_pos) < TERM(cmd_size))
+		ft_right_arrow(grp);
+}
+
+void		ft_go_up(t_group *grp)
+{
+	int i;
 
 	i = -1;
-	grp->curs_col = START_POS + LEN(*cmd) - 1;
-	ft_tputs(NULL, "ch");
-	while (++i < LEN(*cmd))
-	{
-		ft_tputs("le", NULL);
-		ft_tputs("dc", NULL);
-	}
-	REMOVE(cmd);
-	*cmd = SDUP("");
-	grp->curs_col = START_POS;
+	while (++i < TERM(window->width) && TERM(curs_pos) > 0)
+		ft_left_arrow(grp);
+}
+
+void		ft_go_down(t_group *grp)
+{
+	int i;
+
+	i = -1;
+	while (++i < TERM(window->width) && TERM(curs_pos) < TERM(cmd_size))
+		ft_right_arrow(grp);
 }
 
 void	insert_hist(t_group *grp, char *name)
@@ -46,7 +51,7 @@ void	insert_hist(t_group *grp, char *name)
 		(grp->hist && ft_strcmp(grp->hist->name, name) == 0))
 		return ;
 	new = (t_hist *)malloc(sizeof(t_hist));
-	new->name = name;
+	new->name = SDUP(name);
 	new->next = grp->hist;
 	new->prev = NULL;
 	if (grp->hist != NULL)

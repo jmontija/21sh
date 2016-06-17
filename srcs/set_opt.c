@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_opt.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 00:02:40 by julio             #+#    #+#             */
-/*   Updated: 2016/05/03 18:04:55 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/15 03:41:22 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,20 +94,6 @@ int		manage_opt(t_group *grp)
 {
 	int	i;
 
-	i = 0;
-	while (grp->cmd && grp->cmd[++i])
-	{
-		if (grp->cmd[i][0] == '-' &&
-			grp->define_cmd[namenv] == false && grp->define_cmd[utils] == false)
-			grp->define_cmd[e_opt] = i;
-		else if (is_env(grp->cmd[i]) > 0 && grp->define_cmd[utils] == false)
-			grp->define_cmd[namenv] = i;
-		else
-		{
-			grp->define_cmd[utils] = i;
-			break ;
-		}
-	}
 	i = -1;
 	while (++i < grp->define_cmd[e_opt])
 		if (analyse_opt(grp, i + 1) < 0)

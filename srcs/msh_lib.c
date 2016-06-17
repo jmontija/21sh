@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_lib.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/05 03:52:12 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/01 17:27:33 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/15 00:51:28 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	cderr_pwd(t_group *grp, char *path, struct stat s_buf)
 		error_cmd("what the fuck you are doing ?", dir_name);
 }
 
-int		list_to_tab(t_env *env, char ***env_tab)
+int		list_to_tab(int stock, t_env *env, char ***env_tab)
 {
 	char	*tmp;
 	int		pos;
@@ -68,8 +68,11 @@ int		list_to_tab(t_env *env, char ***env_tab)
 	pos = 0;
 	while (env != NULL)
 	{
-		tmp = JOIN(env->name, "=");
-		(*env_tab)[pos] = JOIN(tmp, env->val);
+		if (stock)
+		{
+			tmp = JOIN(env->name, "=");
+			(*env_tab)[pos] = JOIN(tmp, env->val);
+		}
 		pos++;
 		env = env->next;
 	}

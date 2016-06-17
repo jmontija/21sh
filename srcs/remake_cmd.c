@@ -3,196 +3,171 @@
 /*                                                        :::      ::::::::   */
 /*   remake_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/29 19:02:34 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/01 22:08:28 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/17 03:28:23 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-char *actual = NULL;
-
-char	**cmd_remake(t_group *grp, char *cmd_to_rmk, char *symbol)
+int		check_fill_cmd(int idx_cmd, t_group *grp, char *cmd)
 {
-	char		**cmd_line;
-	char		*tmp;
-	int			i;
-
-	printf("cmd after %s = %s\n", symbol , cmd_to_rmk);
-	cmd_line = ft_spacesplit(cmd_to_rmk);
-	if (cmd_line[0] && cmd_line[1])
-	{
-		tmp = cmd_line[0];
-		cmd_line[0] = cmd_line[1];
-		cmd_line[1] = tmp;
-		i = 1;
-		while (cmd_line[++i])
-		{
-			printf("RMK REST %s\n", cmd_line[i]);
-			/*cmd_line[1] = ft_charjoin(cmd_line[1], ' ');
-			cmd_line[1] = JOIN(cmd_line[1], cmd_line[i]);*/
-		}
-		cmd_line[2] = NULL;
-		return (cmd_line);
-	}
-	return (NULL);
-}
-
-int		cmd_checker(t_group *grp, char *cmd_to_check, char *error_name)
-{
-	struct stat	s_buf;
-	mode_t		val;
-	int			ret;
-	char		**cmd_line;
-	char		*path;
-	int			i;
+	int		i;
+	int		ret;
+	char	*file;
+	char	*symbol;
+	int		synth;
 
 	i = -1;
-	cmd_line = ft_spacesplit(cmd_to_check);
-	while (cmd_line[++i])
-		cmd_line[i] = ft_strtrim(cmd_line[i]);
-	grp->cmd = cmd_line;
-	if (cmd_line[0][0] != '.' && cmd_line[0][0] != '/' && error_name[0] == 'u')
-		path = child_process(grp, NULL);
-	else
-		path = SDUP(cmd_line[0]);
-	if (path == NULL)
-		return (0);
-	ret = lstat(path, &s_buf);
-	val = (s_buf.st_mode & ~S_IFMT);
-	if (ret != 0)
-		error_cmd(error_name, cmd_line[0]);
-	/*else if (s_buf.st_size <= 0)
-		error_cmd("executable format error", cmd_line[0]);
-	else if (!(val & S_IXUSR) || S_ISDIR(s_buf.st_mode))
-		error_cmd("Permission denied", cmd_line[0]);*/
-	else
-		return (0);
-	return (-1);
+	file = ft_strnew(0);
+	symbol = ft_strnew(0);
+	grp->curr_cmd = ft_strnew(0);
+	ret = 0;
+	synth = false;
+	while (cmd[++i] != '\0')
+	{
+		synth = check_parentheses(grp, cmd[i]);
+		while (synth == false && (cmd[i] == '>' || cmd[i] == '<'))
+		{
+			symbol = ft_charjoin(symbol, cmd[i]);
+			i++;
+		}
+		if (cmd[i] == '&')
+		{
+			symbol = ft_charjoin(symbol, cmd[i]);
+			i++;
+		}
+		if (symbol[0] == '\0')
+			grp->curr_cmd = ft_charjoin(grp->curr_cmd, cmd[i]);
+		else
+			file = ft_charjoin(file, cmd[i]);
+		if (synth == false && file[0] != '\0' && (cmd[i + 1] == '\0' || cmd[i + 1] == '>' || cmd[i + 1] == '<'))
+		{
+			ret = insert_fd(idx_cmd, grp, file, symbol);
+			REMOVE(&symbol); REMOVE(&file);
+			if (ret < 0)
+				return (ret);
+			symbol = ft_strnew(0); file = ft_strnew(0);
+		}
+	}
+	ret = insert_cmd(idx_cmd, grp);
+	REMOVE(&grp->curr_cmd);
+	if (symbol[0] != '\0')
+		return (error_synthax("error parsing near", symbol));
+	return (ret);
 }
 
-int		check_synth_redir(t_group *grp, char **split_cmd, char *symbol)
+int		split_order(t_group *grp)
 {
-	char	*splitw;
-	char	*file;
-	int		ret;
+	char	**cmd_to_exec;
 	int		i;
+	int		ret;
 
 	i = -1;
 	ret = 0;
-	if (split_cmd[0][0] == '\0')
+	cmd_to_exec = ft_strsplitquote(grp->order, '|');
+	while (cmd_to_exec[++i] != NULL)
 	{
-		if ((split_cmd = cmd_remake(grp, split_cmd[1], symbol)) == NULL)
-			return (error_synthax("error parsing near", symbol));
+		cmd_to_exec[i] = ft_strtrim(cmd_to_exec[i]);
+		if ((ret = check_fill_cmd(i, grp, cmd_to_exec[i])) < 0)
+			return (-1);
 	}
-	if (actual == NULL)
-	{
-		actual = SDUP("");
-		while (split_cmd[++i])
-		{
-			/*actual = JOIN(actual, split_cmd[i]);
-			if (split_cmd[i + 1] != NULL)
-				actual = JOIN(actual, symbol);*/
-			printf("ACTUAL RMK = %s\n", split_cmd[i]);
-		}
-	}
-
-	i =-1;
-	while (split_cmd[++i])
-	{
-		printf("split_cmd %s\n", split_cmd[i]);
-		if (i > 0)
-		{
-			if (split_cmd[i][0] == '\0')
-			{
-				ret = error_synthax("error parsing near", symbol);
-				break ;
-			}
-			file = get_cmd(grp, split_cmd[i]);
-			if (symbol[0] == '>')
-				printf("FILE REDIR TO %s\n", file); // a stocker dans une liste et creer a la fin si tout cest bien passé !
-			else
-			{
-				if ((ret = cmd_checker(grp, file, "no such file or directory")) < 0)
-					break ;
-				printf("FILE REDIR FROM %s\n", file); // verifier ici si le fichier existe !
-			}
-		}
-		if ((splitw = ft_findocc(false, split_cmd[i], ">> > << <")) != NULL)
-		{
-			ret = check_synth_redir(grp, ft_strsplitstr(split_cmd[i], splitw), splitw);
-			if (ret < 0)
-				break ;
-		}
-	}
-	grp->pipe == 0 ? REMOVE(&actual) : 0;
-	//printf("ORDER RECOMPOSED QUOTE = %s\n", grp->order);
+	if (i < grp->pipe + 1)
+		return (error_synthax("Invalid null commander near", "|"));
 	return (ret);
 }
 
-int		check_synth_pipe(t_group *grp, char **split_cmd)
+int		is_parenthese_closed(t_group *grp, int synth)
 {
-	int			i;
-	int			ret;
-	char		*splitw;
-
-	i = -1;
-	/*REMOVE(&grp->order);
-	grp->order = ft_strdup("");*/
-	while (split_cmd[++i])
-	{
-		printf("CHECKER PIPE with CMD = %s\n", split_cmd[i]);
-		if (split_cmd[i][0] == '\0')
-		{
-			ret = error_synthax("Invalid null command near", "|");
-			break ;
-		}
-		if ((splitw = ft_findocc(false, split_cmd[i], ">> > << <")) != NULL)
-		{
-			ret = check_synth_redir(grp, ft_strsplitstr(split_cmd[i], splitw), splitw);
-			if (ret < 0)
-				break ;
-		}
-		printf("Actual PIpe = %s\n", actual);
-		if ((ret = cmd_checker(grp, split_cmd[i], "unknown command pipe")) < 0)
-			break ;
-		/*grp->order = JOIN(grp->order, split_cmd[i]);
-		grp->pipe != i ? grp->order = ft_charjoin(grp->order, '|') : 0;*/
-		REMOVE(&actual);
-	}
-	printf("ORDER RECOMPOSED PIPE = %s\n", grp->order);
-	return (ret);
-}
-
-void	is_parenthese_closed(t_group *grp, int synth)
-{
-	char	*order;
 	int		i;
 
+	TERM(other_read) = true;
 	while (synth)
 	{
-		order = SDUP("");
-		ft_putstr_fd("\033[1;34m", 2);
-		ft_putstr_fd("quote> ", 2);
+		TERM(cmd_line) = SDUP("");
+		ft_putstr_fd("\033[1;31m", 2);
+		ft_putstr_fd("incomplete> ", 2);
 		ft_putstr_fd("\033[1;37m", 2);
-		read_cmd(grp, 0, &order);
+		read_cmd(grp, 0);
+		if (grp->exit[1] == true)
+			break ;
 		grp->order = ft_charjoin(grp->order, '\n');
-		grp->order = JOIN(grp->order, order);
+		grp->order = JOIN(grp->order, TERM(cmd_line));
 		i = -1;
-		while (order[++i])
-			synth = check_parenthese(order[i], synth);
-		REMOVE(&order);
+		while (TERM(cmd_line)[++i])
+			synth = check_parentheses(grp, TERM(cmd_line)[i]);
+		REMOVE(&TERM(cmd_line));
 	}
 	i = -1;
 	while (grp->order[++i] != '\0')
 	{
-		synth = check_parenthese(grp->order[i], synth);
+		synth = check_parentheses(grp, grp->order[i]);
 		if (synth == false && grp->order[i] == '|')
 			grp->pipe += 1;
 	}
-	printf("ORDER RECOMPOSED QUOTE = %s\n", grp->order);
+	TERM(other_read) = false;
+	TERM(curs_pos) = 0;
+	TERM(cmd_size) = 0;
+	REMOVE(&TERM(cmd_line));
+	if (grp->exit[1] == true)
+	{
+		grp->exit[1] = false;
+		return (-1);
+	}
+	return (0);
+	//printf("ORDER RECOMPOSED QUOTE = %s\n", grp->order);
+}
+
+int		create_fd_to(t_group *grp)
+{
+	int	i;
+	int	action;
+	t_redir	*curr;
+
+	i = -1;
+	while (grp->sh_cmd[++i] != NULL)
+	{
+		curr = grp->sh_cmd[i];
+		while (curr != NULL)
+		{
+			if (curr->symbol && curr->symbol[0] == '>')
+			{
+				action = (ft_strcmp(curr->symbol, ">") == 0 ||  ft_strcmp(curr->symbol, ">&") == 0) ? O_TRUNC : O_APPEND;
+				curr->fd = open(curr->name, O_WRONLY | action | O_CREAT, 0644);
+				if (check_file(grp, curr->name, S_IWUSR) < 0)
+					return (-1); 
+			}
+			curr = curr->next;
+		}
+	}
+	return (0);
+}
+
+int		csh_check(t_group *grp)
+{
+	int	i;
+	int	ambigous;
+	t_redir	*curr;
+
+	i = -1;
+	while (grp->sh_cmd[++i] != NULL)
+	{
+		curr = grp->sh_cmd[i];
+		ambigous = grp->sh_cmd[i + 1] != NULL ? true : false;
+		while (curr != NULL)
+		{
+			if (curr->symbol && curr->symbol[0] == '>')
+			{
+				if (ambigous)
+					return (error_synthax("Ambiguous output redirect, too many", "'>'"));
+				ambigous = true;
+			}
+			curr = curr->next;
+		}
+	}
+	return (create_fd_to(grp));
 }
 
 int		check_synth_cmd(t_group *grp)
@@ -205,14 +180,15 @@ int		check_synth_cmd(t_group *grp)
 	i = -1;
 	synth = false;
 	while (grp->order[++i] != '\0')
-		synth = check_parenthese(grp->order[i], synth);
-	is_parenthese_closed(grp, synth);
-	if ((splitw = ft_findocc(false, grp->order, "| >> > << < 1>&2 2>&1 2>&- 1>&- >&-")) == NULL)
-		splitw = SDUP(">"); // envoyer grp->order vers un checker fou !
-	if (splitw[0] == '|')
-		return (check_synth_pipe(grp, ft_strsplitstr(grp->order, splitw)));
-	ret = check_synth_redir(grp, ft_strsplitstr(grp->order, splitw), splitw);
-	/*if (ret == 0)
-		ret = cmd_checker(grp, get_cmd(grp, grp->order), "unknown command redir");*/ // <- to check cmd after evthg up to date > TEST ls
+		if ((synth = check_parentheses(grp, grp->order[i])) < 0)
+			return (-1);
+	if (is_parenthese_closed(grp, synth) < 0)
+		return (-1);
+	i = -1;
+	grp->sh_cmd = (t_redir **)malloc(sizeof(t_redir *) * (grp->pipe + 2));
+	while (++i < grp->pipe + 2)
+		grp->sh_cmd[i] = NULL;
+	ret = split_order(grp);
+	ret = ret >= 0 ? csh_check(grp) : -1;
 	return (ret);
 }

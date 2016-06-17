@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 18:43:51 by jmontija          #+#    #+#             */
-/*   Updated: 2016/03/25 18:21:49 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/07 02:19:00 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <fcntl.h>
 # include "libft.h"
 
-# define BUFF_SIZE	1
+# define BUFF_SIZE	4096
 # define FD_MAX		1010
 # define NEW(x)			(ft_strnew(x))
 # define LEN(x)			(ft_strlen(x))

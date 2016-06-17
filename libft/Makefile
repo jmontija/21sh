@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+         #
+#    By: julio <julio@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/10 17:28:13 by jmontija          #+#    #+#              #
-#    Updated: 2016/04/29 19:28:56 by jmontija         ###   ########.fr        #
+#    Updated: 2016/06/02 12:51:02 by julio            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,6 +61,7 @@ SRC += ft_charjoin.c
 SRC += ft_strtrim.c
 SRC += ft_strsplit.c
 SRC += ft_spacesplit.c
+SRC += ft_strsplitquote.c
 SRC += ft_strsplitstr.c
 SRC += ft_atoi.c
 SRC += ft_strchr.c

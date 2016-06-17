@@ -3,16 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/10 17:51:30 by jmontija          #+#    #+#             */
-/*   Updated: 2016/05/13 22:08:23 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/17 03:05:38 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
+#include "stdio.h"
 void	ft_putchar_fd(char c, int fd)
 {
-	write(fd, &c, 1);
+	//int ret;
+	//ret =
+	 write(fd, &c, 1);
+//	printf("%d\n", ret);
 }

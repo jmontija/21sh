@@ -3,199 +3,111 @@
 /*                                                        :::      ::::::::   */
 /*   redir_exec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/06/01 19:43:33 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/17 03:36:37 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-/*
-	<> file -> make file
-	cmd (> < >> <<) file [file1 file2 ...]options_cmd
-	traité de gauche a droite
-		-> cmd < file2 <file1 > file4 < file3  >file5
-		-> cmd get info from file2 file1 file3 and redirect it to file4 file5 etc .. till next_cmd
-	cmd < file > file -> envois un fd vide (faire  un cat et kill process)
-	attention si 2 fois le meme fichier est appelé au cours d'une meme commande pour des redirections,
-	comportement indeterminé (peut prendre en compte la redirection ou non selon le symbol qui suit,
-	, si la redirection est similaire, a approfondir)
-	exemple test :
-		ls | grep -i ZKJSj < dkld | wc > TEST | grep -i '0' | wc -l > TEST | pwd ; cat TEST
-			-> comportement indeterminé (spamer la cmd) !
-		ls | grep -i ZKJSj < dkld | wc > TEST | grep -i 0 | wc -l > TEST ; cat TEST
-		ls | grep -i ZKJSj < dkld | wc > TEST | grep -i 0 | wc -l ; cat TEST
-
-		pour "<<" le pipe ne prend pas en compte la sortie eof, << et < redirige seulment la sortie
-		exple_test: ls | grep -i OK <(<) FILE | grep -i "word_in_FILE" | wc -l
-	/!\ Attention: modifie l'entrée de sa cmd (ici grep) et modifie donc sa sortie
-
-	ATTENTION ZSH CREER LES FICHIER POUR LES REDIR > AVANT LEXECUTION DE LA COMMANDE
-	exple
-		-> ls | wc -l > TEST
-		result = sizeof(ls + TEST) ;
-
-	redirection de sortie dans la ligne de commande !
-		-> >& FILE: redirige tout les fd(STDERR, STDOUT) vers FILE
-		-> 1>&-: ferme le fd 1
-		-> 1>&2: redirige le STDOUT vers STDERR
-		-> CMD &> FILE mets en background la commande recuperable avec fg -> equivalent a un ctrl+Z sur un prog en cour
-*/
-
-void	redir_clean(t_group *grp)
+int		ft_fdcopy(int fd_r, char *fromfd, int fd_w, char *tofd)
 {
-	int		i;
-	t_redir *curr;
-	t_redir *trash;
+	char	*order;
 
-	i = -1;
-	while (++i < 3)
+	order = ft_strdup("");
+	fd_r == 0 ? (fd_r = open(fromfd, O_RDONLY)) : 0;
+	fd_w == 0 ? (fd_w = open(tofd, O_WRONLY | O_APPEND | O_CREAT, 0644)) : 0;
+	while (get_next_line(fd_r, &order) > 0)
 	{
-		curr = grp->redirect[i];
-		while (curr != NULL)
-		{
-			REMOVE(&curr->name);
-			REMOVE(&curr->symbol);
-			REMOVE(&curr->command);
-			curr->action = false;
-			trash = curr;
-			curr = curr->next;
-			ft_memdel((void *)trash);
-		}
-		grp->redirect[i] = NULL;
+		ft_putendl_fd(order, fd_w);
+		REMOVE(&order);
 	}
-	unlink(TMP_FILE);
-	ft_putendl("REDIRECTIONS ARE FREE");
+	return (true);
 }
 
-void	manage_redirection_from(t_group *grp, char *arg, char *fd_to_open)
+int		heredoc(t_group *grp, t_redir *curr)
 {
-	int			fd;
-	pid_t		pid;
-	int			buf;
-	char		*cmd_to_exec;
-	struct stat	s_buf;
+	int	fd;
 
-	if (lstat(arg, &s_buf) < 0 && ft_strcmp(arg, " ") != 0)
-		error_synthax("no such file or directory", arg);
-	pid = fork();
-	pid == -1 ? exit(270) : 0;
-	cmd_to_exec = JOIN("cat ", arg);
-	if (pid == 0)
+	TERM(other_read) = true;
+	set_shell((~ICANON & ~ECHO));
+	fd = open(TMP_FROM, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	while (grp->exit[1] == false)
 	{
-		fd = open(fd_to_open, O_WRONLY | O_APPEND | O_CREAT, 0644);
-		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
-		split_exec_cmd(grp, cmd_to_exec, "COMMAND TO STOCK IN /private/tmp/.tmp_from -> ");
-		close(fd);
+		TERM(cmd_line) = ft_strdup("");
+		ft_putstr_fd("\033[1;34m", 2);
+		ft_putstr_fd("heredoc> ", 2);
+		ft_putstr_fd("\033[1;37m", 2);
+		read_cmd(grp, 0);
+		if (ft_strcmp(TERM(cmd_line), curr->name) == 0)
+			break ;
+		ft_putendl_fd(TERM(cmd_line), fd);
+		REMOVE(&TERM(cmd_line));
 	}
-	else if (pid != 0)
-		waitpid(pid, &buf, 0);
+	TERM(curs_pos) = 0;
+	TERM(cmd_size) = 0;
+	REMOVE(&TERM(cmd_line));
+	TERM(other_read) = false;
+	reset_shell();
+	return (true);
 }
 
-void	redir_from(t_group *grp)
+void	redir_from(int idx_cmd, t_group *grp)
 {
 	t_redir *curr;
 	int		exec;
+	int		exec_2;
 	int		fd;
 
-	curr = grp->redirect[0];
 	exec = false;
+	curr = grp->sh_cmd[idx_cmd];
 	while (curr != NULL)
 	{
-		ft_putstr(curr->symbol); ft_putchar(' '); ft_putendl(curr->name);
-		if (grp->fd_in_save && exec == false)
+		/*if (grp->fd_in_save > 0 && exec == false)
+			exec = ft_fdcopy(grp->fd_in_save, NULL, 0, TMP_FROM);*/
+		if (curr->symbol && ft_strcmp(curr->symbol, "<") == 0)
 		{
-			dup2(grp->fd_in_save, STDIN_FILENO);
-			manage_redirection_from(grp, " ", TMP_FROM);
-			dup2(STDIN_FILENO, grp->fd_in_save);
+			if (grp->fd_in_save > 1)
+				exec_2 = ft_fdcopy(0, curr->name, grp->fd_in_save, NULL);
+			else
+				exec = ft_fdcopy(0, curr->name, 0, TMP_FROM);
 		}
-		exec = true;
-		manage_redirection_from(grp, curr->name, TMP_FROM);
+		else if (curr->symbol && ft_strcmp(curr->symbol, "<<") == 0)
+			exec = heredoc(grp, curr);
 		curr = curr->next;
 	}
 	if (exec)
 	{
 		fd = open(TMP_FROM, O_RDONLY);
 		grp->fd_in_save = fd;
-		unlink(TMP_FROM);
 	}
-}
-
-void	create_redirection_to(t_group *grp, t_redir *curr, char *cmd)
-{
-	int			fd;
-	pid_t		pid;
-	int			buf;
-
-	ft_putstr("CREATE_REDIR_TO ");
-	ft_putendl(curr->name);
-	pid = fork();
-	pid == -1 ? exit(270) : 0;
-	if (pid == 0)
+	else if (exec_2)
 	{
-		fd = open(curr->name, O_WRONLY | curr->action | O_CREAT, 0644);
-		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
-		split_exec_cmd(grp, cmd, "COMMAND TO EXEC BY REDIRECTION_TO -> ");
-		close(fd);
-	}
-	else if (pid != 0)
-		waitpid(pid, &buf, 0);
+		fd = open("/dev/tty1", O_RDONLY);
+		grp->fd_in_save = fd;
+	} 
+	//else if (exec)
+		//ft_putendl("error fd failed");
 }
 
-int		redir_to(t_group *grp, char *cmd)
+int		redir_to(int idx_cmd, t_group *grp)
 {
 	t_redir *curr;
 	int		exec;
+	int		redir_all;
 
-	curr = grp->redirect[1];
+	curr = grp->sh_cmd[idx_cmd];
 	exec = false;
 	while (curr != NULL)
 	{
-		ft_putstr(curr->symbol); ft_putchar(' '); ft_putendl(curr->name);
-		exec = true;
-		create_redirection_to(grp, curr, cmd);
+		if (curr->symbol && curr->symbol[0] == '>')
+		{
+			redir_all = (ft_strcmp(curr->symbol, ">&") == 0) ? 1 : 0;
+			exec = exec_command(curr->fd, grp, redir_all);
+		}
 		curr = curr->next;
 	}
 	return (exec);
-}
-
-void	stock_cmd(t_group *grp, char *pipe_cmd)
-{
-	int			fd;
-	pid_t		pid;
-	int			buf;
-
-	pid = fork();
-	pid == -1 ? exit(270) : 0;
-	if (pid == 0)
-	{
-		fd = open(TMP_FILE, O_WRONLY | O_APPEND | O_CREAT, 777);
-		dup2(grp->fd_in_save, STDIN_FILENO);
-		dup2(fd, STDOUT_FILENO); // penser a reset le shell si cat ou autre fichier utilsant l'entree standard
-		split_exec_cmd(grp, pipe_cmd, "COMMAND TO STOCK IN /private/tmp/.tmp_file -> ");
-		close(fd);
-		exit(0);
-	}
-	else if (pid != 0)
-		waitpid(pid, &buf, 0);
-}
-
-int		manage_redirections(int exec, t_group *grp, char *pipe_cmd)
-{
-	char	*cmd;
-	int		ret;
-
-	ret = 0;
-	cmd = SDUP(CAT_TMP_FILE);
-	if (exec == 0)
-	{
-		redir_clean(grp);
-		return (ret);
-	}
-	redir_from(grp);
-	stock_cmd(grp, pipe_cmd);
-	ret = redir_to(grp, cmd);
-	return (ret);
 }

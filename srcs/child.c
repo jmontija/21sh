@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 14:17:42 by julio             #+#    #+#             */
-/*   Updated: 2016/05/29 19:17:06 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/15 23:18:47 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@ void	path_rights(char *path_env)
 {
 	struct stat	s_buf;
 	mode_t		val;
+	int			ret;
 
-	lstat(path_env, &s_buf);
+	ret = lstat(path_env, &s_buf);
 	val = (s_buf.st_mode & ~S_IFMT);
-	if (!(val & S_IXUSR))
+	if (ret == 0 && !(val & S_IXUSR))
 	{
 		ft_putstr("fsh: /!\\ WARNING PATH /!\\: permission denied: ");
 		ft_putendl(path_env);
@@ -31,20 +32,13 @@ char	*search_exec(t_group *grp, char *cmd)
 	char	**path_env;
 	char	*path_env_line;
 	char	*path;
-	char	*tmp;
 	int		i;
 
 	i = -1;
-	path = NULL;
-	if ((path_env_line = ft_getenv(grp, "PATH")) == NULL)
-	{
-		tmp = JOIN("env ", grp->order);
-		grp->cmd = ft_spacesplit(tmp);
-		path = ft_getenv(grp, "_");
-		return (path);
-	}
+	path = ft_strdup("");
+	path_env_line = ft_getenv(grp, "PATH");
 	path_env = ft_strsplit(path_env_line, ':');
-	while (path_env[++i] != NULL)
+	while (path_env && path_env[++i] != NULL)
 	{
 		REMOVE(&path);
 		path = JOIN(path_env[i], cmd);
