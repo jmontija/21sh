@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msh_lib.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/05 03:52:12 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/15 00:51:28 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/20 23:29:42 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,26 @@ void	error_cmd(char *what, char *who)
 	ft_putendl_fd(who, 2);
 }
 
+int		error_synthax(char *error, char *file)
+{
+	t_group *grp;
+
+	grp = init_grp();
+	error_cmd(error, file);
+	grp->fd_in_save = 0;
+	grp->pipe = 0;
+	unlink(TMP_FROM);
+	return (-1);
+}
+
 int		error_opt(char opt, char *what)
 {
 	ft_putstr_fd("fsh: '-", 2);
 	ft_putchar_fd(opt, 2);
 	ft_putchar_fd('\'', 2);
 	ft_putendl_fd(what, 2);
-	ft_putendl_fd("usage: env [-iv] [-P altpath] [-S string] \
-[-u name] [name=value ...] [utility [argument ...]]", 2);
+	ft_putendl_fd(
+"usage: env [-iv] [-P altpath][-u name] [name=value] [utility [argument]", 2);
 	return (-1);
 }
 

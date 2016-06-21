@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard_tools.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 19:31:01 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/17 00:45:48 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/21 19:05:39 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-void		ft_replace_cursor(t_group *grp)
+void	ft_replace_cursor(t_group *grp)
 {
 	int i;
 	int y;
@@ -20,7 +20,9 @@ void		ft_replace_cursor(t_group *grp)
 	i = -1;
 	while (++i < (int)ft_strlen(&TERM(cmd_line)[TERM(curs_pos)]))
 	{
-		if (((TERM(curs_pos) + START_POS + (int)ft_strlen(&TERM(cmd_line)[TERM(curs_pos)]) - i) % TERM(window->width)) == 0)
+		if (((TERM(curs_pos) + START_POS +
+			(int)ft_strlen(&TERM(cmd_line)[TERM(curs_pos)]) - i) %
+			TERM(window->width)) == 0)
 		{
 			tputs(tgetstr("up", NULL), 1, ft_getchar);
 			y = 0;
@@ -32,7 +34,7 @@ void		ft_replace_cursor(t_group *grp)
 	}
 }
 
-void		ft_get_cmd(t_group *grp, char *order)
+void	ft_get_cmd(t_group *grp, char *order)
 {
 	char	*tmp;
 
@@ -49,7 +51,7 @@ void		ft_get_cmd(t_group *grp, char *order)
 	ft_putstr_fd(order, 2);
 }
 
-void			print_cmd(t_group *grp, char *order)
+void	print_cmd(t_group *grp, char *order)
 {
 	int i;
 
@@ -64,20 +66,19 @@ void			print_cmd(t_group *grp, char *order)
 			tputs(tgetstr("do", NULL), 0, ft_getchar);
 		ft_replace_cursor(grp);
 	}
+	else if ((START_POS + TERM(curs_pos)) % TERM(window->width) == 0)
+		tputs(tgetstr("do", NULL), 0, ft_getchar);
+	grp->is_search == true ? find_search(grp) : 0;
 }
 
 void	handling_ctrl_d(t_group *grp)
 {
 	char	*tmp;
 	int		i;
-// attention dans cat si fleche tapé au debut puis ctrld ereur termcaps
+
 	i = -1;
-	if (TERM(cmd_size) == 0)
-	{
-		reset_shell();
-		ft_putchar_fd('\n', 2);
-		exit(0);
-	}
+	if (TERM(cmd_size) == 0 && START_POS == 6)
+		exit_shell(grp, 0);
 	else if (TERM(curs_pos) < TERM(cmd_size))
 	{
 		tmp = &TERM(cmd_line)[TERM(curs_pos) + 1];
@@ -99,15 +100,15 @@ void	handling_backspace(t_group *grp)
 	if (TERM(curs_pos) == 0)
 		return ;
 	tmp = &TERM(cmd_line)[TERM(curs_pos)];
-	TERM(curs_pos)--;
+	ft_left_arrow(grp);
 	TERM(cmd_size)--;
 	TERM(cmd_line)[TERM(curs_pos)] = '\0';
 	TERM(cmd_line) = JOIN(TERM(cmd_line), tmp);
-	tputs(tgetstr("le", NULL), 0, ft_getchar);
 	tputs(tgetstr("dc", NULL), 0, ft_getchar);
 	tputs(tgetstr("cd", NULL), 0, ft_getchar);
-	tputs(tgetstr("sc", NULL), 0, ft_getchar);
 	ft_putstr_fd(&TERM(cmd_line)[TERM(curs_pos)], 2);
-	tputs(tgetstr("rc", NULL), 0, ft_getchar);
+	if ((START_POS + LEN(&TERM(cmd_line)[TERM(curs_pos)]))
+		% TERM(window->width) == 0)
+		tputs(tgetstr("do", NULL), 0, ft_getchar);
+	grp->is_search == true ? find_search(grp) : 0;
 }
-

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/10 17:24:59 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/02 12:54:07 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/19 03:32:43 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+
+enum {squote, dquote, bquote, par, cro, acc};
 
 typedef struct		s_list
 {
@@ -69,13 +71,13 @@ int					ft_toupper(int c);
 int					ft_tolower(int c);
 int					ft_atoi(const char *str);
 int					ft_memcmp(const void *s1, const void *s2, size_t n);
+int					check_parentheses(char c);
 size_t				ft_strlen(const char *s);
 size_t				ft_strlcat(char *dst, const char *src, size_t dstsize);
 size_t				ft_strintchr(char *s, int tofind);
 char				**ft_strsplit(char const *s, char c);
 char				**ft_spacesplit(char const *s);
 char				**ft_strsplitquote(char *s, char c);
-char				**ft_strsplitstr(char const *s, char *c); // todel
 char				*ft_strncat(char *dest, const char *src, size_t n);
 char				*ft_strcat(char *s1, const char *s2);
 char				*ft_strncpy(char *dest, const char *src, size_t n);

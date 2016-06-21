@@ -6,28 +6,12 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/10 19:59:55 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/05 19:58:04 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/19 04:12:57 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <stdio.h>
-
-static int		ft_isdquote(char c)
-{
-	if (c == '\'' || c == '"')
-		return (1);
-	return (0);
-}
-
-static int		check_parenthese(char cmd, int synth)
-{
-	if (synth == 0 && ft_isdquote(cmd))
-		synth = 1;
-	else if (synth == 1 && ft_isdquote(cmd))
-		synth = 0;
-	return (synth);
-}
 
 static int		ft_cnt_parts(const char *s, char c)
 {
@@ -40,7 +24,7 @@ static int		ft_cnt_parts(const char *s, char c)
 	cnt = 0;
 	while (*s != '\0')
 	{
-		synth = check_parenthese(*s, synth);
+		synth = check_parentheses(*s);
 		if (synth == 0 && in_part == 1 && *s == c)
 			in_part = 0;
 		if (in_part == 0 && *s != c)
@@ -62,7 +46,7 @@ static int		ft_wlen(const char *s, char c)
 	synth = 0;
 	while (*s != '\0')
 	{
-		synth = check_parenthese(*s, synth);
+		synth = check_parentheses(*s);
 		if (synth == 0 && *s == c)
 			break ;
 		len++;

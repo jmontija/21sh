@@ -3,17 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard_tools2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/10 17:06:09 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/14 00:47:46 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/21 19:01:55 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
+void	display_historic(t_group *grp)
+{
+	ft_putstr_fd(grp->curr_hist->name, 2);
+	if ((START_POS + LEN(grp->curr_hist->name)) % TERM(window->width) == 0)
+		tputs(tgetstr("do", NULL), 0, ft_getchar);
+	TERM(cmd_line) = SDUP(grp->curr_hist->name);
+	TERM(curs_pos) += LEN(TERM(cmd_line));
+	TERM(cmd_size) = TERM(curs_pos);
+}
+
 void	handling_historic(t_group *grp, int key)
 {
+	grp->is_search ? canceled_search(grp) : 0;
 	remove_line(grp);
 	if (key == ARROW_U && grp->hist)
 	{
@@ -21,28 +32,20 @@ void	handling_historic(t_group *grp, int key)
 			grp->curr_hist = grp->hist;
 		else if (grp->curr_hist->next)
 			grp->curr_hist = grp->curr_hist->next;
-		ft_putstr_fd(grp->curr_hist->name, 2);
-		TERM(cmd_line) = SDUP(grp->curr_hist->name);
-		TERM(curs_pos) += LEN(TERM(cmd_line));
-		TERM(cmd_size) = TERM(curs_pos);
+		display_historic(grp);
 	}
 	else if (key == ARROW_D && grp->hist)
 	{
 		if (grp->curr_hist != NULL)
 			grp->curr_hist = grp->curr_hist->prev;
 		if (grp->curr_hist != NULL)
-		{
-			ft_putstr_fd(grp->curr_hist->name, 2);
-			TERM(cmd_line) = SDUP(grp->curr_hist->name);
-			TERM(curs_pos) += LEN(TERM(cmd_line));
-			TERM(cmd_size) = TERM(curs_pos);
-		}
+			display_historic(grp);
 		else
 			remove_line(grp);
 	}
 }
 
-void		ft_left_arrow(t_group *grp)
+void	ft_left_arrow(t_group *grp)
 {
 	int i;
 
@@ -58,7 +61,7 @@ void		ft_left_arrow(t_group *grp)
 	TERM(curs_pos) -= 1;
 }
 
-void		ft_right_arrow(t_group *grp)
+void	ft_right_arrow(t_group *grp)
 {
 	TERM(curs_pos) += 1;
 	if (((TERM(curs_pos) + START_POS) % TERM(window->width)) == 0)

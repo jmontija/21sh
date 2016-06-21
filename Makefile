@@ -6,7 +6,7 @@
 #    By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/10 17:28:13 by jmontija          #+#    #+#              #
-#    Updated: 2016/06/06 19:55:53 by jmontija         ###   ########.fr        #
+#    Updated: 2016/06/21 01:35:16 by jmontija         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,16 +29,21 @@ SRCS			+=	srcs/keyboard_tools.c
 SRCS			+=	srcs/keyboard_tools2.c
 SRCS			+=	srcs/keyboard_tools3.c
 SRCS			+=	srcs/keyboard_lib.c
+SRCS			+=	srcs/keyboard_search_lib.c
 SRCS			+=	srcs/child.c
 SRCS			+=	srcs/builtins.c
-SRCS			+=	srcs/set_opt.c
+SRCS			+=	srcs/env.c
 SRCS			+=	srcs/env_opt.c
-SRCS			+=	srcs/parsing_lib.c
+SRCS			+=	srcs/env_lib.c
+SRCS			+=	srcs/env_lib2.c
 SRCS			+=	srcs/pre_exec.c
 SRCS			+=	srcs/redir_exec.c
 SRCS			+=	srcs/exec.c
+SRCS			+=	srcs/parser.c
 SRCS			+=	srcs/remake_cmd.c
-SRCS			+=	srcs/remake_lib.c
+SRCS			+=	srcs/remake_lib_cmd.c
+SRCS			+=	srcs/remake_lib_file.c
+SRCS			+=	srcs/signaux.c
 
 OBJS			=	$(SRCS:srcs/%.c=srco/%.o)
 

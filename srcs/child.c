@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/23 14:17:42 by julio             #+#    #+#             */
-/*   Updated: 2016/06/15 23:18:47 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/19 00:52:03 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ void	path_rights(char *path_env)
 	val = (s_buf.st_mode & ~S_IFMT);
 	if (ret == 0 && !(val & S_IXUSR))
 	{
-		ft_putstr("fsh: /!\\ WARNING PATH /!\\: permission denied: ");
-		ft_putendl(path_env);
+		ft_putstr_fd("fsh: /!\\ WARNING PATH /!\\: permission denied: ", 2);
+		ft_putendl_fd(path_env, 2);
 	}
 }
 

@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   shell_lib.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:06:08 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/11 18:04:27 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/20 23:38:06 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+
+void	show_prompt(t_group *grp, char *prompt, int size, char *color)
+{
+	ft_putstr_fd(color, 2);
+	ft_putstr_fd(prompt, 2);
+	ft_putstr_fd("\033[1;37m", 2);
+	grp->prompt_size = size;
+}
 
 int		ft_getchar(int c)
 {

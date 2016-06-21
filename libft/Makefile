@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: julio <julio@student.42.fr>                +#+  +:+       +#+         #
+#    By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/10 17:28:13 by jmontija          #+#    #+#              #
-#    Updated: 2016/06/02 12:51:02 by julio            ###   ########.fr        #
+#    Updated: 2016/06/19 04:10:21 by jmontija         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,7 @@ SRC += ft_putnbr.c
 SRC += ft_putnbr_fd.c
 SRC += ft_putstr.c
 SRC += ft_putstr_fd.c
+SRC += ft_quotes.c
 SRC += ft_strcat.c
 SRC += ft_strcmp.c
 SRC += ft_strcpy.c
@@ -62,7 +63,6 @@ SRC += ft_strtrim.c
 SRC += ft_strsplit.c
 SRC += ft_spacesplit.c
 SRC += ft_strsplitquote.c
-SRC += ft_strsplitstr.c
 SRC += ft_atoi.c
 SRC += ft_strchr.c
 SRC += ft_strlcat.c

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/23 17:29:45 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/15 00:28:41 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/20 23:20:30 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,23 @@ void	ft_setenv(t_group *grp)
 	t_bool	error;
 
 	i = 0;
-	error = false;
-	if (grp->cmd[1] == NULL)
-	{
-		ft_putendl("setenv: set argument(s) -> key=value or key=");
-		return ;
-	}
+	error = grp->cmd[1] != NULL ? false : true;
 	while (grp->cmd[++i] != NULL)
 	{
-		if (insert_env(grp, grp->cmd[i]) < 0)
+		if (!ft_strncmp(grp->cmd[i], "_", 1) ||
+			!ft_strncmp(grp->cmd[i], "SHLVL", 5))
 		{
-			ft_putstr("setenv: bad synthax -> ");
-			ft_putendl(grp->cmd[i]);
+			ft_putendl_fd("setenv: \"SHLVL\" and \"_\" can't be modify", 2);
+			break ;
+		}
+		else if (insert_env(grp, grp->cmd[i]) < 0)
+		{
+			ft_putstr_fd("setenv: bad synthax -> ", 2);
+			ft_putendl_fd(grp->cmd[i], 2);
 			error = true;
 		}
 	}
-	error ? ft_putendl("setenv: synthax -> key=value or key=") : 0;
+	error ? ft_putendl_fd("setenv: synthax -> key=value or key=", 2) : 0;
 }
 
 void	ft_unsetenv(t_group *grp)
@@ -42,22 +43,23 @@ void	ft_unsetenv(t_group *grp)
 	t_bool	error;
 
 	i = 0;
-	error = false;
-	if (grp->cmd[1] == NULL)
-	{
-		ft_putendl("unsetenv: set argument(s) -> key");
-		return ;
-	}
+	error = grp->cmd[1] != NULL ? false : true;
 	while (grp->cmd[++i] != NULL)
 	{
-		if (unset_env(grp, grp->cmd[i]) < 0)
+		if (!ft_strncmp(grp->cmd[i], "_", 1) ||
+			!ft_strncmp(grp->cmd[i], "SHLVL", 5))
 		{
-			ft_putstr("unsetenv: unfound key -> ");
-			ft_putendl(grp->cmd[i]);
+			ft_putendl_fd("setenv: 'SHLVL', '_' can't be modify", 2);
+			break ;
+		}
+		else if (unset_env(grp, grp->cmd[i]) < 0)
+		{
+			ft_putstr_fd("unsetenv: unfound key -> ", 2);
+			ft_putendl_fd(grp->cmd[i], 2);
 			error = true;
 		}
 	}
-	error ? ft_putendl("unsetenv: synthax -> key") : 0;
+	error ? ft_putendl_fd("unsetenv: synthax -> key", 2) : 0;
 }
 
 void	manage_cd(t_group *grp)
@@ -107,6 +109,7 @@ int		exec_builtin(int exec, t_group *grp, char *order)
 	else if (ft_strcmp(grp->cmd[0], "unsetenv") == 0)
 		((active += 1) && exec) ? ft_unsetenv(grp) : 0;
 	else if (ft_strcmp(grp->cmd[0], "exit") == 0)
-		grp->cmd[1] ? exit(ft_atoi(grp->cmd[1])) : exit(0);
+		grp->cmd[1] ?
+		exit_shell(grp, ft_atoi(grp->cmd[1])) : exit_shell(grp, 0);
 	return (active);
 }

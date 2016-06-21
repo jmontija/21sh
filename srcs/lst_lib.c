@@ -3,133 +3,64 @@
 /*                                                        :::      ::::::::   */
 /*   lst_lib.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/06/17 03:01:30 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/21 17:25:57 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-int		unset_env(t_group *grp, char *todel)
+void	exit_shell(t_group *grp, int exit_id)
 {
-	t_env *curr;
-	t_env *prev;
+	t_hist	*curr;
+	int		hist;
 
-	prev = NULL;
-	curr = grp->first;
-	ft_strcmp(todel, "_") == 0 ? todel = NULL : 0;
-	while (todel != NULL && curr != NULL)
-	{
-		if ((ft_strcmp(curr->name, todel) == 0))
-		{
-			if (prev == NULL)
-				grp->first = curr->next;
-			else
-				prev->next = curr->next;
-			curr->next == NULL ? grp->last = prev : 0;
-			REMOVE(&curr->name);
-			REMOVE(&curr->val);
-			ft_memdel((void *)&curr);
-			return (1);
-		}
-		prev = curr;
+	hist = open(
+	"/nfs/2015/j/jmontija/.fsh_history", O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if (grp->curr_hist == NULL)
+		grp->curr_hist = grp->hist;
+	curr = grp->curr_hist;
+	while (curr && curr->next != NULL)
 		curr = curr->next;
-	}
-	return (-1);
-}
-
-int		is_env(char *env)
-{
-	int i;
-
-	i = -1;
-	while (env[++i] != '\0')
+	while (curr != NULL)
 	{
-		if (env[i] == '=')
-			break ;
+		ft_putendl_fd(curr->name, hist);
+		curr = curr->prev;
 	}
-	if (env[i] != '=')
-		return (false);
-	return (i);
+	reset_shell();
+	ft_putendl_fd("fsh_exit", 2);
+	exit(exit_id);
 }
 
-t_env	*create_env_line(t_group *grp, char *env, int i)
+void	set_grp_next2(t_group *grp)
 {
-	t_env	*new;
-	t_env	*curr_env;
-
-	curr_env = grp->first;
-	new = (t_env *)malloc(sizeof(t_env));
-	if (!(new) || !(env))
-		return (NULL);
-	if ((i = is_env(env)) == false)
-		return (NULL);
-	new->exist = false;
-	new->name = SUB(env, 0, i);
-	new->val = SUB(env, i + 1, LEN(env));
-	while (curr_env != NULL)
-	{
-		if (ft_strcmp(new->name, curr_env->name) == 0)
-		{
-			new->exist = true;
-			curr_env->val = new->val;
-			break ;
-		}
-		curr_env = curr_env->next;
-	}
-	new->next = NULL;
-	return (new);
-}
-
-int		insert_env(t_group *grp, char *env)
-{
-	t_env	*new;
-	int		i;
-
-	i = 0;
-	env = ft_strtrim(env);
-	new = create_env_line(grp, env, i);
-	if (new == NULL)
-		return (-1);
-	if (new->exist == true)
-		return (1);
-	if (grp->last != NULL)
-		grp->last->next = new;
-	else
-		grp->first = new;
-	grp->last = new;
-	return (1);
-}
-
-t_group	*set_grp(void)
-{
-	t_group	*grp;
 	struct winsize	w;
-	int		i;
+
+	ioctl(0, TIOCGWINSZ, &w);
+	grp->term = (t_term *)malloc(sizeof(t_term));
+	grp->term->curs_pos = 0;
+	grp->term->line = 0;
+	grp->term->cmd_size = 0;
+	grp->term->other_read = 0;
+	grp->term->cmd_line = NULL;
+	grp->term->search = NULL;
+	grp->term->window = (t_window *)malloc(sizeof(t_window));
+	grp->term->window->width = w.ws_col;
+	grp->term->window->heigth = w.ws_row;
+}
+
+void	set_grp_next(t_group *grp)
+{
+	int	i;
 
 	i = -1;
-	grp = (t_group *)malloc(sizeof(t_group));
-	if (!(grp))
-		exit(0);
-	ioctl(0, TIOCGWINSZ, &w);
-	grp->first = NULL;
-	grp->last = NULL;
-	grp->cmd = NULL;
-	grp->curr_cmd = NULL;
-	grp->cmd_save = NULL;
-	grp->env = NULL;
-	grp->hist = NULL;
+	grp->exit[0] = 0;
+	grp->exit[1] = 0;
 	grp->quotes = (int *)malloc(sizeof(int) * 6);
 	while (++i < 6)
 		grp->quotes[i] = 0;
-	grp->curr_hist = NULL;
-	grp->fd_in_save = STDIN_FILENO;
-	//grp->fd_out_save = open("/tmp/.tmp_file", O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	grp->pipe = 0;
-	grp->exit[0] = 0;
-	grp->exit[1] = 0;
 	grp->define_cmd = (int *)malloc(sizeof(int) * 4);
 	i = -1;
 	while (++i < 4)
@@ -143,14 +74,31 @@ t_group	*set_grp(void)
 		grp->options->on[i] = false;
 		grp->options->params[i] = NULL;
 	}
-	grp->term = (t_term *)malloc(sizeof(t_term));
-	grp->term->curs_pos = 0;
-	grp->term->cmd_size = 0;
-	grp->term->other_read = 0;
-	grp->term->cmd_line = NULL;
-	grp->term->window = (t_window *)malloc(sizeof(t_window));
-	grp->term->window->width = w.ws_col;
-	grp->term->window->heigth = w.ws_row;
+	set_grp_next2(grp);
+}
+
+t_group	*set_grp(void)
+{
+	t_group	*grp;
+	int		i;
+
+	i = -1;
+	grp = (t_group *)malloc(sizeof(t_group));
+	!(grp) ? exit(0) : 0;
+	grp->first = NULL;
+	grp->last = NULL;
+	grp->cmd = NULL;
+	grp->curr_cmd = NULL;
+	grp->cmd_save = NULL;
+	grp->env = NULL;
+	grp->hist = NULL;
+	grp->curr_hist = NULL;
+	grp->tmp_from = NULL;
+	grp->fd_in_save = STDIN_FILENO;
+	grp->pipe = 0;
+	grp->is_search = false;
+	grp->prompt_size = 6;
+	set_grp_next(grp);
 	return (grp);
 }
 

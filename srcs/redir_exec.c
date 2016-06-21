@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_exec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/06/17 03:36:37 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/21 01:31:33 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int		ft_fdcopy(int fd_r, char *fromfd, int fd_w, char *tofd)
 
 int		heredoc(t_group *grp, t_redir *curr)
 {
-	int	fd;
+	int		fd;
 
 	TERM(other_read) = true;
 	set_shell((~ICANON & ~ECHO));
@@ -37,9 +37,7 @@ int		heredoc(t_group *grp, t_redir *curr)
 	while (grp->exit[1] == false)
 	{
 		TERM(cmd_line) = ft_strdup("");
-		ft_putstr_fd("\033[1;34m", 2);
-		ft_putstr_fd("heredoc> ", 2);
-		ft_putstr_fd("\033[1;37m", 2);
+		show_prompt(grp, "heredoc> ", 9, "\033[1;34m");
 		read_cmd(grp, 0);
 		if (ft_strcmp(TERM(cmd_line), curr->name) == 0)
 			break ;
@@ -58,38 +56,24 @@ void	redir_from(int idx_cmd, t_group *grp)
 {
 	t_redir *curr;
 	int		exec;
-	int		exec_2;
 	int		fd;
 
 	exec = false;
 	curr = grp->sh_cmd[idx_cmd];
 	while (curr != NULL)
 	{
-		/*if (grp->fd_in_save > 0 && exec == false)
-			exec = ft_fdcopy(grp->fd_in_save, NULL, 0, TMP_FROM);*/
+		if (grp->fd_in_save > 1 && exec == false)
+			exec = ft_fdcopy(grp->fd_in_save, NULL, 0, TMP_FROM);
 		if (curr->symbol && ft_strcmp(curr->symbol, "<") == 0)
-		{
-			if (grp->fd_in_save > 1)
-				exec_2 = ft_fdcopy(0, curr->name, grp->fd_in_save, NULL);
-			else
-				exec = ft_fdcopy(0, curr->name, 0, TMP_FROM);
-		}
+			exec = ft_fdcopy(0, curr->name, 0, TMP_FROM);
 		else if (curr->symbol && ft_strcmp(curr->symbol, "<<") == 0)
 			exec = heredoc(grp, curr);
 		curr = curr->next;
 	}
-	if (exec)
-	{
-		fd = open(TMP_FROM, O_RDONLY);
+	if (exec && (fd = open(TMP_FROM, O_RDONLY)) >= 0)
 		grp->fd_in_save = fd;
-	}
-	else if (exec_2)
-	{
-		fd = open("/dev/tty1", O_RDONLY);
-		grp->fd_in_save = fd;
-	} 
-	//else if (exec)
-		//ft_putendl("error fd failed");
+	else if (exec)
+		ft_putendl("error fd failed");
 }
 
 int		redir_to(int idx_cmd, t_group *grp)

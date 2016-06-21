@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard_lib.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/02 15:43:58 by julio             #+#    #+#             */
-/*   Updated: 2016/06/14 00:44:05 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/20 23:28:12 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void		ft_go_down(t_group *grp)
 		ft_right_arrow(grp);
 }
 
-void	insert_hist(t_group *grp, char *name)
+void		insert_hist(t_group *grp, char *name)
 {
 	t_hist	*new;
 

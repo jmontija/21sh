@@ -3,34 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   father.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/03 23:53:16 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/17 03:01:27 by julio            ###   ########.fr       */
+/*   Updated: 2016/06/20 23:47:50 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-char	**get_all_command(int const fd)
-{
-	char	*cmd_line;
-	char	*order;
-	int		ret;
-
-	ret = 0;
-	order = NULL;
-	get_next_line(fd, &order);
-	cmd_line = SDUP(order);
-	while ((ret = get_next_line(fd, &order)) > 0)
-	{
-		cmd_line = JOIN(cmd_line, ";");
-		cmd_line = JOIN(cmd_line, order);
-	}
-	return (ft_strsplit(cmd_line, ';'));
-}
-
-char	**get_command(t_group *grp ,int const fd)
+char	**get_command(t_group *grp, int const fd)
 {
 	char	order[512];
 	char	**split;
@@ -38,15 +20,10 @@ char	**get_command(t_group *grp ,int const fd)
 
 	TERM(cmd_line) = SDUP("");
 	ft_bzero(order, 513);
-	//readlink(JOIN(FD_DIR, ft_itoa(fd)), order, 512);
-	/*fcntl(fd, F_GETPATH, order);
+	fcntl(fd, F_GETPATH, order);
 	if (ft_strcmp(order, "/dev/ttys000") == 0 ||
 		ft_strcmp(order, "/dev/ttys001") == 0)
-	{*/
-		ft_putstr_fd("\033[1;32m", 2);
-		ft_putstr_fd("fsh-> ", 2);
-		ft_putstr_fd("\033[1;37m", 2);
-	//}
+		show_prompt(grp, "fsh-> ", 6, "\033[1;32m");
 	read_cmd(grp, fd);
 	split = ft_strsplit(TERM(cmd_line), ';');
 	REMOVE(&TERM(cmd_line));
@@ -72,9 +49,9 @@ char	*check_shortcut(t_group *grp, char *order)
 	return (order);
 }
 
-void		free_sh_cmd(t_group *grp)
+void	free_sh_cmd(t_group *grp)
 {
-	int	i;
+	int		i;
 	t_redir	*curr;
 	t_redir	*trash;
 
@@ -93,19 +70,15 @@ void		free_sh_cmd(t_group *grp)
 		}
 		grp->sh_cmd[i] = NULL;
 	}
-	//ft_putendl("grp->sh_cmd FREE");
 }
 
-void		lets_free(t_group *grp)
+void	lets_free(t_group *grp)
 {
-	// VERIFIER ET FERMER LES FD OUVERT
-
-	check_parentheses(grp, 0);
+	check_parentheses(0);
 	REMOVE(&grp->order);
 	REMOVE(&grp->curr_cmd);
 	grp->pipe = 0;
 	grp->fd_in_save = STDIN_FILENO;
-	//grp->fd_in_psave = STDIN_FILENO;
 	grp->exit[1] = false;
 	free_sh_cmd(grp);
 	TERM(curs_pos) = 0;
@@ -114,20 +87,15 @@ void		lets_free(t_group *grp)
 	unlink(TMP_FROM);
 }
 
-// ./21sh < file | env ls=djk test=dkjk ./21sh | wc <<eof
-
 void	parse_cmd(int const fd, t_group *grp)
 {
 	char	**all_cmd;
-	char	*path;
 	int		i;
-	int		j;
 
 	i = -1;
-	all_cmd = fd == 0 ? get_command(grp, fd) : get_all_command(fd);
+	all_cmd = get_command(grp, fd);
 	while (all_cmd[++i])
 	{
-		j = -1;
 		all_cmd[i] = ft_strtrim(all_cmd[i]);
 		all_cmd[i] = check_shortcut(grp, all_cmd[i]);
 		if (all_cmd[i][0] != '\0')
@@ -135,9 +103,13 @@ void	parse_cmd(int const fd, t_group *grp)
 			grp->order = SDUP(all_cmd[i]);
 			insert_hist(grp, grp->order);
 			if (check_synth_cmd(grp) >= 0)
+			{
+				reset_shell();
 				main_pipe(grp, NULL);
+				set_shell((~ICANON & ~ECHO));
+			}
 			lets_free(grp);
 		}
 	}
-	grp->exit[0] ? exit(0) : 0;
+	grp->exit[0] ? exit_shell(grp, 0) : 0;
 }
