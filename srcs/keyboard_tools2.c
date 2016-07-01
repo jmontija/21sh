@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/10 17:06:09 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/21 19:01:55 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:44:10 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,6 @@ void	handling_arrow(t_group *grp, int key)
 		handling_historic(grp, key);
 	else if (key == ARROW_L && TERM(curs_pos) > 0)
 		ft_left_arrow(grp);
-	else if (key == ARROW_R && TERM(curs_pos) < LEN(TERM(cmd_line)))
+	else if (key == ARROW_R && TERM(curs_pos) < (int)LEN(TERM(cmd_line)))
 		ft_right_arrow(grp);
 }

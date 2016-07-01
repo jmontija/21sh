@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/03 02:03:59 by julio             #+#    #+#             */
-/*   Updated: 2016/06/21 01:31:33 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:04:05 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,8 @@ int		redir_to(int idx_cmd, t_group *grp)
 	{
 		if (curr->symbol && curr->symbol[0] == '>')
 		{
-			redir_all = (ft_strcmp(curr->symbol, ">&") == 0) ? 1 : 0;
+			redir_all = (ft_strcmp(curr->symbol, ">&") == 0) ||
+			(ft_strcmp(curr->symbol, ">>&") == 0) ? 1 : 0;
 			exec = exec_command(curr->fd, grp, redir_all);
 		}
 		curr = curr->next;

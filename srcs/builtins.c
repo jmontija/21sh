@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/23 17:29:45 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/20 23:20:30 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:45:29 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int		exec_builtin(int exec, t_group *grp, char *order)
 	int		active;
 
 	active = 0;
+	order = NULL;
 	if (ft_strcmp(grp->cmd[0], "env") == 0)
 	{
 		active += 1;

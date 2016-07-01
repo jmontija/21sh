@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/29 19:02:34 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/20 23:47:55 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 23:57:09 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,14 @@ int		terminate(t_group *grp)
 
 	i = -1;
 	synth = false;
+	check_parentheses(0);
 	while (grp->order[++i] != '\0')
 	{
 		synth = check_parentheses(grp->order[i]);
 		if (synth == false && grp->order[i] == '|')
 			grp->pipe += 1;
 	}
+	check_parentheses(0);
 	TERM(other_read) = false;
 	TERM(curs_pos) = 0;
 	TERM(cmd_size) = 0;
@@ -118,13 +120,12 @@ int		check_synth_cmd(t_group *grp)
 	int		i;
 	int		ret;
 	int		synth;
-	char	*splitw;
 
 	i = -1;
 	synth = false;
 	while (grp->order[++i] != '\0')
 		if ((synth = check_parentheses(grp->order[i])) < 0)
-			return (-1);
+			return (error_synthax("Ambiguous", "closed"));
 	if (is_parenthese_closed(grp, synth) < 0)
 		return (-1);
 	i = -1;

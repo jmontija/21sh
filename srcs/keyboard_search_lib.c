@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/28 17:32:39 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/21 19:04:41 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:45:10 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	up_clear_find(t_group *grp, char *name)
 	int	i;
 
 	i = -1;
+	name = NULL;
 	tputs(tgetstr("cr", NULL), 0, ft_getchar);
 	while (++i < TERM(line))
 		tputs(tgetstr("up", NULL), 0, ft_getchar);
@@ -27,7 +28,7 @@ void	up_clear_find(t_group *grp, char *name)
 
 void	display_search(t_group *grp, char *name)
 {
-	int	i;
+	size_t	i;
 
 	i = -1;
 	up_clear_find(grp, name);
@@ -47,6 +48,8 @@ void	find_search(t_group *grp)
 	if (TERM(curs_pos) == 0)
 	{
 		display_search(grp, TERM(cmd_save));
+		REMOVE(&TERM(search));
+		TERM(search) = SDUP(TERM(cmd_save));
 		return ;
 	}
 	curr = grp->curr_hist == NULL ? grp->hist : grp->curr_hist;
@@ -55,23 +58,25 @@ void	find_search(t_group *grp)
 		if (ft_strstr(curr->name, TERM(cmd_line)) != NULL)
 		{
 			display_search(grp, curr->name);
+			REMOVE(&TERM(search));
+			TERM(search) = SDUP(curr->name);
 			break ;
 		}
 		curr = curr->next;
 	}
+	curr == NULL ? REMOVE(&TERM(search)) : 0;
 }
 
 void	canceled_search(t_group *grp)
 {
-	int	i;
-
-	i = -1;
 	grp->is_search = false;
 	up_clear_find(grp, TERM(cmd_save));
 	ft_putstr_fd(TERM(cmd_save), 2);
 	TERM(cmd_line) = SDUP(TERM(cmd_save));
 	TERM(curs_pos) = LEN(TERM(cmd_line));
 	TERM(cmd_size) = TERM(curs_pos);
+	REMOVE(&TERM(search));
+	REMOVE(&TERM(cmd_save));
 }
 
 void	init_search(t_group *grp)
@@ -79,9 +84,9 @@ void	init_search(t_group *grp)
 	int	i;
 
 	i = -1;
-	TERM(line) = 0;
 	if (grp->is_search == false)
 	{
+		TERM(line) = 0;
 		grp->is_search = true;
 		TERM(cmd_save) = SDUP(TERM(cmd_line));
 		while (++i < TERM(curs_pos))

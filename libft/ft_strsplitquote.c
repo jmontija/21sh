@@ -6,12 +6,11 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/10 19:59:55 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/19 04:12:57 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 23:42:16 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
 
 static int		ft_cnt_parts(const char *s, char c)
 {
@@ -34,6 +33,7 @@ static int		ft_cnt_parts(const char *s, char c)
 		}
 		s++;
 	}
+	check_parentheses(0);
 	return (cnt);
 }
 
@@ -52,6 +52,7 @@ static int		ft_wlen(const char *s, char c)
 		len++;
 		s++;
 	}
+	check_parentheses(0);
 	return (len);
 }
 
@@ -79,5 +80,6 @@ char			**ft_strsplitquote(char *s, char c)
 		index++;
 	}
 	t[index] = NULL;
+	check_parentheses(0);
 	return (t);
 }

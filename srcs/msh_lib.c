@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/05 03:52:12 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/20 23:29:42 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:38:36 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 void	error_cmd(char *what, char *who)
 {
-	ft_putstr_fd("fsh: ", 2);
+	t_group *grp;
+
+	grp = init_grp();
+	show_prompt(grp, "fsh: ", 6, "\033[1;31m");
 	ft_putstr_fd(what, 2);
 	ft_putstr_fd(" -> ", 2);
 	ft_putendl_fd(who, 2);
@@ -34,9 +37,11 @@ int		error_synthax(char *error, char *file)
 
 int		error_opt(char opt, char *what)
 {
-	ft_putstr_fd("fsh: '-", 2);
+	t_group *grp;
+
+	grp = init_grp();
+	show_prompt(grp, "fsh: env: ", 6, "\033[1;31m");
 	ft_putchar_fd(opt, 2);
-	ft_putchar_fd('\'', 2);
 	ft_putendl_fd(what, 2);
 	ft_putendl_fd(
 "usage: env [-iv] [-P altpath][-u name] [name=value] [utility [argument]", 2);

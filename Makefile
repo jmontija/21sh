@@ -6,13 +6,13 @@
 #    By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/10 17:28:13 by jmontija          #+#    #+#              #
-#    Updated: 2016/06/21 01:35:16 by jmontija         ###   ########.fr        #
+#    Updated: 2016/06/22 22:41:54 by jmontija         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # -fsanitize=address (force segflt)
 NAME			=	21sh
-COMPIL			=	gcc
+COMPIL			=	gcc -Wextra -Werror -Wall
 
 LIB_PATH		=	libft/
 LIB				=	$(LIB_PATH)libft.a

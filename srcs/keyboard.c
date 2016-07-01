@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 17:05:11 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/21 01:33:42 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:42:50 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int		key_selection_next(t_group *grp, char *order, int key)
 
 int		key_selection(t_group *grp, char *order)
 {
-	int	ret;
 	int	key;
 
 	key = KEY(order[0], order[1], order[2], order[3]);
@@ -94,7 +93,6 @@ void	read_cmd(t_group *grp, int fd)
 	char	order[BUF_SIZE + 1];
 
 	tmp = NULL;
-	ret = -1;
 	ft_bzero(order, BUF_SIZE + 1);
 	while ((ret = read(fd, order, BUF_SIZE)) > 0)
 	{
@@ -104,13 +102,9 @@ void	read_cmd(t_group *grp, int fd)
 			break ;
 		ft_bzero(order, BUF_SIZE + 1);
 	}
-	if (ret == 0)
-		read_fd_in(grp, tmp);
-	else
-		ft_putchar_fd('\n', 2);
-	TERM(curs_pos) = 0;
-	TERM(cmd_size) = 0;
-	grp->is_search = false;
+	ft_go_end(grp);
+	ret == 0 ? read_fd_in(grp, tmp) : ft_putchar_fd('\n', 2);
+	reset_edl(grp);
 	ft_bzero(order, BUF_SIZE + 1);
 	REMOVE(&tmp);
 }

@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 16:50:31 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/21 18:57:31 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/23 00:07:53 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,9 @@ void					parse_cmd(int const fd, t_group *grp);
 void					show_prompt(t_group *grp, char *prompt,
 										int size, char *color);
 void					read_cmd(t_group *grp, int fd);
+void					reset_edl(t_group *grp);
 int						check_synth_cmd(t_group *grp);
+void					take_off_quotes(char **cmd);
 int						split_order(t_group *grp);
 int						check_file(t_group *grp, char *name, int rights);
 void					exec_env(t_group *grp, int show_env);
@@ -205,6 +207,7 @@ int						redir_to(int idx_cmd, t_group *grp);
 void					init_search(t_group *grp);
 void					handling_search(t_group *grp, int key);
 void					find_search(t_group *grp);
+void					up_clear_find(t_group *grp, char *name);
 void					canceled_search(t_group *grp);
 void					exit_shell(t_group *grp, int exit_id);
 #endif

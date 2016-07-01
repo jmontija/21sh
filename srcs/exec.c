@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/06 18:04:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/20 15:30:23 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:47:21 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ int		main_pipe(t_group *grp, char **split_cmd)
 
 	i = -1;
 	ret = 0;
+	split_cmd = NULL;
 	while (grp->sh_cmd[++i] != NULL)
 	{
 		exec = manage_pre_exec(i, grp, NULL);

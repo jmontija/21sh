@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/14 15:57:08 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/20 23:31:21 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:46:56 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ int		manage_pre_exec(int idx_cmd, t_group *grp, char *pipe_cmd)
 	int		ret;
 
 	ret = 0;
+	pipe_cmd = NULL;
 	get_save_cmd(idx_cmd, grp);
 	define_arg_cmd(grp);
 	manage_env(grp);

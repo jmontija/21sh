@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/13 20:08:18 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/21 18:30:14 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 19:41:03 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_next_word(t_group *grp)
 void	handling_clear_screen(t_group *grp)
 {
 	tputs(tgetstr("cl", NULL), 0, ft_getchar);
-	show_prompt(grp, "fsh-> ", 6, "\033[1;34m");
+	show_prompt(grp, "fsh-> ", 6, "\033[1;32m");
 	ft_putstr_fd(TERM(cmd_line), 2);
 	TERM(curs_pos) = LEN(TERM(cmd_line));
 }
@@ -51,4 +51,18 @@ void	remove_line(t_group *grp)
 	ft_go_end(grp);
 	while (TERM(curs_pos) > 0)
 		handling_backspace(grp);
+}
+
+void	reset_edl(t_group *grp)
+{
+	if (grp->is_search == true)
+	{
+		TERM(cmd_line) = SDUP(TERM(search));
+		TERM(cmd_line) == NULL ? (TERM(cmd_line) = ft_strnew(0)) : 0;
+		grp->is_search = false;
+		REMOVE(&TERM(search));
+		REMOVE(&TERM(cmd_save));
+	}
+	TERM(curs_pos) = 0;
+	TERM(cmd_size) = 0;
 }

@@ -6,11 +6,16 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/19 00:56:23 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/20 23:29:38 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/23 00:08:35 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+
+t_group	*nothing(t_group *grp)
+{
+	return (grp);
+}
 
 int		check_file(t_group *grp, char *name, int rights)
 {
@@ -20,6 +25,7 @@ int		check_file(t_group *grp, char *name, int rights)
 
 	ret = lstat(name, &s_buf);
 	val = (s_buf.st_mode & ~S_IFMT);
+	nothing(grp);
 	if (ret != 0)
 		error_cmd("unknown file", name);
 	else if (!(val & rights))
@@ -36,7 +42,6 @@ char	*last_pars_file(t_group *grp, char *new_cmd, char *curr_file,
 {
 	int			i;
 	char		**file;
-	struct stat	s_buf;
 
 	file = ft_spacesplit(curr_file);
 	if (file[0] == '\0')
@@ -44,6 +49,7 @@ char	*last_pars_file(t_group *grp, char *new_cmd, char *curr_file,
 		error_synthax("error parsing near", new->symbol);
 		return (NULL);
 	}
+	take_off_quotes(&file[0]);
 	new->name = SDUP(file[0]);
 	if (ft_strcmp(new->symbol, "<") == 0 &&
 		check_file(grp, new->name, S_IRUSR) < 0)
@@ -65,7 +71,7 @@ int		insert_fd(int idx_cmd, t_group *grp, char *file, char *symbol)
 	new = (t_redir *)malloc(sizeof(t_redir));
 	if (!ft_strcmp(symbol, ">") || !ft_strcmp(symbol, ">>") ||
 		!ft_strcmp(symbol, "<") || !ft_strcmp(symbol, "<<") ||
-		!ft_strcmp(symbol, ">&"))
+		!ft_strcmp(symbol, ">&") || !ft_strcmp(symbol, ">>&"))
 		new->symbol = SDUP(symbol);
 	else
 		return (error_synthax("unavailable symbol", symbol));

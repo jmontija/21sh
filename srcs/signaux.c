@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/18 18:39:25 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/21 18:56:54 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:51:35 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	handler_win(int sig)
 	struct winsize	w;
 
 	grp = init_grp();
+	sig = 0;
 	ioctl(0, TIOCGWINSZ, &w);
 	TERM(window->width) = w.ws_col;
 	TERM(window->heigth) = w.ws_row;
@@ -28,6 +29,7 @@ void	handler_ctrl_c(int sig)
 	t_group	*grp;
 
 	grp = init_grp();
+	sig = 0;
 	if (TERM(cmd_line) == NULL)
 	{
 		ft_putchar_fd('\n', 2);
@@ -59,7 +61,6 @@ void	ft_prompt(int signum)
 	order[0] = 3;
 	order[1] = 0;
 	grp = init_grp();
-	show_prompt(grp, "\nfsh-> ", 6, "\033[1;32m");
 	ioctl(0, TIOCSTI, order);
 }
 

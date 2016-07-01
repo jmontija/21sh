@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/05 03:07:07 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/20 16:09:12 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:46:34 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	create_process_env(t_group *grp, char *path, char **cmd_line)
 {
 	pid_t	pid;
 	int		buf;
-	int		fd;
 
 	if (path == NULL)
 		return ;
@@ -37,7 +36,7 @@ void	create_process_env(t_group *grp, char *path, char **cmd_line)
 	}
 }
 
-int		exec_cmd(t_group *grp, char *path, char *cmd_line)
+int		exec_cmd(char *path, char *cmd_line)
 {
 	struct stat	s_buf;
 	mode_t		val;
@@ -108,7 +107,7 @@ char	*env_cmd(t_group *grp, int opt)
 		while (grp->env_save[++i] != NULL)
 			insert_env(grp, grp->env_save[i]);
 	}
-	if (exec_cmd(grp, path, grp->cmd[0]) < 0)
+	if (exec_cmd(path, grp->cmd[0]) < 0)
 		return (NULL);
 	return (path);
 }

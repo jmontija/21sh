@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/15 18:38:24 by julio             #+#    #+#             */
-/*   Updated: 2016/06/20 23:22:45 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/23 17:37:02 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int		stock_env(t_group *grp, char **env)
 	insert_env(grp, old_pwd);
 	insert_env(grp,
 "PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/munki");
-	insert_env(grp, "SHLVL=1");
+	insert_env(grp, "SHLVL=2");
 	i = -1;
 	while (env[++i] != NULL)
 		insert_env(grp, env[i]);
@@ -79,7 +79,6 @@ void	stock_hist(t_group *grp)
 int		main(int argc, char **argv, char **env)
 {
 	t_group		*grp;
-	struct stat	s_buf;
 
 	(!argc || !argv) ? (exit(0)) : 0;
 	grp = init_grp();

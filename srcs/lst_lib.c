@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 16:00:22 by julio             #+#    #+#             */
-/*   Updated: 2016/06/21 17:25:57 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 22:55:46 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	exit_shell(t_group *grp, int exit_id)
 		curr = curr->prev;
 	}
 	reset_shell();
-	ft_putendl_fd("fsh_exit", 2);
+	ft_putstr_fd("\n", 2);
 	exit(exit_id);
 }
 

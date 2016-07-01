@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard_tools.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
+/*   By: julio <julio@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/29 19:31:01 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/21 19:05:39 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 02:04:11 by julio            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,8 @@ void	handling_backspace(t_group *grp)
 	TERM(cmd_line) = JOIN(TERM(cmd_line), tmp);
 	tputs(tgetstr("dc", NULL), 0, ft_getchar);
 	tputs(tgetstr("cd", NULL), 0, ft_getchar);
+	tputs(tgetstr("sc", NULL), 0, ft_getchar);
 	ft_putstr_fd(&TERM(cmd_line)[TERM(curs_pos)], 2);
-	if ((START_POS + LEN(&TERM(cmd_line)[TERM(curs_pos)]))
-		% TERM(window->width) == 0)
-		tputs(tgetstr("do", NULL), 0, ft_getchar);
+	tputs(tgetstr("rc", NULL), 0, ft_getchar);
 	grp->is_search == true ? find_search(grp) : 0;
 }

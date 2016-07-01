@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/03 23:53:16 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/20 23:47:50 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/06/22 23:43:14 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ char	**get_command(t_group *grp, int const fd)
 {
 	char	order[512];
 	char	**split;
-	int		ret;
 
 	TERM(cmd_line) = SDUP("");
 	ft_bzero(order, 513);
@@ -25,7 +24,7 @@ char	**get_command(t_group *grp, int const fd)
 		ft_strcmp(order, "/dev/ttys001") == 0)
 		show_prompt(grp, "fsh-> ", 6, "\033[1;32m");
 	read_cmd(grp, fd);
-	split = ft_strsplit(TERM(cmd_line), ';');
+	split = ft_strsplitquote(TERM(cmd_line), ';');
 	REMOVE(&TERM(cmd_line));
 	ft_bzero(order, 513);
 	return (split);
