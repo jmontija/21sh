@@ -6,7 +6,7 @@
 /*   By: jmontija <jmontija@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/06/19 03:11:24 by jmontija          #+#    #+#             */
-/*   Updated: 2016/06/19 04:29:10 by jmontija         ###   ########.fr       */
+/*   Updated: 2016/09/11 17:57:45 by jmontija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,15 @@ int		malloc_free(int **quotes, char c)
 	int	i;
 
 	i = -1;
-	if (c == 0)
-		return (ret_clean_quotes(1, *quotes));
+
 	if (*quotes == NULL)
 	{
 		*quotes = (int *)malloc(sizeof(int) * 6);
 		while (++i < 6)
 			(*quotes)[i] = 0;
 	}
+	if (c == 0)
+		return (ret_clean_quotes(1, *quotes));
 	return (0);
 }
 
